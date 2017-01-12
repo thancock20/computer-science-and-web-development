@@ -23,16 +23,21 @@ docs does?
 Why do you think some version control systems, like Git, allow saving multiple
 files in one commit, while others, like Google Docs, treat each file separately?
 
-    Fill in your answer here
+    Documents, such as the ones in Google Docs, are usually not interrelated.
+    So they do not need to be saved together. Code, on the other hand is
+    usually interrelated, so should be saved together.
 
 How can you use the commands git log and git diff to view the history of files?
 
-    Fill in your answer here
+    git log --stat can tell you which files changed, and then git diff to view
+    the changes.
 
 How might using version control make you more confident to make changes that
 could break something?
 
-    Fill in your answer here
+    It's easy to return the code to how it was at an earlier commit, so if
+    something breaks it's an easy fix. Especially if you commit at each logical
+    change.
 
 Now that you have your workspace set up, what do you want to try using Git for?
 
