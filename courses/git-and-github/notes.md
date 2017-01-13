@@ -1,8 +1,12 @@
 # Notes related to what I learned while completing this
 
+## Lesson 1: Navigating a Commit History
+
 ### To view the difference between two commits:
 
-    git diff *first-commit-id* *second-commit-id*
+```
+git diff *first-commit-id* *second-commit-id*
+```
 
 ### How often to commit:
 
@@ -12,8 +16,22 @@ should use one commit for each change since they are logically separate.
 
 ### To see which files were changed between commits:
 
-    git log --stat
+```
+git log --stat
+```
 
 ### To return to a previous commit:
 
-    git checkout *commit-id*
+```
+git checkout *commit-id*
+```
+
+### Workflow to debug using git:
+
+```
+git log //Look through log to get commit ids
+git checkout *commit-id* //Find last commit that didn't have bug
+git checkout master //Return to latest commit
+git diff *id-of-last-commit-without-bug* *id-of-first-commit-with-bug*
+//Examine code to see what caused the bug
+```
