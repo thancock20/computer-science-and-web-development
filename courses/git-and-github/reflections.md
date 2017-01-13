@@ -1,5 +1,7 @@
 # Important reflections while completing this item
 
+## Lesson 1: Navigating a Commit History
+
 How did viewing a diff between two versions of a file help you see the bug that
 was introduced?
 
@@ -38,3 +40,19 @@ could break something?
     It's easy to return the code to how it was at an earlier commit, so if
     something breaks it's an easy fix. Especially if you commit at each logical
     change.
+
+## Lesson 2: Creating and Modifying a Repository
+
+What happens when you initialize a repository? Why do you need to do it?
+
+    The .git directory is created. This is where git stores all its metadata
+    related to commits. You can't make any commits until a repository is
+    initialized.
+
+How is the staging area different from the working directory and the repository?
+What value do you thing it offers?
+
+    It contains changes that will be commited into the repository with the next
+    `git commit`. The changes are not yet in the repository. It does not
+    necessarily contain all the changes in the working directory. This gives
+    fine grained control over what gets commited and when.

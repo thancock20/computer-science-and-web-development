@@ -35,3 +35,17 @@ git checkout master //Return to latest commit
 git diff *id-of-last-commit-without-bug* *id-of-first-commit-with-bug*
 //Examine code to see what caused the bug
 ```
+
+## Lesson 2: Creating and Modifying a Repository
+
+### To initialize a new git repository:
+
+```
+git init
+```
+
+### To add a file to the staging area:
+
+```
+git add *filename*
+```
