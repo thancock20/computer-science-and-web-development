@@ -38,7 +38,3 @@ could break something?
     It's easy to return the code to how it was at an earlier commit, so if
     something breaks it's an easy fix. Especially if you commit at each logical
     change.
-
-Now that you have your workspace set up, what do you want to try using Git for?
-
-    Fill in your answer here
