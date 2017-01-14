@@ -49,3 +49,30 @@ git init
 ```
 git add <filename>
 ```
+
+### To commit changes in the staging area to the repository:
+
+```
+git commit -m <commit message>
+
+//or to enter the message in the editor
+git commit //no arguments
+```
+
+### To diff the working directory to the staging area:
+
+```
+git diff //no arguments
+```
+
+### To diff the staging area to the repository:
+
+```
+git diff --staged
+```
+
+### To discard all changes in the working directory:
+
+```
+git reset --hard
+```

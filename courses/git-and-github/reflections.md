@@ -56,3 +56,9 @@ What value do you thing it offers?
     `git commit`. The changes are not yet in the repository. It does not
     necessarily contain all the changes in the working directory. This gives
     fine grained control over what gets commited and when.
+
+How can you use the staging area to make sure you have one commit per logical
+change?
+
+    Stage only one logical change before commiting, and any other logical
+    changes in the working directory won't be included in that commit.
