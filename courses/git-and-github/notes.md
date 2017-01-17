@@ -47,7 +47,7 @@ git init
 ### To add a file to the staging area:
 
 ```
-git add <filename>
+git add <file_name>
 ```
 
 ### To commit changes in the staging area to the repository:
@@ -80,10 +80,41 @@ git reset --hard
 ### To create a new branch:
 
 ```
-git branch <branchname>
+git branch <branch_name>
 ```
 
 ### To create and checkout a new branch in one command:
 
 ```
-git checkout -b <branchname>
+git checkout -b <branch_name>
+```
+
+### To see graph of commits:
+
+```
+git log --graph --oneline <branch_names>
+```
+
+### To manually run garbage collection to delete unreachable branches:
+
+```
+git gc
+```
+
+### To merge branch_A into the current branch:
+
+```
+git merge branch_A
+```
+
+### To delete a branch:
+
+```
+git branch -d <branch_name>
+```
+
+### To compare a commit to its parent:
+
+```
+git show <commit_id>
+```
