@@ -76,3 +76,14 @@ git diff --staged
 ```
 git reset --hard
 ```
+
+### To create a new branch:
+
+```
+git branch <branchname>
+```
+
+### To create and checkout a new branch in one command:
+
+```
+git checkout -b <branchname>
