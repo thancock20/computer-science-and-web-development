@@ -118,3 +118,23 @@ git branch -d <branch_name>
 ```
 git show <commit_id>
 ```
+
+## Lesson 3: Using GitHub to Collaborate
+
+## To add a GitHub remote to a repository:
+
+```
+git remote add <remote_name> <remote_url> // remote_name is usually origin
+```
+
+## To push local changes to a branch to GitHub:
+
+```
+git push <remote_name> <branch_name>
+```
+
+## To pull remote changes to a branch from GitHub:
+
+```
+git pull <remote_name> <branch_name>
+```

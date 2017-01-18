@@ -56,3 +56,15 @@ the working directory won't be included in that commit.
 When creating a new experimental feature or an alternative version. If you need
 to fix a bug on the regular version, without the new features, you can do so on
 the master branch.
+
+## Lesson 3: Using GitHub to Collaborate
+
+#### When would you want to use a remote repository rather than keeping all the work local?
+
+When working with others who need to use the repository as well. Also, when you want to make
+sure that the repository is backed up, and not only on your computer.
+
+#### Why might you want to always pull changes manually rather than having Git automatically stay up-to-date with your remote repository?
+
+Someone else might make changes to the same files, and merge conflicts could happen when
+you aren't ready to deal with them.
