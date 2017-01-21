@@ -68,3 +68,5 @@ sure that the repository is backed up, and not only on your computer.
 
 Someone else might make changes to the same files, and merge conflicts could happen when
 you aren't ready to deal with them.
+
+#### Describe the difference between forks, clones, and branches. When would you use one instead of the other?
