@@ -1,11 +1,5 @@
 # Curriculum Checklist
 
-## Prequisites
-
-| Progress        | Type   | Item                                                                                                    | Project(s) | Notes | Reflections |
-|:----------------|:-------|:--------------------------------------------------------------------------------------------------------|:-----------|:------|:------------|
-| Started 1/12/17 | Course | [How to Use Git and GitHub](https://www.udacity.com/course/how-to-use-git-and-github--ud775) on Udacity |            |       |             |
-
 ## Tier One
 
 | Progress | Type    | Item                                                                                                                                                                        | Project(s) | Notes | Reflections |
