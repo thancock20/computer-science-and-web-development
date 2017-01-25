@@ -220,3 +220,84 @@ for (var i = 0; i <= 9; i++) {
 }
 // 0 1 2 3 4 5 6 7 8 9
 ```
+
+## Functions
+
+**Function**: A named section of code that can be called by name, and the code inside it will be run each time.
+
+```js
+function printAmount() {
+  console.log(amount.toFixed(2));
+}
+
+var amount = 99.99;
+
+printAmount(); // "99.99"
+
+amount = amount * 2;
+
+printAmount(); // "199.98"
+```
+
+**Arguments/Parameters**: Values passed into a function.
+
+```js
+const TAX_RATE = 0. 08;
+
+function calculateFinalPurchase(amt) { // amt is the argument
+  // calculate the new amount with the tax
+  amt = amt + (amt * TAX_RATE);
+
+  // return the new amount
+  return amt;
+}
+
+var amount = 99.99;
+
+amount = calculateFinalPurchase(amount);
+
+console.log(amount.toFixed(2)); // "107.99"
+```
+
+### Scope
+
+**Scope**: A collection of variables as well as the rules for how those variables are accessed by name.
+
+```js
+function one() {
+  // this 'a' only belongs to the 'one()' function
+  var a = 1;
+  console.log(a);
+}
+
+function two() {
+  // this 'a' only belongs to the 'two()' function
+  var a = 2;
+  console.log(a);
+}
+
+one(); // 1
+two(); // 2
+```
+
+Lexical scope rules say that code in one scope can access variables of either that scope or any scope outside of it.
+
+```js
+function outer() {
+  var a = 1;
+
+  function inner() {
+    var b = 2;
+
+    // we can access both 'a' and 'b' here
+    console.log(a + b); // 3
+  }
+
+  inner();
+
+  // we can only access 'a' here
+  console.log(a);       // 1
+}
+
+outer();
+```
