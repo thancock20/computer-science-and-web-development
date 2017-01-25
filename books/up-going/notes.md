@@ -1,4 +1,24 @@
-# Notes related to what I learned while completing this item
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+- [Chapter 1: Into Programming](#chapter-1-into-programming)   
+   - [Code](#code)   
+      - [Statements](#statements)   
+      - [Expressions](#expressions)   
+      - [Executing a program](#executing-a-program)   
+   - [Operators](#operators)   
+   - [Values & Types](#values-types)   
+      - [Converting Between Types](#converting-between-types)   
+   - [Code Comments](#code-comments)   
+   - [Variables](#variables)   
+   - [Blocks](#blocks)   
+   - [Conditionals](#conditionals)   
+   - [Loops](#loops)   
+   - [Functions](#functions)   
+      - [Scope](#scope)   
+
+<!-- /MDTOC -->
+
+# Chapter 1: Into Programming
 
 ## Code
 
