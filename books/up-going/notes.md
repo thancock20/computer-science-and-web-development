@@ -103,3 +103,120 @@ var a = /* This is a comment in the middle of a line */ 42;
 
 console.log(a); // 42
 ```
+
+## Variables
+
+**Variable**: A symbolic container that holds a value that can *vary* over time as needed.
+
+**Dynamic Typing**: Variables can hold values of any *type* without any *type* enforcement.
+
+```js
+var amount = 99.99;
+
+amount = amount * 2;
+
+console.log(amount);  // 199.98
+
+// convert `amount` to a string, and
+// add "$" on the beginning
+amount = "$" + String(amount);
+
+console.log(amount);  // "$199.98"
+```
+
+## Blocks
+
+**Block**: A series of statements that is grouped together. In JavaScript, a block is defined b y wrapping one or more statements inside a curly-brace pair `{ .. }`.
+
+```js
+var amount = 99.99;
+
+// a general block
+{
+  amount = amount * 2;
+  console.log(amount); // 199.98
+}
+```
+
+Typically, blocks are attached to some control statement, such as `if`.
+
+```js
+var amount = 99.99;
+
+// is amount big enough?
+if (amount > 10) {     // <-- block attached to 'if'
+  amount = amount * 2;
+  console.log(amount); // 199.98
+}
+```
+
+**Note**: Unlike most other statements, a block statement does not need a `;` to conclude it.
+
+## Conditionals
+
+**Conditional**: A decision point in a program
+
+```js
+const ACCESSORY_PRICE = 9.99;
+
+var bank_balance = 302.13;
+var amount = 99.99;
+
+amount = amount * 2;
+
+// can we afford the extra purchase?
+if (amount < bank_balance) {
+  console.log("I'll take the accessory!");
+  amount = amount + ACCESSORY_PRICE;
+}
+// otherwise
+else {
+  console.log("No, thanks.");
+}
+```
+
+## Loops
+
+**Loop**: Repeats a set of actions only while a certain condition holds.
+
+```js
+while (numOfCustomers > 0) { // won't run at all if false
+  console.log("How may I help you?");
+
+  // help the customer...
+
+  numOfCustomers = numOfCustomers - 1;
+}
+
+// versus:
+
+do { // will always run the 1st time, even is false
+  console.log("How may I help you?");
+
+  // help the customer...
+
+  numOfCustomers = numOfCustomers - 1;
+} while (numOfCustomers > 0); // condition evaluated after loop runs once
+```
+
+```js
+var i = 0;
+
+// a `while..true` loop would run forever, right?
+while (true) {
+  // stop the loop?
+  if (( i <= 9) === false) {
+    break;
+  }
+
+  console.log(i);
+  i = i + 1;
+}
+// 0 1 2 3 4 5 6 7 8 9
+
+// the above as a `for` loop
+for (var i = 0; i <= 9; i++) {
+  console.log(i);
+}
+// 0 1 2 3 4 5 6 7 8 9
+```
