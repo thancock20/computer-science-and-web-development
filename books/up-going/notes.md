@@ -1,24 +1,22 @@
-<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+# Notes for YDKJS: Up & Going
+<!-- MDTOC maxdepth:6 firsth1:0 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
 
-- [Chapter 1: Into Programming](#chapter-1-into-programming)   
-   - [Code](#code)   
-      - [Statements](#statements)   
-      - [Expressions](#expressions)   
-      - [Executing a program](#executing-a-program)   
-   - [Operators](#operators)   
-   - [Values & Types](#values-types)   
-      - [Converting Between Types](#converting-between-types)   
-   - [Code Comments](#code-comments)   
-   - [Variables](#variables)   
-   - [Blocks](#blocks)   
-   - [Conditionals](#conditionals)   
-   - [Loops](#loops)   
-   - [Functions](#functions)   
-      - [Scope](#scope)   
+- [Code](#code)   
+   - [Statements](#statements)   
+   - [Expressions](#expressions)   
+   - [Executing a program](#executing-a-program)   
+- [Operators](#operators)   
+- [Values & Types](#values-types)   
+   - [Converting Between Types](#converting-between-types)   
+- [Code Comments](#code-comments)   
+- [Variables](#variables)   
+- [Blocks](#blocks)   
+- [Conditionals](#conditionals)   
+- [Loops](#loops)   
+- [Functions](#functions)   
+   - [Scope](#scope)   
 
 <!-- /MDTOC -->
-
-# Chapter 1: Into Programming
 
 ## Code
 
@@ -85,6 +83,62 @@ More details at MDN's [Expressions and Operators](https://developer.mozilla.org/
 true;
 false;
 ```
+
+`typeof` operator examines a value and tells what type it is:
+
+```js
+var a;
+typeof a;          // "undefined"
+
+a = "hello world";
+typeof a;          // "string"
+
+a = 42;
+typeof a;          // "number"
+
+a = true;
+typeof a;          // "boolean"
+
+a = null;
+typeof a;          // "object" -- weird bug. Type is actually null
+
+a = undefined;
+typeof a;          // "undefined"
+
+a = { b: "c" };
+typeof a;          // "object"
+```
+
+### Objects
+
+**Object**: A compound value where you can set properties (named locations) that each hold their own values of any type.
+
+```js
+var obj = {
+  a: "hello world",
+  b: 42,
+  c: true
+};
+
+// dot notation
+obj.a;        // "hello world"
+obj.b;        // 42
+obj.c;        // true
+
+// bracket notation
+// requires variable or string literal
+obj["a"]      // "hello world"
+obj["b"]      // 42
+obj["c"]      // true
+
+var b = "a";
+obj[b];       // "hello world"
+obj["b"]      // 42
+```
+
+#### Arrays
+
+**Array**: An `object` that holds values (of any type) not particularly in named properties/keys, but rather in numerically indexed positions.
 
 ### Converting Between Types
 
