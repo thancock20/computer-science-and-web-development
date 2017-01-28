@@ -1,24 +1,44 @@
 # Notes for YDKJS: Up & Going
-<!-- MDTOC maxdepth:6 firsth1:0 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
 
-- [Code](#code)   
-   - [Statements](#statements)   
-   - [Expressions](#expressions)   
-   - [Executing a program](#executing-a-program)   
-- [Operators](#operators)   
-- [Values & Types](#values-types)   
-   - [Converting Between Types](#converting-between-types)   
-- [Code Comments](#code-comments)   
-- [Variables](#variables)   
-- [Blocks](#blocks)   
-- [Conditionals](#conditionals)   
-- [Loops](#loops)   
-- [Functions](#functions)   
-   - [Scope](#scope)   
+<!-- toc orderedList:0 depthFrom:2 depthTo:6 -->
 
-<!-- /MDTOC -->
+* [Code](#code)
+  * [Code Comments](#code-comments)
+  * [Statements](#statements)
+  * [Expressions](#expressions)
+  * [Executing a program](#executing-a-program)
+* [Operators](#operators)
+* [Values & Types](#values-types)
+  * [Objects](#objects)
+    * [Arrays](#arrays)
+  * [Converting Between Types](#converting-between-types)
+* [Variables](#variables)
+* [Blocks](#blocks)
+* [Conditionals](#conditionals)
+* [Loops](#loops)
+* [Functions](#functions)
+  * [Scope](#scope)
+
+<!-- tocstop -->
 
 ## Code
+
+### Code Comments
+
+Comments should explain *why*, not *what*. They can optionally explain *how* if that's particularly confusing.
+
+```js
+// This is a single-line comment
+
+/* But this is
+      a multiline
+          comment.
+              */
+
+var a = /* This is a comment in the middle of a line */ 42;
+
+console.log(a); // 42
+```
 
 ### Statements
 
@@ -140,6 +160,21 @@ obj["b"]      // 42
 
 **Array**: An `object` that holds values (of any type) not particularly in named properties/keys, but rather in numerically indexed positions.
 
+```js
+var arr = [
+  "hello world",
+  42,
+  true
+];
+
+arr[0];     // "hello world"
+arr[1];     // 42
+arr[3];     // true
+arr.length; // 3
+
+typeof arr; // "object"
+```
+
 ### Converting Between Types
 
 **Coercion**: Converting from one type to another.
@@ -148,35 +183,31 @@ obj["b"]      // 42
 
 ```js
 var a = "42";
-var b = Number(a);
+var b = Number(a); // "42" is explicitly coerced to 42 here
 
-console.log(a); // "42"
-console.log(b); // 42
+a;                 // "42"
+b;                 // 42
 ```
 
 **Implicit Coercion**: When JavaScript coerces values as part of an operation
 
 ```js
-"99.99" == 99.99;  // true
-"99.99" === 99.99; // false
+var a = "42";
+
+var b = a * 1; // "42" is implicitly coerced to 42 here
+
+a;             // "42"
+b;             // 42
 ```
 
-## Code Comments
+**Falsy**: Values which become `false` when coerced to a `boolean`:
 
-Comments should explain *why*, not *what*. They can optionally explain *how* if that's particularly confusing.
+* `""` (empty string)
+* `0`, `-0`, `NaN` (invalid number)
+* `null`, `undefined`
+* `false`
 
-```js
-// This is a single-line comment
-
-/* But this is
-      a multiline
-          comment.
-              */
-
-var a = /* This is a comment in the middle of a line */ 42;
-
-console.log(a); // 42
-```
+**Truthy**: Values which become `true` when coerced to a `boolean`. This is any value not on the falsy list.
 
 ## Variables
 
