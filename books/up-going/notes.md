@@ -12,6 +12,9 @@
   * [Objects](#objects)
     * [Arrays](#arrays)
   * [Converting Between Types](#converting-between-types)
+    * [Truthy & Falsy](#truthy-falsy)
+    * [Equality](#equality)
+    * [Inequality](#inequality)
 * [Variables](#variables)
 * [Blocks](#blocks)
 * [Conditionals](#conditionals)
@@ -200,6 +203,8 @@ a;             // "42"
 b;             // 42
 ```
 
+#### Truthy & Falsy
+
 **Falsy**: Values which become `false` when coerced to a `boolean`:
 
 * `""` (empty string)
@@ -208,6 +213,59 @@ b;             // 42
 * `false`
 
 **Truthy**: Values which become `true` when coerced to a `boolean`. This is any value not on the falsy list.
+
+#### Equality
+
+```js
+var a = "42";
+var b = 42;
+
+a == b;     // true - allows coercion
+a === b;    // false - is strict and does not allow coercion
+
+a != b;     // false - allows coercion
+a !== b;    // true - does not allow coercion
+```
+
+Simple rules of when to use which `==` (`!=`) vs `===` (`!==`):
+
+* If either value in a comparison could be the `true` or `false` value, avoid `==` and use `===`.
+* If either value in a comparison could be these specific values - `0`, `""`, or `[]` (empty array) - avoid `==` and use `===`.
+* In *all* other cases, you're safe to use `==`. Not only is it safe, but in may cases it simplifies your code in a way that improves readability.
+
+```js
+var a = [1,2,3];
+var b = [1,2,3];
+var c = "1,2,3";
+
+// Arrays coerce to strings as a comma separated list
+a == c; // true
+b == c; // true
+
+// But comparing two objects (including arrays) checks the references, not the values
+a == b; // false
+```
+
+#### Inequality
+
+```js
+3 < 4         // true - simple number comparison
+"bar" < "foo" // true - alphabetic order
+41 < "42"     // true - strings are coerced to numbers
+
+// Strings that cannot be coerced to numbers become NaN
+// NaN is not equal-to, greater-than, or less-than any other value
+// including itself
+
+var a = 42;
+var b = "foo";
+
+a < b;        // false
+a > b;        // false
+a == b;       // false
+
+NaN == NaN;   // false
+```
 
 ## Variables
 
