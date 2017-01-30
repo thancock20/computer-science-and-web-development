@@ -1,13 +1,13 @@
-const TAX_RATE           = 0.08;
-const PHONE_PRICE        = 99.99;
-const ACCESSORY_PRICE    = 19.99;
-const SPENDING_THRESHOLD = 300;
+const taxRate           = 0.08;
+const phonePrice        = 99.99;
+const accessoryPrice    = 19.99;
+const spendingThreshold = 300;
 
 var bankBalance = 525.54;
 var amount      = 0;
 
 function calculateTax(amt) {
-  return amt * TAX_RATE;
+  return amt * taxRate;
 }
 
 function formatPrice(price) {
@@ -15,10 +15,10 @@ function formatPrice(price) {
 }
 
 while (amount < bankBalance) {
-  amount += PHONE_PRICE;
+  amount += phonePrice;
 
-  if ( amount < SPENDING_THRESHOLD) {
-    amount += ACCESSORY_PRICE;
+  if ( amount < spendingThreshold) {
+    amount += accessoryPrice;
   }
 }
 

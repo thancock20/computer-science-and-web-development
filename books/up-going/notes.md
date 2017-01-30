@@ -21,6 +21,12 @@
 * [Loops](#loops)
 * [Functions](#functions)
   * [Scope](#scope)
+    * [Hoisting](#hoisting)
+  * [Functions As Values](#functions-as-values)
+    * [Immediately Invoked Function Expressions (IIFEs)](#immediately-invoked-function-expressions-iifes)
+    * [Closure](#closure)
+      * [Modules](#modules)
+* [`this` Identifier](#this-identifier)
 
 <!-- tocstop -->
 
@@ -269,7 +275,9 @@ NaN == NaN;   // false
 
 ## Variables
 
-**Variable**: A symbolic container that holds a value that can *vary* over time as needed.
+**Variable**: A symbolic container that holds a value that can *vary* over time as needed. A variable must be a valid *identifier*.
+
+**Identifier**: Must start with `a`--`z`, `A`--`Z`, `$`, of `_`. It can then contain any of those characters plus the numerals `0`--`9`.
 
 **Dynamic Typing**: Variables can hold values of any *type* without any *type* enforcement.
 
@@ -337,6 +345,65 @@ else {
   console.log("No, thanks.");
 }
 ```
+
+```js
+// series of `if...else...if` statements
+if (a == 2) {
+  // do something
+} else if (a == 10) {
+  // do another thing
+} else if (a == 42) {
+  // do yet another thing
+} else {
+  // fallback to here
+}
+
+// written as `switch` statement
+switch (a) {
+  case 2:
+    // do something
+    break; // keeps execution from continuing to next case
+  case 10:
+    // do another thing
+    break;
+  case 42:
+    // do yet another thing
+    break;
+  default:
+    // fallback to here
+}
+```
+
+```js
+// sometimes "fall through" is desired
+switch (a) {
+  case 2:
+  case 10:
+    // some cool stuff -- executes if a is 2 or 10
+    break;
+  case 42:
+    // other stuff
+    break;
+  default:
+    // fallback
+}
+```
+
+```js
+var a = 42;
+var b;
+
+// `if..else` statement
+if (a > 41) {
+  b = "hello";
+} else {
+  b = "world";
+}
+
+// written using ternary operator
+b = (a > 41) ? "hello" : "world";
+```
+
 
 ## Loops
 
@@ -463,4 +530,182 @@ function outer() {
 }
 
 outer();
+```
+
+#### Hoisting
+
+**Hoisting**: Whenever a `var` appears inside a scope, that declaration is taken to belong to the entire scope and accessible everywhere throughout.
+
+```js
+var a = 2;
+
+// works because `foo()` declaration is hoisted
+foo();             
+
+function foo() {
+   a = 3;
+
+   console.log(a); // 3
+
+// declaration is hoisted to the top of `foo()`
+   var a;          
+}
+
+console.log(a);    // 2
+```
+
+```js
+// Always formally declare variables
+
+function foo() {
+  a = 1; // `a` is not formally declared
+}
+
+foo();
+a; // 1 -- oops, auto global variable :(
+```
+
+```js
+// ES6 includes `let` keyword to scope variables to blocks (not just functions)
+
+function foo() {
+  var a = 1;
+
+  if (a >= 1) {
+    let b = 2;       // `b` belongs to `if` block only
+
+    while (b < 5) {
+      let c = b * 2; // `c` belongs to `while` block only
+      b++;
+
+      console.log(a + c);
+    }
+  }
+}
+
+foo();               // 5 7 9
+```
+
+### Functions As Values
+
+```js
+// A function itself is a value that can be assigned to variables, or passed to or returned from other functions
+
+var foo = function () {}; // anonymous function expression
+
+var x = function bar() {}; // named function expression
+```
+
+#### Immediately Invoked Function Expressions (IIFEs)
+
+```js
+// `foo` function expression
+function foo() {
+  console.log("Hello!")
+}
+
+// then `()` executes it
+foo(); // "Hello!"
+
+// `IIFE` function expression, then `()` executes it
+(function IIFE() {
+  console.log("Hello!");
+})();
+// "Hello!"
+```
+
+```js
+// IIFEs can return values
+var x = (function IIFE() {
+  return 42;
+})();
+
+x; // 42
+```
+
+#### Closure
+
+**Closure**: A way to remember and continue to access a function's scope even once the function has finished running.
+
+```js
+function makeAdder(x) {
+  // parameter `x` is an inner variable
+
+  // inner function `add()` uses `x`, so it has a closure over it
+  function add(y) {
+    return y + x;
+  };
+
+  return add;
+}
+
+// `plusOne` gets a reference to the inner `add(..)`
+// function with closure over the `x` parameter of
+// the outer `makeAdder(..)`
+var plusOne = makeAdder(1);
+
+// `plusTen` gets a reference to the inner `add(..)`
+// function with closure over the `x` parameter of
+// the outer `makeAdder(..)`
+var plusTen = makeAdder(10);
+
+plusOne(3);  // 4 <-- 1+3
+plusOne(41); // 42 <-- 1+41
+
+plusTen(13); // 23 <-- 10+13
+```
+
+##### Modules
+
+**Modules**: Use closure to let you define private implementation details that are hidden from the outside world, as well as a public API that *is* accessible from the outside.
+
+```js
+function User() {
+  var username, password;
+
+  function doLogin(user,pw) {
+    username = user;
+    password = pw;
+
+    // do the rest of the login work
+  }
+
+  var publicAPI = {
+    login: doLogin
+  };
+
+  return publicAPI;
+}
+
+// create a `User` module instance
+var fred = User();
+
+fred.login( "fred", "12battery34!" );
+```
+
+## `this` Identifier
+
+```js
+// `this` in a function points to an object
+// not to the function itself
+
+function foo() {
+  console.log(this.bar);
+}
+
+var bar = "global";
+
+var obj1 = {
+  bar: "obj1",
+  foo: foo
+};
+
+var obj2 = {
+  bar: "obj2"
+};
+
+foo();          // "global"
+obj1.foo();     // "obj1"
+foo.call(obj2); // "obj2"
+new foo();      // undefined
 ```
