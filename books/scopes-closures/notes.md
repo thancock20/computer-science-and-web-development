@@ -9,6 +9,7 @@
   * [Errors](#errors)
   * [Collision Avoidance](#collision-avoidance)
 * [Function and Block Scope](#function-and-block-scope)
+* [Hoisting](#hoisting)
 
 <!-- tocstop -->
 
@@ -28,7 +29,7 @@ Statements like `var a = 2;` are split into two separate steps:
 
 ## Understanding Scope
 
-**Scope**: The set of rules that determines where and  how a variable can be looked-up.
+**Scope**: The set of rules that determines where and how a variable can be looked-up.
 
 **Lexical Scope**: Scope is defined by author-time decisions of where functions are declared. The lexing phase of complilation is able to know where and how all identifiers are declared, and thus predict how they will be looked-up during execution.
 
@@ -138,4 +139,46 @@ function foo(bar) {
 foo(true);
 
 console.log(baz); // ReferenceError
+```
+
+## Hoisting
+
+**Hoisting**: Declarations of functions and variables are moved to the top of their scope and compilation, before execution. Assignments, even assignments of function expressions, are *not* hoisted.
+
+```js
+foo();
+
+function foo() {
+  console.log(a); // undefined
+  var a = 2;
+}
+
+// above code will be interpreted like this
+function foo() {
+  var a;
+  console.log(a); // undefined
+  a = 2;
+}
+
+foo();
+```
+
+```js
+foo(); // TypeError
+bar(); // ReferenceError
+
+var foo = function bar() {
+  // ...
+};
+
+// above code will be interpreted like this
+var foo;
+
+foo(); // TypeError
+bar(); // ReferenceError
+
+foo = function() {
+  var bar = ...self...
+  // ...
+};
 ```
