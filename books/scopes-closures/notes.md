@@ -7,6 +7,8 @@
 * [Understanding Scope](#understanding-scope)
   * [Nested Scope](#nested-scope)
   * [Errors](#errors)
+  * [Collision Avoidance](#collision-avoidance)
+* [Function and Block Scope](#function-and-block-scope)
 
 <!-- tocstop -->
 
@@ -47,18 +49,93 @@ foo(2);           // LHS reference to `a` when 2 is passed to it
 ```
 
 ### Nested Scope
+
 For both LHS and RHS references, if the engine doesn't find the variable in the current scope, it looks up the variable in the next outermost scope, and continues until it reaches the global scope
 
 ```js
-function foo(a) { // `a` is in the scope of `foo`
+function foo(a) {     // `a` is in the scope of `foo`
   console.log(a + b); // `b` will be looked for in the next scope up
 }
 
-var b = 2; // `b` is in the global scope
+var b = 2;            // `b` is in the global scope
 
-foo(2); // 4
+foo(2);               // 4
 ```
 
 ### Errors
 
 Unfulfilled RHS references result in `ReferenceError`s being thrown. Unfulfilled LHS references result in an automatic, implicitly-created global of that name (if not in "Strict Mode"), or a `ReferenceError` (if in "Strict Mode").
+
+### Collision Avoidance
+
+ Hiding variables and functions inside a scope is good to avoid unintended collision between two different identifiers with the same name but different intended usages.
+
+```js
+function foo() {
+  function bar(a) {
+    i = 3; // no `var`, so is changing the `i` in the enclosing scopes for-loop
+    console.log(a + i);
+  }
+
+  for (var i=0; i<10; i++) {
+    bar(i * 2); // oops, infinite loop ahead!
+  }
+}
+
+foo();
+```
+
+## Function and Block Scope
+
+```js
+// `var`: Scopes a variable to the enclosing function, or global object.
+function foo(bar) {
+
+  if (bar) {
+    var baz = 2;
+    console.log(baz); // 2
+  }
+
+  console.log(baz); // 2  
+}
+
+foo(true);
+
+console.log(baz); // ReferenceError
+```
+
+```js
+// `let`: Scopes a variable to the enclosing block -- { .. } pair
+function foo(bar) {
+
+  if (bar) {
+    let baz = 2;
+    console.log(baz); // 2
+  }
+
+  console.log(baz); // ReferenceError
+}
+
+foo(true);
+
+console.log(baz); // ReferenceError
+```
+
+```js
+// `const`: Scopes a variable to the enclosing block, and fixes the value
+function foo(bar) {
+
+  if (bar) {
+    const baz = 2;
+    console.log(baz); // 2
+
+    baz = 3; // error!
+  }
+
+  console.log(baz); //ReferenceError
+}
+
+foo(true);
+
+console.log(baz); // ReferenceError
+```
