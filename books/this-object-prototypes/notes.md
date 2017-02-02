@@ -1,1 +1,1 @@
-# Notes related to what I learned while completing this item
+# Notes for YDKJS: *this* & Object Prototypes
