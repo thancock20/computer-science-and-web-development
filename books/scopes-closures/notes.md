@@ -10,6 +10,8 @@
   * [Collision Avoidance](#collision-avoidance)
 * [Function and Block Scope](#function-and-block-scope)
 * [Hoisting](#hoisting)
+* [Closure](#closure)
+* [Modules](#modules)
 
 <!-- tocstop -->
 
@@ -181,4 +183,108 @@ foo = function() {
   var bar = ...self...
   // ...
 };
+```
+
+## Closure
+
+**Closure**: When a function is able to remember and access its lexical scope even when that function is executing outside its lexical scope.
+
+```js
+function foo() {
+  var a = 2; // `a` is scoped to function `foo`, so can't be used outside of it
+
+  function bar() {
+    console.log(a); // `a` is used in function `bar`, so it is remembered
+  }
+
+  return bar;
+}
+
+var baz = foo(); // `baz` is now a reference to the function `bar`
+
+baz(); // 2 -- `a` is remembered even outside of `foo`
+```
+
+```js
+// This does not work as expected because of closure
+// `i` will be 6 by the time the first `setTimeout` runs
+for (var i=1; i<=5; i++) {
+  setTimeout(function timer() {
+    console.log(i);
+  }, i*1000);
+}
+
+// This works as expected
+for (var i=1; i<=5; i++) {
+  (function() {
+    var j = i; // `j` gets a copy of `i` at each iteration
+    setTimeout(function timer() {
+      console.log(j);
+    }, j*1000);
+  })();
+}
+
+// This also works, because `let` creates a new value at each iteration
+for (let i=1; i<=5; i++) {
+  setTimeout(function timer() {
+    console.log(i);
+  }, i*1000);
+}
+```
+
+## Modules
+
+There are 2 requirements for the module pattern:
+1. There must be an outer enclosing function, and it must be invoked at least once (each time creates a new module instance).
+2. The enclosing function must return back at least one inner function, so that this inner function has closure over the private scope, and can access and/or modify that private state.
+
+```js
+// example module
+function CoolModule() {
+  var something = "cool";
+  var another = [1, 2, 3];
+
+  function doSomething() {
+    console.log( something );
+  }
+
+  function doAnother() {
+    console.log( another.join( " ! ") );
+  }
+
+  // This object is the public API
+  return {
+    doSomething: doSomething,
+    doAnother: doAnother
+  };
+}
+
+var foo = CoolModule();
+
+foo.doSomething(); // cool
+foo.doAnother();   // 1 ! 2 ! 3
+```
+
+```js
+// example "singleton" module
+var foo = (function CoolModule() {
+  var something = "cool";
+  var another = [1, 2, 3];
+
+  function doSomething() {
+    console.log( something );
+  }
+
+  function doAnother() {
+    console.log( another.join( " ! ") );
+  }
+
+  return {
+    doSomething: doSomething,
+    doAnother: doAnother
+  };
+})();
+
+foo.doSomething(); // cool
+foo.doAnother();   // 1 ! 2 ! 3
 ```
