@@ -9,6 +9,8 @@
   * [2. Explicit Binding](#2-explicit-binding)
   * [3. Implicit Binding](#3-implicit-binding)
   * [4. Default Binding](#4-default-binding)
+* [Binding Exceptions](#binding-exceptions)
+  * [Safer `this`](#safer-this)
 
 <!-- tocstop -->
 
@@ -147,4 +149,26 @@ var a = 2;
 
 foo(); // 2
 bar(); // TypeError: `this` is `undefined`
+```
+
+## Binding Exceptions
+
+### Safer `this`
+
+When using `apply` to spread out an array of parameters or `bind` to curry, it's good to use a **totally empty** object as a "DMZ".
+
+```js
+function foo(a,b) {
+  console.log("a:" + a + ", b:" + b);
+}
+
+// our DMZ empty object
+const ø = Object.create(null);
+
+// spreading out array as parameters
+foo.apply( ø, [2, 3] ); // a:2, b:3
+
+// currying
+var bar = foo.bind(ø, 2);
+bar(3); // a:2, b:3
 ```
