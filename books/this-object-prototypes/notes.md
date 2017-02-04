@@ -11,6 +11,8 @@
   * [4. Default Binding](#4-default-binding)
 * [Binding Exceptions](#binding-exceptions)
   * [Safer `this`](#safer-this)
+  * [Softening Binding](#softening-binding)
+  * [Lexical `this`](#lexical-this)
 
 <!-- tocstop -->
 
@@ -155,7 +157,7 @@ bar(); // TypeError: `this` is `undefined`
 
 ### Safer `this`
 
-When using `apply` to spread out an array of parameters or `bind` to curry, it's good to use a **totally empty** object as a "DMZ".
+In cases where you want to "safely" ignore a `this` binding, a "DMZ" object is a good placeholder value that protects the `global` object from unintended side-effects.
 
 ```js
 function foo(a,b) {
@@ -171,4 +173,77 @@ foo.apply( ø, [2, 3] ); // a:2, b:3
 // currying
 var bar = foo.bind(ø, 2);
 bar(3); // a:2, b:3
+```
+
+### Softening Binding
+
+```js
+// `softBind` function provides a different default for default binding
+// while still allowing the function to be able to be manually `this` bound
+if (!Function.prototype.softBind) {
+  Function.prototype.softBind = function(obj) {
+    var fn = this,
+      curried = [].slice.call(arguments, 1),
+      bound = function bound() {
+        return fn.apply(
+          (!this ||
+            (typeof window !== "undefined" &&
+              this === window) ||
+            (typeof global !== "undefined" &&
+              this === global)
+          ) ? obj : this,
+          curried.concat.apply(curried, arguments)
+        );
+      };
+    bound.prototype = Object.create(fn.prototype);
+    return bound;
+  };
+}
+```
+
+```js
+// example usage of `softBind` function
+function foo() {
+  console.log("name: " + this.name);
+}
+
+var obj = { name: "obj" },
+    obj2 = { name: "obj2" },
+    obj3 = { name: "obj3" };
+
+var fooObj = foo.softBind(obj);
+
+fooObj();                 // name: obj
+
+obj2.foo = foo.softBind(obj);
+obj2.foo();               // name: obj2 <---- look!!!
+
+fooObj.call(obj3);        // name: obj3 <---- look!!
+
+setTimeout(obj2.foo, 10); // name: obj  <---- falls back to soft-binding
+```
+
+### Lexical `this`
+
+Intead of the four standard binding rules, arrow functions use the lexical scope for `this` binding
+
+```js
+function foo() {
+  // return an arrow function
+  return (a) => {
+    // `this` here is lexically adopted from  `foo()`
+    console.log(this.a);
+  };
+}
+
+var obj1 = {
+  a: 2
+};
+
+var obj2 = {
+  a: 3
+};
+
+var bar = foo.call(obj1);
+bar.call(obj2); // 2, not 3!
 ```
