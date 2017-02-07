@@ -13,6 +13,11 @@
   * [Safer `this`](#safer-this)
   * [Softening Binding](#softening-binding)
   * [Lexical `this`](#lexical-this)
+* [Object Syntax](#object-syntax)
+* [Built-in Objects](#built-in-objects)
+* [Object Contents](#object-contents)
+  * [Computed Property Names](#computed-property-names)
+  * [Duplicating Objects](#duplicating-objects)
 
 <!-- tocstop -->
 
@@ -246,4 +251,120 @@ var obj2 = {
 
 var bar = foo.call(obj1);
 bar.call(obj2); // 2, not 3!
+```
+
+## Object Syntax
+
+```js
+// Object Literal - preferred
+var myObj = {
+  key: value
+};
+```
+
+```js
+// Constructed Object - uncommon
+var myObj = new Object();
+myObj.key = value;
+```
+
+## Built-in Objects
+
+**Built-in Object**: An object sub-type that is part of the JavaScript language. Created using a constructor function.
+
+* `String`
+* `Number`
+* `Boolean`
+* `Object`
+* `Function`
+* `Array`
+* `Date`
+* `RegExp`
+* `Error`
+
+How the built-in objects relate to primitive values:
+
+1. `string`, `number`, and `boolean` primitives are automatically coerced to the object version when needed (e.g. when `"string".length()` is called). So, there is almost never a need to explicitly create the Object form.
+2. `null` and `undefined` only exist as primitives. There are no Object forms.
+3. `Date` only exists as a constructed object. They have no literal form.
+4. `Object`, `Array`, `Function`, and `RegExp` are always objects whether the literal or constructed for is used. **Only use the constructed form if you need the extra options.**
+5. `Error` objects are rarely created explicitly in code (with `new Error(..)`), but usually created automatically when exceptions are thrown.
+
+## Object Contents
+
+```js
+// Accessing values in an Object using the key/property name
+var myObject = {
+  a: 2
+};
+
+myObject.a;    // 2
+
+myObject["a"]; // 2
+```
+
+```js
+// Property names are always strings...
+var myObject = {
+  a: 2
+};
+
+// ...Can be stored in a variable
+var idx = "a";
+myObject[idx] = 2;
+
+// ...Watch out for coercion
+myObject[true] = "foo";
+myObject[3] = "bar";
+myObject[myObject] = "baz";
+
+myObject["true"];            // "foo"
+myObject["3"];               // "bar"
+myObject["[object Object]"]; // "baz"
+```
+
+### Computed Property Names
+
+```js
+// An expression, surrounded by a `[]` pair, can be used in the key-name
+// position of an object-literal declaration
+var prefix = "foo";
+
+var myObject = {
+  [prefix + "bar"]: "hello",
+  [`${prefix}baz`]: "world"
+};
+
+myObject["foobar"]; // hello
+myObject["foobaz"]; // world
+```
+
+### Duplicating Objects
+
+```js
+function anotherFunction() { /*..*/ }
+
+var anotherObject = {
+  c: true
+};
+
+var anotherArray = [];
+
+var myObject = {
+  a: 2,
+  b: anotherObject,     // reference, not a copy!
+  c: anotherArray,      // another reference!
+  d: anotherFunction    // and again!
+};
+
+anotherArray.push(anotherObject, myObject);
+
+// Object.assign - first parameter is target object
+// other parameters are sources
+var newObj = Object.assign({}, myObject);
+
+newObj.a;                      // 2
+newObj.b === anotherObject;    // true
+newObj.c === anotherArray;     // true
+newObj.c === anotherFunction   // true
 ```
