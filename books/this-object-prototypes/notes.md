@@ -18,6 +18,10 @@
 * [Object Contents](#object-contents)
   * [Computed Property Names](#computed-property-names)
   * [Duplicating Objects](#duplicating-objects)
+  * [Property Descriptors](#property-descriptors)
+    * [Writable](#writable)
+    * [Configurable](#configurable)
+    * [Enumerable](#enumerable)
 
 <!-- tocstop -->
 
@@ -368,3 +372,73 @@ newObj.b === anotherObject;    // true
 newObj.c === anotherArray;     // true
 newObj.c === anotherFunction   // true
 ```
+
+### Property Descriptors
+
+```js
+var myObject = {
+  a: 2
+};
+
+Object.getOwnPropertyDescriptor(myObject, "a");
+// {
+//   value: 2,
+//   writable: true,
+//   enumerable: true,
+//   configurable: true
+// }
+```
+
+#### Writable
+
+```js
+var myObject = {};
+
+Object.defineProperty(myObject, "a", {
+  value: 2,
+  writable: false, // not writable!
+  configurable: true,
+  enumerable: true
+});
+
+myObject.a = 3; // Will throw TypeError if in strict mode
+
+myObject.a; // 2
+```
+
+#### Configurable
+
+```js
+var myObject = {
+  a: 2
+};
+
+myObject.a = 3;
+myObject.a;            // 3
+
+Object.defineProperty(myObject, "a", {
+  value: 4,
+  writable: true,
+  configurable: false, // not configurable!
+  enumerable: true
+});
+
+myObject.a;            // 4
+myObject.a = 5;
+myObject.a;            // 5
+
+Object.defineProperty(myObject, "a", {
+  value:6,
+  writable: true,
+  configurable: true,
+  enumerable: true
+}); // TypeError - regardless of strict mode
+```
+
+Two notes about `configurable: false`:
+1. `writable` can be changed to `true` from `false` without error, but not back to `true` if already `false`.
+2. Prevents the ability to use the `delete` property to remove an existing property.
+
+#### Enumerable
+
+This characteristic controls if a property shows up in certain object-property enumerations, such as the `for..in` loop. (See below).
