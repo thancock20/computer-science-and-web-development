@@ -22,6 +22,9 @@
     * [Writable](#writable)
     * [Configurable](#configurable)
     * [Enumerable](#enumerable)
+  * [Iteration](#iteration)
+  * [Immutability](#immutability)
+  * [Getters & Setters](#getters-setters)
 
 <!-- tocstop -->
 
@@ -441,4 +444,162 @@ Two notes about `configurable: false`:
 
 #### Enumerable
 
-This characteristic controls if a property shows up in certain object-property enumerations, such as the `for..in` loop. (See below).
+```js
+var myObject = {};
+
+Object.defineProperty(
+  myObject,
+  "a",
+  // make `a` enumerable, as normal
+  {enumerable: true, value: 2}
+);
+
+Object.defineProperty(
+  myObject,
+  "b",
+  // make `b` NON-enumerable
+  {enumerable: false, value: 3}
+);
+
+myObject.b;                           // 3
+("b" in myObject);                    // true
+myObject.hasOwnProperty("b");         //true
+
+// for..in loop gets object keys
+for (var k in myObject) {
+  console.log(k, myObject[k]);
+}                                     // "a" 2
+
+myObject.propertyisEnumerable("a");   // true
+myObject.propertyisEnumerable("b");   // false
+
+Object.keys(myObject);                // ["a"]
+Object.getOwnPropertyNames(myObject); // ["a", "b"]
+```
+
+### Iteration
+
+```js
+// for loop uses indexes to get values from array
+var myArray = [1, 2, 3];
+
+for (var i = 0; i < myArray.length; i++) {
+  console.log(myArrar[i]);
+} // 1 2 3
+```
+
+```js
+  // forEach(..) iterates over all values in an array,
+  // and ignores any callback return values
+  var myArray = [1, 2, 3];
+
+  myArray.forEach(function(value) {
+    console.log(value);
+  });
+  // 1
+  // 2
+  // 3
+```
+
+```js
+// every(..) keeps iterating until the end
+// or the callback returns a falsy value
+function isBigEnough(value) {
+  return value >= 10;
+}
+
+[12, 5, 8, 130, 44].every(isBigEnough);   // false
+[12, 54, 18, 130, 44].every(isBigEnough); // true
+```
+
+```js
+// some(..) keeps iterating until the end
+// or the callback returns a truthy value
+function isBiggerThan10(value) {
+  return value > 10;
+}
+
+[2, 5, 8, 1, 4].some(isBiggerThan10);  // false
+[12, 5, 8, 1, 4].some(isBiggerThan10); // true
+```
+
+```js
+// for..of loop iterates over values in an array
+var myArray = [1, 2, 3];
+
+for (var value of myArray) {
+  console.log(value);
+}
+// 1
+// 2
+// 3
+```
+
+It's best to use `for..in` loops on Objects, and `for..of` loops on Arrays, because Objects are only iterable if they have defined a custom iterator
+
+```js
+var myObject = {
+  a: 2,
+  b: 3
+};
+
+Object.defineProperty( myObject, Symbol.iterator, {
+  enumerable: false,
+  writable: false,
+  configurable: true,
+  value: function() {
+    var o = this;
+    var idx = 0;
+    var ks = Object.keys( o );
+    return {
+      next: function() {
+        return {
+          value: o[ks[idx++]],
+          done: (idx > ks.length)
+        };
+      }
+    };
+  }
+});
+
+// iterate `myObject` manually
+var it = myObject[Symbol.iterator]();
+it.next(); // { value:2, done:false }
+it.next(); // { value:3, done:false }
+it.next(); // { value:undefined, done:true }
+
+// iterate `myObject` with `for..of`
+for (var v of myObject) {
+    console.log( v );
+}
+// 2
+// 3
+```
+
+### Immutability
+
+**Four different nuanced ways to make an object immutable**:
+1. Combine `writable:false` and `configurable:false` to create a *constant* as an object property.
+2. `Object.preventExtensions(..)` prevents an object from having new properties added to it, but otherwise leaves the rest of the object's properties alone.
+3. `Object.seal(..)` essentially calls `Object.preventExtensions(..)` on the object, but also marks all of its existing properties as `configurable:false`. So, no more properties can be added to it and the existing properties cannot be reconfigured or deleted.
+4. `Object.freeze(..)` essentially calls `Object.seal(..)` on the object, but also marks all the properties as `writable:false`, so that their values cannot be changed.
+
+### Getters & Setters
+
+```js
+var myObject = {
+  // define a getter for `a`
+  get a() {
+    return this._a_;
+  },
+
+  // define a setter for `a`
+  set a(val) {
+    this._a_ = val * 2;
+  }
+};
+
+myObject.a = 2;
+
+myObject.a;  // 4
+```
