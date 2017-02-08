@@ -22,8 +22,8 @@
     * [Writable](#writable)
     * [Configurable](#configurable)
     * [Enumerable](#enumerable)
-  * [Iteration](#iteration)
-  * [Immutability](#immutability)
+* [Iteration](#iteration)
+* [Immutability](#immutability)
   * [Getters & Setters](#getters-setters)
 
 <!-- tocstop -->
@@ -477,7 +477,7 @@ Object.keys(myObject);                // ["a"]
 Object.getOwnPropertyNames(myObject); // ["a", "b"]
 ```
 
-### Iteration
+## Iteration
 
 ```js
 // for loop uses indexes to get values from array
@@ -576,7 +576,7 @@ for (var v of myObject) {
 // 3
 ```
 
-### Immutability
+## Immutability
 
 **Four different nuanced ways to make an object immutable**:
 1. Combine `writable:false` and `configurable:false` to create a *constant* as an object property.
