@@ -16,6 +16,7 @@
   * [Paragraphs](#paragraphs)
   * [Bold Text](#bold-text)
   * [Italicize Text](#italicize-text)
+* [Structurally Based Elements](#structurally-based-elements)
 
 <!-- tocstop -->
 
@@ -220,4 +221,44 @@ Two inline-level elements that will italicize text:
 
 <!-- Alternative voice or tone -->
 <p>The name <i>Shay</i> means a gift.</p>
+```
+
+## Structurally Based Elements
+
+These elements are intended to give meaning to the organization of pages and improve structural semantics. They are all block-level elements and do not have any implied position or style.
+
+**Header**: Identifies the top of a page, article, section, or other segment of a page.
+
+```html
+<header>...</header>
+```
+
+**Navigation**: Identifies a section of major navigational links on a page. Should be reserved for primary navigation secions only.
+
+```html
+<nav>...</nav>
+```
+
+**Article**: Identifies a secion of independent, self-contained content that may be independently distributed or reused. e.g. blog posts, newspaper articles, user-submitted content, and the like.
+
+```html
+<article>...</article>
+```
+
+**Section**: Identifies a thematic grouping of content, which generally, but not always, includes a heading. It's useful to identify all of the content as related.
+
+```html
+<section>...</section>
+```
+
+**Aside**: Identifies content, such as sidebars, inserts, or brief explanations, that is tangentially related to the content surrounding it.
+
+```html
+<aside>...</aside>
+```
+
+**Footer**: Identifies the closing or end of a page, article, section, or other segment of a page. Content should be relative information and should not diverge from the document or section it is included within.
+
+```html
+<footer>...</footer>
 ```
