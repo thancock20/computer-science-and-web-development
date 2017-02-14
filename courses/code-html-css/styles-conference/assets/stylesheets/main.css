@@ -67,6 +67,23 @@ table {
 }
 
 /*
+	Clearfix
+*/
+
+.group:before,
+.group:after {
+	content: "";
+	display: table;
+}
+.group:after {
+	clear:both;
+}
+.group {
+	clear: both;
+	*zoom: 1;
+}
+
+/*
 	Typography
 */
 
@@ -96,4 +113,27 @@ h1, h3, h4, h5, p {
 
 .hero {
 	padding: 22px 80px 66px 80px;
+}
+
+/*
+	Primary header
+*/
+
+.logo {
+	border-top: 4px solid #648880;
+	padding: 40px 0 22px 0;
+	float: left;
+}
+
+/*
+	Primary footer
+*/
+
+.primary-footer small {
+	float: left;
+}
+
+.primary-footer {
+	padding-bottom: 44px;
+	padding-top: 44px;
 }
