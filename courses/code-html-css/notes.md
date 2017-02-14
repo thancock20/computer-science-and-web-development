@@ -31,6 +31,7 @@
   * [Borders](#borders)
 * [Positioning with Floats](#positioning-with-floats)
   * [Clearfix](#clearfix)
+* [Positioning with Inline-Block](#positioning-with-inline-block)
 
 <!-- tocstop -->
 
@@ -445,6 +446,34 @@ section {
 }
 aside {
   float: right;
+  margin: 0 1.5%;
+  width: 30%;
+}
+```
+
+## Positioning with Inline-Block
+
+HTML
+```html
+<header>...</header>
+
+<!-- comments used between sections to remove space -->
+<section>
+  ...
+</section><!--
+--><section>
+  ...
+</section><!--
+--><section>
+  ...
+</section>
+<footer>...</footer>
+```
+
+CSS
+```css
+section {
+  display: inline-block;
   margin: 0 1.5%;
   width: 30%;
 }
