@@ -29,6 +29,8 @@
   * [Margin](#margin)
   * [Padding](#padding)
   * [Borders](#borders)
+* [Positioning with Floats](#positioning-with-floats)
+  * [Clearfix](#clearfix)
 
 <!-- tocstop -->
 
@@ -376,3 +378,74 @@ Padding is very similar to margin, but falls inside of the element's border. Unl
 ### Borders
 
 Borders fall between the padding and margin, providing an outline around an element. It requires three values: `width`, `style`, and `color`.
+
+## Positioning with Floats
+
+`float` property removes an element from the normal flow of a page, and positions is to the left or right of its parent element. An `<img>` element floated to the side of a few paragraphs of text will allow the paragraphs to wrap around the image as necessary.
+
+```css
+img {
+  float: left; /* could also be right */
+}
+```
+
+**note**: The `float` property was originally intended for this purpose. It was never actually intended to used for layouts and positioning. So, there are a few *hacky* things about using it this way.
+
+```css
+/* example positioning a section and an aside */
+section {
+  float:left;
+  margin: 0 1.5%;
+  width: 63%;
+}
+aside {
+  float: right;
+  margin: 0 1.5%;
+  width: 30%;
+}
+
+/* `clear` property is needed so footer doesn't wrap around the floats */
+footer {
+  clear:both; /* could also be right or left */
+}
+```
+
+### Clearfix
+
+**Clearfix**: A technique for containing floats in a parent element, leaving the flow of the document completely normal outside of it. This helps to ensure that all the styles will be rendered properly.
+
+HTML
+```html
+<header>...</header>
+<div class="clearfix">
+  <section>...</section>
+  <aside>...</aside>
+</div>
+<footer>...</footer>
+```
+
+CSS
+```css
+.clearfix:before,
+.clearfix:after {
+  content: "";
+  display: table;
+}
+.clearfix:after {
+  clear: both;
+}
+.clearfix {
+  clear: both;
+  *zoom: 1; /* needed to work on older browsers */
+}
+section {
+  float: left;
+  margin: 0 1.5%;
+  width: 63%;
+}
+aside {
+  float: right;
+  margin: 0 1.5%;
+  width: 30%;
+}
+```
