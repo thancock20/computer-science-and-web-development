@@ -17,6 +17,11 @@
   * [Bold Text](#bold-text)
   * [Italicize Text](#italicize-text)
 * [Structurally Based Elements](#structurally-based-elements)
+* [Creating Hyperlinks](#creating-hyperlinks)
+  * [Relative & Absolute Paths](#relative-absolute-paths)
+  * [Linking to an Email Address](#linking-to-an-email-address)
+  * [Opening Links in a New Window](#opening-links-in-a-new-window)
+  * [Linking to Parts of the Same Page](#linking-to-parts-of-the-same-page)
 
 <!-- tocstop -->
 
@@ -261,4 +266,44 @@ These elements are intended to give meaning to the organization of pages and imp
 
 ```html
 <footer>...</footer>
+```
+
+## Creating Hyperlinks
+
+**Hyperlinks**: Provide the ability to link from one web page or resource to another.
+
+```html
+<a href="http://toddhancock.net">Todd</a>
+```
+
+### Relative & Absolute Paths
+
+```html
+<!-- Relative Path: page on same website -->
+<a href="about.html">About</a>
+
+<!-- Absolute Path: page on other website -->
+<a href="http://www.google.com/">Google</a>
+```
+
+### Linking to an Email Address
+
+```html
+<a href="mailto:todd@awesome.com?subject=Reaching%20Out&body=How%20are%20you">Email Me</a>
+```
+
+### Opening Links in a New Window
+
+```html
+<a href="http://toddhancock.net/" target="_blank">Todd Hancock</a>
+```
+
+### Linking to Parts of the Same Page
+
+```html
+<body id="top">
+  ...
+  <a href="#top">Back to top</a>
+  ...
+</body>
 ```
