@@ -22,6 +22,13 @@
   * [Linking to an Email Address](#linking-to-an-email-address)
   * [Opening Links in a New Window](#opening-links-in-a-new-window)
   * [Linking to Parts of the Same Page](#linking-to-parts-of-the-same-page)
+* [The Display Property](#the-display-property)
+* [The Box Model](#the-box-model)
+  * [Width](#width)
+  * [Height](#height)
+  * [Margin](#margin)
+  * [Padding](#padding)
+  * [Borders](#borders)
 
 <!-- tocstop -->
 
@@ -307,3 +314,65 @@ These elements are intended to give meaning to the organization of pages and imp
   ...
 </body>
 ```
+
+## The Display Property
+
+**Display**: CSS property that determines exactly how elements are displayed.
+
+Four most common `display` values:
+1. `block` makes the element a block-level element.
+2. `inline` makes the element an inline-level element.
+3. `inline-block` allows the element to behave as a block-level element, accepting all box model properties, but will be displayed in line with the other elements.
+4. `none` completely hides an element and render the page as if the element doesn't exist.
+
+```css
+div {
+  display: none;
+}
+```
+
+## The Box Model
+
+According to the box model concept, every element on a page is a rectangular box and may have a width, height, padding, borders, and margins.
+
+```css
+div {
+  border: 6px solid #949599;
+  height: 100px;
+  margin: 20px;
+  padding: 20px;
+  width: 400px;
+}
+```
+
+The total width of an element can be calculated using the following formula:
+
+```
+margin-right + border-right + padding-right + width + padding-left + border-left + margin-left
+```
+
+And the total height can be calculated using the following formula:
+
+```
+margin-top + border-top + padding-top + height + padding-bottom + border-bottom + margin-bottom
+```
+
+### Width
+
+Block-level elements have a default width of 100%. Inline and inline-block elements expand and contract horizontally to accommodate their content. Inline-level elements cannot have a fixed size.
+
+### Height
+
+Default height is determined by content. All elements expand and contract vertically as necessary to accommodate their content. Inline-level elements cannot have a fixed size.
+
+### Margin
+
+Browsers may apply default margin to elements. Margin for an element falls outside any border and is completely transparent in color. Vertical margins, `top` and `bottom` are not accepted by inline-level elements.
+
+### Padding
+
+Padding is very similar to margin, but falls inside of the element's border. Unlike the `margin` property, the `padding` property works vertically on inline-level elements, though it may blend into the line above or below the given element.
+
+### Borders
+
+Borders fall between the padding and margin, providing an outline around an element. It requires three values: `width`, `style`, and `color`.
