@@ -29,9 +29,11 @@
   * [Margin](#margin)
   * [Padding](#padding)
   * [Borders](#borders)
-* [Positioning with Floats](#positioning-with-floats)
-  * [Clearfix](#clearfix)
-* [Positioning with Inline-Block](#positioning-with-inline-block)
+* [Positioning](#positioning)
+  * [Positioning with Floats](#positioning-with-floats)
+    * [Clearfix](#clearfix)
+  * [Positioning with Inline-Block](#positioning-with-inline-block)
+  * [Uniquely Positioning Elements](#uniquely-positioning-elements)
 
 <!-- tocstop -->
 
@@ -380,7 +382,9 @@ Padding is very similar to margin, but falls inside of the element's border. Unl
 
 Borders fall between the padding and margin, providing an outline around an element. It requires three values: `width`, `style`, and `color`.
 
-## Positioning with Floats
+## Positioning
+
+### Positioning with Floats
 
 `float` property removes an element from the normal flow of a page, and positions is to the left or right of its parent element. An `<img>` element floated to the side of a few paragraphs of text will allow the paragraphs to wrap around the image as necessary.
 
@@ -411,7 +415,7 @@ footer {
 }
 ```
 
-### Clearfix
+#### Clearfix
 
 **Clearfix**: A technique for containing floats in a parent element, leaving the flow of the document completely normal outside of it. This helps to ensure that all the styles will be rendered properly.
 
@@ -451,7 +455,7 @@ aside {
 }
 ```
 
-## Positioning with Inline-Block
+### Positioning with Inline-Block
 
 HTML
 ```html
@@ -478,3 +482,11 @@ section {
   width: 30%;
 }
 ```
+
+### Uniquely Positioning Elements
+
+The `position` property identifies *how* an element is positioned on a page and whether or not it will appear in the normal flow of a document. This is used in conjunction with the box offset properties---`top`, `right`, `bottom`, and `left`---which identify exactly *where* an element will be positioned.
+
+* `static` is the default value of the `position` property. It means that the element exists in the normal flow of a document and doesn't accept any box offset properties.
+* `relative` value allows an element to appear in the normal flow of the page, not allowing other elements to flow around it; and also allows it's display position to be modified with the box offset properties. [Example](http://codepen.io/shayhowe/pen/xJlhs)
+* `absolute` value makes an element not appear within the normal flow of a document, and its original space and position will not be preserved. Absolutely positioned elements are moved in relation to their closest relatively positioned parent element, or the `<body>` element. [Example](http://codepen.io/shayhowe/pen/ibhkD)
