@@ -250,13 +250,13 @@ These elements are intended to give meaning to the organization of pages and imp
 <header>...</header>
 ```
 
-**Navigation**: Identifies a section of major navigational links on a page. Should be reserved for primary navigation secions only.
+**Navigation**: Identifies a section of major navigational links on a page. Should be reserved for primary navigation sections only.
 
 ```html
 <nav>...</nav>
 ```
 
-**Article**: Identifies a secion of independent, self-contained content that may be independently distributed or reused. e.g. blog posts, newspaper articles, user-submitted content, and the like.
+**Article**: Identifies a section of independent, self-contained content that may be independently distributed or reused. e.g. blog posts, newspaper articles, user-submitted content, and the like.
 
 ```html
 <article>...</article>
