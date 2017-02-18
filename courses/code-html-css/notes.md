@@ -55,7 +55,7 @@
 **Tags**: Created by the use of less-than and greater-than angle brackets surrounding an element.
 
 * Opening Tag: Marks the beginning of an element. e.g. `<div>`
-* Closing Tag: Marks the end of an element. e.g. `</div`
+* Closing Tag: Marks the end of an element. e.g. `</div>`
 
 ```html
 <a>...</a>
