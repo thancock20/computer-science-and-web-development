@@ -39,6 +39,8 @@
   * [Font Properties](#font-properties)
   * [Text Properties](#text-properties)
   * [Typography Properties Example](#typography-properties-example)
+  * [Web Safe Fonts](#web-safe-fonts)
+  * [Embedding Web Fonts](#embedding-web-fonts)
 
 <!-- tocstop -->
 
@@ -587,5 +589,34 @@ h2 a {
   font-weight: bold;
   text-decoration: underline;
   text-transform: uppercase;
+}
+```
+### Web Safe Fonts
+
+By default, there are a few fonts pre-installed on every web-browsing-capable device. These can be freely used within web sites.
+
+* Arial
+* Courier New, Courier
+* Garamond
+* Georgia
+* Lucida Sans, Lucida Grande, Lucida
+* Palatino Linotype
+* Tahoma
+* Times New Roman, Times
+* Trebuchet
+* Verdana
+
+### Embedding Web Fonts
+
+```css
+/* First declare font name and location in @font-face */
+@font-face {
+  font-family: "Lobster";
+  src: local("Lobster"), url("lobster.woff") format("woff");
+}
+
+/* Then use font in any font-family property value */
+body {
+  font-family: "Lobster", "Comic Sans", cursive;
 }
 ```
