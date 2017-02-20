@@ -34,6 +34,9 @@
     * [Clearfix](#clearfix)
   * [Positioning with Inline-Block](#positioning-with-inline-block)
   * [Uniquely Positioning Elements](#uniquely-positioning-elements)
+* [Typography](#typography)
+  * [Adding Color to Text](#adding-color-to-text)
+  * [Font Properties](#font-properties)
 
 <!-- tocstop -->
 
@@ -490,3 +493,65 @@ The `position` property identifies *how* an element is positioned on a page and 
 * `static` is the default value of the `position` property. It means that the element exists in the normal flow of a document and doesn't accept any box offset properties.
 * `relative` value allows an element to appear in the normal flow of the page, not allowing other elements to flow around it; and also allows it's display position to be modified with the box offset properties. [Example](http://codepen.io/shayhowe/pen/xJlhs)
 * `absolute` value makes an element not appear within the normal flow of a document, and its original space and position will not be preserved. Absolutely positioned elements are moved in relation to their closest relatively positioned parent element, or the `<body>` element. [Example](http://codepen.io/shayhowe/pen/ibhkD)
+
+## Typography
+
+**Typeface**: The artistic impression of how text looks, feels, and reads.
+
+**Font**: A file that contains a typeface.
+
+### Adding Color to Text
+
+```css
+html {
+  color: #555;
+}
+```
+
+### Font Properties
+
+* `font-family`: Used to declare which font---as well as which fallback or substitute fonts---should be used to display text. Value contains multiple font names, all comma separated.
+* `font-size`: Provides the ability to set the size of text using common length values.
+* `font-style`: Can change text to italics (`italic`) or return text or its normal style (`normal`).
+* `font-variant`: Can set text in small capitals (`small-caps`) or return it to normal (`normal`).
+* `font-weight`: Styles text as bold or changes the specific weight of a typeface. `normal` maps to `400`, and `bold` to `700`.
+* `line-height`: Declares the distance between two lines of text (also called leading). May also be used to center a single line of text within an element, by setting `height` and `line-height` to the same value on the element.
+
+HTML
+```html
+<h2><a href="#">I Am a Builder</a></h2>
+
+<p class="byline">Posted by Todd Hancock</p>
+
+<p>Every day I see designers and developers working alongside onde another. They work intelligently in pursuit of business objectives. They work diligently making exceptional products. They solve real problems and take pride in their work. They are builders. <a href='#'>Continue&#8230;</a></p>
+```
+
+CSS
+```css
+h2,
+p {
+  color: #555;
+  font: 13px/20px "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #0087cc;
+}
+
+a:hover {
+  color: #ff7b29;
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.byline {
+  color: #9799a7;
+  font-family: Georgia, Times, "Times New Roman", serif;
+  font-style: italic;
+  margin-bottom: 18px;
+}
+```
