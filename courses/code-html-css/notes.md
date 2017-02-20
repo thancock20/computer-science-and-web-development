@@ -516,6 +516,7 @@ html {
 * `font-variant`: Can set text in small capitals (`small-caps`) or return it to normal (`normal`).
 * `font-weight`: Styles text as bold or changes the specific weight of a typeface. `normal` maps to `400`, and `bold` to `700`.
 * `line-height`: Declares the distance between two lines of text (also called leading). May also be used to center a single line of text within an element, by setting `height` and `line-height` to the same value on the element.
+* `font`: Uses a shorthand value to combine all font properties. The order of these property values should be as follows: `font-style` `font-variant` `font-weight` `font-size`/`line-height` `font-family`. Every value is optional *except* `font-size` and `font-family`.
 
 HTML
 ```html
