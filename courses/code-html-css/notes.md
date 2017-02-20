@@ -37,6 +37,8 @@
 * [Typography](#typography)
   * [Adding Color to Text](#adding-color-to-text)
   * [Font Properties](#font-properties)
+* [Text Properties](#text-properties)
+* [Typography Properties Example](#typography-properties-example)
 
 <!-- tocstop -->
 
@@ -518,13 +520,27 @@ html {
 * `line-height`: Declares the distance between two lines of text (also called leading). May also be used to center a single line of text within an element, by setting `height` and `line-height` to the same value on the element.
 * `font`: Uses a shorthand value to combine all font properties. The order of these property values should be as follows: `font-style` `font-variant` `font-weight` `font-size`/`line-height` `font-family`. Every value is optional *except* `font-size` and `font-family`.
 
+## Text Properties
+
+* `text-align`: Aligns text within the element. Values are `left`, `right`, `center`, `justify`, and `inherit`.
+* `text-decoration`: Provides a handful of ways to spruce up text. Values are `none`, `underline`, `overline`, `line-through`, and `inherit`.
+* `text-indent`: Used to indent the first line of text within an element.
+* `text-shadow`: Adds a shadow or multiple shadows to text. Takes four values:
+  1. Shadow's horizontal offset (length).
+  2. Shadow's vertical offset (length).
+  3. Shadow's blur radius (length).
+  4. Shadow's color.
+* `text-transform`: Changes text inline without the need for an alternate typeface. Values are `none`, `capitalize` (first letter of each word), `uppercase` (every letter), `lowercase` (every letter), and `inherit`.
+
+## Typography Properties Example
+
 HTML
 ```html
 <h2><a href="#">I Am a Builder</a></h2>
 
 <p class="byline">Posted by Todd Hancock</p>
 
-<p>Every day I see designers and developers working alongside onde another. They work intelligently in pursuit of business objectives. They work diligently making exceptional products. They solve real problems and take pride in their work. They are builders. <a href='#'>Continue&#8230;</a></p>
+<p class="intro">Every day I see designers and developers working alongside onde another. They work intelligently in pursuit of business objectives. They work diligently making exceptional products. They solve real problems and take pride in their work. They are builders. <a href='#'>Continue&#8230;</a></p>
 ```
 
 CSS
@@ -546,7 +562,13 @@ a:hover {
 h2 {
   font-size: 22px;
   font-weight: bold;
+  letter-spacing: -.02em;
   margin-bottom: 6px;
+}
+
+h2 a {
+  text-decoration: none;
+  text-shadow: 2px 2px 1px rgba(0, 0, 0, .2);
 }
 
 .byline {
@@ -554,5 +576,16 @@ h2 {
   font-family: Georgia, Times, "Times New Roman", serif;
   font-style: italic;
   margin-bottom: 18px;
+}
+
+.intro {
+  text-indent: 15px;
+}
+
+.intro a {
+  font-size: 11px;
+  font-weight: bold;
+  text-decoration: underline;
+  text-transform: uppercase;
 }
 ```
