@@ -37,8 +37,8 @@
 * [Typography](#typography)
   * [Adding Color to Text](#adding-color-to-text)
   * [Font Properties](#font-properties)
-* [Text Properties](#text-properties)
-* [Typography Properties Example](#typography-properties-example)
+  * [Text Properties](#text-properties)
+  * [Typography Properties Example](#typography-properties-example)
 
 <!-- tocstop -->
 
@@ -520,7 +520,7 @@ html {
 * `line-height`: Declares the distance between two lines of text (also called leading). May also be used to center a single line of text within an element, by setting `height` and `line-height` to the same value on the element.
 * `font`: Uses a shorthand value to combine all font properties. The order of these property values should be as follows: `font-style` `font-variant` `font-weight` `font-size`/`line-height` `font-family`. Every value is optional *except* `font-size` and `font-family`.
 
-## Text Properties
+### Text Properties
 
 * `text-align`: Aligns text within the element. Values are `left`, `right`, `center`, `justify`, and `inherit`.
 * `text-decoration`: Provides a handful of ways to spruce up text. Values are `none`, `underline`, `overline`, `line-through`, and `inherit`.
@@ -532,7 +532,7 @@ html {
   4. Shadow's color.
 * `text-transform`: Changes text inline without the need for an alternate typeface. Values are `none`, `capitalize` (first letter of each word), `uppercase` (every letter), `lowercase` (every letter), and `inherit`.
 
-## Typography Properties Example
+### Typography Properties Example
 
 HTML
 ```html
