@@ -740,3 +740,12 @@ div {
   * `border-box`
   * `padding-box`
   * `content-box`
+
+```css
+div {
+  background: url("todd.jpg") 0 0 no-repeat;
+  background-size: 32px 48px;
+  background-clip: padding-box;
+  background-origin: padding-box;
+}
+```
