@@ -48,6 +48,10 @@
   * [Gradient Backgrounds](#gradient-backgrounds)
   * [Multiple Background Images](#multiple-background-images)
   * [New CSS3 Background Properties](#new-css3-background-properties)
+* [Lists](#lists)
+  * [Nesting Lists](#nesting-lists)
+  * [List Item Styling](#list-item-styling)
+  * [Using an Image as a List Item Marker](#using-an-image-as-a-list-item-marker)
 
 <!-- tocstop -->
 
@@ -747,5 +751,130 @@ div {
   background-size: 32px 48px;
   background-clip: padding-box;
   background-origin: padding-box;
+}
+```
+
+## Lists
+
+**Unordered list**: A list of related items whose order does not matter.
+
+```html
+<ul>
+  <li>Orange</li>
+  <li>Green</li>
+  <li>Blue</li>
+</ul>
+```
+
+**Ordered List**: A list where the order in which items are presented is important.
+
+```html
+<!-- List starts at 1 and goes up by default -->
+<ol>
+  <li>Head north on N Halsted St</li>
+  <li>Turn right on W Diversey Pkwy</li>
+  <li>Turn left on N Orchard St</li>
+</ol>
+
+<!-- To start a list at 30 and go up -->
+<ol start="30">
+  <li>Head north on N Halsted St</li>
+  <li>Turn right on W Diversey Pkwy</li>
+  <li>Turn left on N Orchard St</li>
+</ol>
+
+<!-- To go down and end on 1 -->
+<ol reversed>
+  <li>Head north on N Halsted St</li>
+  <li>Turn right on W Diversey Pkwy</li>
+  <li>Turn left on N Orchard St</li>
+</ol>
+
+<!-- To go 1, 9, 10 -->
+<ol>
+  <li>Head north on N Halsted St</li>
+  <li value="9">Turn right on W Diversey Pkwy</li>
+  <li>Turn left on N Orchard St</li>
+</ol>
+```
+
+**Description List**: Used to outline multiple terms and their descriptions, as in a glossary, for example.
+
+```html
+<dl>
+  <dt>study</dt>
+  <dd>The devotion of time and attention to acquiring knowledge on an academic subject, especially by means of books</dd>
+  <dt>design</dt>
+  <dd>A plan or drawing produced to show the look and function or workings of a building, garment, or other object before it is built or made</dd>
+  <dd>Purpose, planning, or intention that exists or is thought to exist behind an action, fact, or material object</dd>
+  <dt>business</dt>
+  <dt>work</dt>
+  <dd>A person's regular occupation, profession, or trade</dd>
+</dl>
+```
+
+### Nesting Lists
+
+```html
+<ol>
+  <li>Walk the dog</li>
+  <li>Fold laundry</li>
+  <li>
+    Go to the grocery and buy:
+    <ul>
+      <li>Milk</li>
+      <li>Bread</li>
+      <li>Cheese</li>
+    </ul>
+  </li>
+  <li>Mow the Lawn</li>
+  <li>Make dinner</li>
+</ol>
+```
+
+### List Item Styling
+
+* `list-style-type`: Used to set the content of a list item marker. Values are:
+  * `none`: No list item
+  * `disc`: A filled circle
+  * `circle`: A hollow circle
+  * `square`: A filled square
+  * `decimal`: Decimal numbers
+  * `decimal-leading-zero`: Decimal numbers padded by initail zeros
+  * `lower-roman`: Lowercase Roman numerals
+  * `upper-roman`: Uppercase Roman numerals
+  * `lower-greek`: Lowercase classical Greek
+  * `lower-alpha` / `lower-latin`: Lowercase ASCII letters
+  * `upper-alpha` / `upper-latin`: Uppercase ASCII letters
+  * `armenian`: Traditional Armenian numbering
+  * `georgian`: Traditional Gerogian numbering
+* `list-style-position`: Values are:
+  * `outside`: Places the list item marker to the left of the `<li>` element and doesn't allow any content to wrap below the list item marker.
+  * `inside`: Places the list item marker in line with the first line of the `<li>` element and allows other content to wrap below it as needed.
+  * `inherit`
+* `list-style`: Shorthand property. Order is `list-style-type` `list-style-position`.
+
+### Using an Image as a List Item Marker
+
+HTML
+```html
+<ul>
+  <li>Orange</li>
+  <li>Green</li>
+  <li>Blue</li>
+<ul>
+```
+
+CSS
+```css
+li {
+  /* Remove existing list item markers */
+  list-style-type: none;
+
+  /* Identify a background image, along with its postition and repeat value, if necessary */
+  background: url("arrow.png") 0 50% no-repeat;
+
+  /* Provide space to the left of the text for the background image */
+  padding-left: 12px;
 }
 ```
