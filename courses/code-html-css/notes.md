@@ -42,6 +42,9 @@
   * [Web Safe Fonts](#web-safe-fonts)
   * [Embedding Web Fonts](#embedding-web-fonts)
   * [Citations & Quotes](#citations-quotes)
+* [Backgrounds & Gradients](#backgrounds-gradients)
+  * [Background Color](#background-color)
+  * [Background Image](#background-image)
 
 <!-- tocstop -->
 
@@ -640,3 +643,37 @@ body {
   <p>&#8220;In most people&#8217;s vocabularies, design is a veneer. It&#8217;s interior decorating. It&#8217;s the fabric of the curtains, of the sofa. But to me, nothing could be further from the meaning of design. Design is the fundamental soul of a human-made creation that ends up expressing itself in successive outer layers of the product.&#8221;</p>
   <p><cite>&#8212; Steve Jobs in <a href="http://money.cnn.com/ magazines/fortune/fortune_archive/2000/01/24/272277/index.htm"> Fortune Magazine</a></cite></p>
 </blockquote>
+```
+
+## Backgrounds & Gradients
+
+### Background Color
+
+```css
+div {
+  background-color: #b2b2b2;
+}
+```
+
+### Background Image
+
+```css
+div{
+  /* give url for background image */
+  background-image: url("alert.png");
+
+  /* possible values: repeat, repeat-x, repeat-y, no-repeat */
+  background-repeat: no-repeat;
+
+  /* relative to left top corner */
+  background-position: 20px 10px;
+}
+```
+
+`background` shorthand property. Order is `background-color` `background-image` `background-position` `background-repeat`.
+
+```css
+div {
+  background: #b2b2b2 url("alert.png") 20px 10px no-repeat;
+}
+```
