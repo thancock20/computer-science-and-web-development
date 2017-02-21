@@ -46,6 +46,8 @@
   * [Background Color](#background-color)
   * [Background Image](#background-image)
   * [Gradient Backgrounds](#gradient-backgrounds)
+  * [Multiple Background Images](#multiple-background-images)
+  * [New CSS3 Background Properties](#new-css3-background-properties)
 
 <!-- tocstop -->
 
@@ -718,3 +720,23 @@ div {
   background: linear-gradient(to right, #f6f1d3, #648880, #293f50);
 }
 ```
+
+### Multiple Background Images
+
+```css
+div {
+  background: url("foreground.png") 0 0 no-repeat, url("middle-ground.png") 0 0 no-repeat, url("background.png") 0 0 no-repeat;
+}
+```
+
+### New CSS3 Background Properties
+
+* `background-size`: Specifies a size for a background image. Values are:
+  * Length values. 1st value is width, 2nd is height.
+  * `cover`: Background image will be resized to completely cover an element's width and height. Original aspect ratio will be preserved. Part of the image may be cut off.
+  * `contain`: Background image will be resized to reside entirely contained within an element's width and height. Image may not occupy the full available space of the element.
+* `background-clip`: Specifies the surface area a background image will cover.
+* `background-origin`: Specifies where the `background-position` should originate. Values for both are:
+  * `border-box`
+  * `padding-box`
+  * `content-box`
