@@ -41,6 +41,7 @@
   * [Typography Properties Example](#typography-properties-example)
   * [Web Safe Fonts](#web-safe-fonts)
   * [Embedding Web Fonts](#embedding-web-fonts)
+  * [Citations & Quotes](#citations-quotes)
 
 <!-- tocstop -->
 
@@ -620,3 +621,22 @@ body {
   font-family: "Lobster", "Comic Sans", cursive;
 }
 ```
+
+### Citations & Quotes
+
+* `<cite>`: Used to reference a creative work, author, or resource
+* `<q>`: Used for short, inline quotations
+* `<blockquote>`: Used for longer external quotations
+
+```html
+<!-- <cite> example, includes hyperlink to original source -->
+<p>The book <cite><a href="http://www.amazon.com/Steve-Jobs-Walter-Isaacson/dp/1451648537">Steve Jobs</a></cite> is truly inspirational.
+
+<!-- <q> example, includes cite attribute -->
+<p><a href="http://www.businessweek.com/magazine/content/06_06/b3970001.htm">Steve Jobs</a> once said, <q cite="http://www.businessweek.com/magazine/content/06_06/b3970001.htm">One home run is much better than two doubles.</q></p>
+
+<!-- <blockquote> example, inlcudes cite attribute -->
+<blockquote cite="http://money.cnn.com/magazines/fortune/fortune_archive/2000/01/24/272277/index.htm">
+  <p>&#8220;In most people&#8217;s vocabularies, design is a veneer. It&#8217;s interior decorating. It&#8217;s the fabric of the curtains, of the sofa. But to me, nothing could be further from the meaning of design. Design is the fundamental soul of a human-made creation that ends up expressing itself in successive outer layers of the product.&#8221;</p>
+  <p><cite>&#8212; Steve Jobs in <a href="http://money.cnn.com/ magazines/fortune/fortune_archive/2000/01/24/272277/index.htm"> Fortune Magazine</a></cite></p>
+</blockquote>
