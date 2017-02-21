@@ -52,6 +52,8 @@
   * [Nesting Lists](#nesting-lists)
   * [List Item Styling](#list-item-styling)
   * [Using an Image as a List Item Marker](#using-an-image-as-a-list-item-marker)
+  * [Horizontally Displaying a List](#horizontally-displaying-a-list)
+  * [Navigational List Example](#navigational-list-example)
 
 <!-- tocstop -->
 
@@ -876,5 +878,69 @@ li {
 
   /* Provide space to the left of the text for the background image */
   padding-left: 12px;
+}
+```
+
+### Horizontally Displaying a List
+
+```css
+/* Display method - list item marker is removed */
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+```
+
+```css
+/* Float method - list item marker is retained */
+li {
+  float: left;
+  margin: 0 20px;
+}
+```
+
+### Navigational List Example
+
+HTML
+```html
+<nav class="navigation">
+  <ul>
+    <li><a href="#">Profile</a></li><!--
+    --><li><a href="#">Settings</a></li><!--
+    --><li><a href="#">Notifications</a></li><!--
+    --><li><a href="#">Logout</a></li>
+  </ul>
+</nav>
+```
+
+CSS
+```css
+.navigation ul {
+  font: bold 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  text-transform: uppercase;
+}
+.navigation li {
+  display: inline-block;
+}
+.navigation a {
+  background: #395870;
+  background: linear-gradient(#49708f, #293f50);
+  border-right: 1px solid rgba(0, 0, 0, .3);
+  color: #fff;
+  padding: 12px 20px;
+  text-decoration: none;
+}
+.navigation a:hover {
+  background: #314b60;
+  box-shadow: inset 0 0 10px 1px rgba(0, 0, 0, .3);
+}
+.navigation li:first-child a {
+  border-radius: 4px 0 0 4px;
+}
+.navigation li:last-child a {
+  border-right: 0;
+  border-radius: 0 4px 4px 0;
 }
 ```
