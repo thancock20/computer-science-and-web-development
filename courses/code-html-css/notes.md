@@ -54,6 +54,10 @@
   * [Using an Image as a List Item Marker](#using-an-image-as-a-list-item-marker)
   * [Horizontally Displaying a List](#horizontally-displaying-a-list)
   * [Navigational List Example](#navigational-list-example)
+* [Adding Media](#adding-media)
+  * [Adding Images](#adding-images)
+    * [Sizing Images](#sizing-images)
+    * [Positioning Images](#positioning-images)
 
 <!-- tocstop -->
 
@@ -942,5 +946,41 @@ CSS
 .navigation li:last-child a {
   border-right: 0;
   border-radius: 0 4px 4px 0;
+}
+```
+
+## Adding Media
+
+### Adding Images
+
+`<img>`: Inline element that displays an image. Is self-containing and has two attributes:
+
+1. `src`: URL to the source of the image.
+2. `alt`: Alternative text, which describes the contents of an image. Is picked up by search engines and assistive technologies to help convey the purpose of an image. Will be displayed in place of the image if it is not available for some reason.
+
+```html
+<img src="dog.jpg" alt="A black, brown, and white dog wearing a kerchief">
+```
+
+#### Sizing Images
+
+```css
+/* Note: including both height and width may break the aspect ratio of image */
+img {
+  height: 200px;
+  width: 200px;
+}
+```
+
+#### Positioning Images
+
+```css
+/* Using float */
+img {
+  background: #eaeaed;
+  border: 1px solid #9799a7;
+  float: right;
+  margin: 8px 0 0 20px;
+  padding: 4px;
 }
 ```
