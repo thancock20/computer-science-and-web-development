@@ -45,6 +45,7 @@
 * [Backgrounds & Gradients](#backgrounds-gradients)
   * [Background Color](#background-color)
   * [Background Image](#background-image)
+  * [Gradient Backgrounds](#gradient-backgrounds)
 
 <!-- tocstop -->
 
@@ -675,5 +676,30 @@ div{
 ```css
 div {
   background: #b2b2b2 url("alert.png") 20px 10px no-repeat;
+}
+```
+
+### Gradient Backgrounds
+
+```css
+/* linear gradient background top to bottom */
+div {
+  background: #466368; /* fallback for older browsers */
+  background: linear-gradient(#648880, #293f50);
+}
+
+/* linear gradient background top left to right bottom */
+div {
+  background: linear-gradient(to right bottom, #648880, #293f50);
+}
+
+/* radial gradient background inside to outside */
+div {
+  background: radial-gradient(#648880, #293f50);
+}
+
+/* linear gradient background with color stops */
+div {
+  background: linear-gradient(to right, #f6f1d3, #648880, #293f50);
 }
 ```
