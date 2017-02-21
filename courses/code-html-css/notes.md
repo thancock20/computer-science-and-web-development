@@ -529,15 +529,30 @@ html {
 
 ### Text Properties
 
-* `text-align`: Aligns text within the element. Values are `left`, `right`, `center`, `justify`, and `inherit`.
-* `text-decoration`: Provides a handful of ways to spruce up text. Values are `none`, `underline`, `overline`, `line-through`, and `inherit`.
+* `text-align`: Aligns text within the element. Values are:
+  * `left`
+  * `right`
+  * `center`
+  * `justify`
+  * `inherit`
+* `text-decoration`: Provides a handful of ways to spruce up text. Values are:
+  * `none`
+  * `underline`
+  * `overline`
+  * `line-through`
+  * `inherit`
 * `text-indent`: Used to indent the first line of text within an element.
 * `text-shadow`: Adds a shadow or multiple shadows to text. Takes four values:
   1. Shadow's horizontal offset (length).
   2. Shadow's vertical offset (length).
   3. Shadow's blur radius (length).
   4. Shadow's color.
-* `text-transform`: Changes text inline without the need for an alternate typeface. Values are `none`, `capitalize` (first letter of each word), `uppercase` (every letter), `lowercase` (every letter), and `inherit`.
+* `text-transform`: Changes text inline without the need for an alternate typeface. Values are:
+  * `none`
+  * `capitalize` (first letter of each word)
+  * `uppercase` (every letter)
+  * `lowercase` (every letter)
+  * `inherit`
 
 ### Typography Properties Example
 
