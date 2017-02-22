@@ -67,6 +67,10 @@
   * [Text](#text)
   * [Multiple Choice](#multiple-choice)
   * [Menus](#menus)
+  * [Buttons](#buttons)
+  * [Other Inputs](#other-inputs)
+  * [Organizing Form Elements](#organizing-form-elements)
+  * [Additional Form & Input Attributes](#additional-form-input-attributes)
 
 <!-- tocstop -->
 
@@ -1096,15 +1100,17 @@ img {
 
 ### Multiple Choice
 
-* `radio`: Value of `type` attribute on `<input>` element. Permits users to select one option from a small list. Each radio button in a group should have the same `name` attribute.
+* `radio`: `type` of `<input>` element. Permits users to select one option from a small list. Each radio button in a group should have the same `name` attribute.
   * `checked`: Boolean attribute to preselect a button.
 * `checkbox`: Similar to radio buttons, but allows users to select multiple values and tie them all to one control name. Also has `checked` attribute available.
 
 ```html
+<!-- Radio Buttons -->
 <input type="radio" name="day" value="Friday" checked> Friday
 <input type="radio" name="day" value="Saturday"> Saturday
 <input type="radio" name="day" value="Sunday"> Sunday
 
+<!-- Checkboxes -->
 <input type="checkbox" name="day" value="Friday" checked> Friday
 <input type="checkbox" name="day" value="Saturday"> Saturday
 <input type="checkbox" name="day" value="Sunday"> Sunday
@@ -1124,3 +1130,72 @@ img {
   <option value="Sunday">Sunday</option>
 </select>
 ```
+
+### Buttons
+
+* `submit`: `type` of `<input>` element. Creates a button, that submits the form.
+  * `value`: Attribute used to specify the text that appears within the button.
+* `<button>`: Element performs the same way as the `<input>` element with the `type` value of `submit`; however it includes opening and closing tags, which may wrap other elements.
+
+```html
+<!-- Submit Input -->
+<input type="submit" name="submit" value="Send">
+
+<!-- Submit Button -->
+<button name="submit">
+  <strong>Send Us</strong> a Message
+</button>
+```
+
+### Other Inputs
+
+* `hidden`: `type` of `<input>` element. Provides a way to pass data to the server without displaying it to users. Not displayed on the page, but can be found by viewing the source code.
+* `file`: `type` of `<input>` element. Allows users to add a file to a form, much like attaching a file to an email.
+
+```html
+<input type="hidden" name="tracking-code" value="abc-123">
+
+<input type="file" name="file">
+```
+
+### Organizing Form Elements
+
+* `<label>`: Provides captions or headings for form controls, unambiguously tyin them together and creating an accessible form for all users and assistive technologies.
+  * `for`: Attribute. Should match `id` attribute of form control. If `<label>` wraps the control, `for` and `id` may be omitted.
+* `<fieldset>`: Block-level element that wraps related elements within a `<form>` for better organization. By default, includes a border outline.
+* `<legend>`: Provides a caption, or heading, for the `<fieldset>` element. Should be included directly after the opening `<fieldset>` tag.
+
+```html
+<fieldset>
+  <legend>Login</legend>
+  <label>
+    Username
+    <input type="text" name="username">
+  </label>
+  <label>
+    Password
+    <input type="text" name="password">
+  </label>
+</fieldset>
+```
+
+### Additional Form & Input Attributes
+
+* `disabled`
+* `placeholder`
+* `required`
+* `accept`
+* `autocomplete`
+* `autofocus`
+* `formaction`
+* `formenctype`
+* `formmethod`
+* `formnovalidate`
+* `formtarget`
+* `max`
+* `maxlength`
+* `min`
+* `pattern`
+* `readonly`
+* `selectionDirection`
+* `step`
