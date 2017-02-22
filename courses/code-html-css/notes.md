@@ -63,6 +63,10 @@
   * [Adding Video](#adding-video)
   * [Adding Inline Frames](#adding-inline-frames)
 * [Semantically Identifying Figures & Captions](#semantically-identifying-figures-captions)
+* [Forms](#forms)
+  * [Text](#text)
+  * [Multiple Choice](#multiple-choice)
+  * [Menus](#menus)
 
 <!-- tocstop -->
 
@@ -1048,4 +1052,75 @@ img {
   <img src="dog.jpg">
   <figcaption>A beautiful black, brown, and white hound dog wearing kerchief.</figcaption>
 </figure>
+```
+
+## Forms
+
+* `<form>`: Identifies where on the page control elements will appear. Will wrap all of the elements included within the form. Most common attributes are:
+  * `action`: Contains the URL to which information included within the form will be sent for processing by the server.
+  * `method`: The HTTP method browsers should use to submit the form data.
+
+```html
+<form action="/login" method="post">
+  ...
+</form>
+```
+### Text
+
+* `<input>`: Used to obtain text from users.
+  * `name`: Value is used as the name of the control and is submitted along with the input data to the server.
+  * `type`: Defines what type of information is to be captured within the control. Text values are:
+    * `text`
+    * `password`
+    * `color`
+    * `date`
+    * `datetime`
+    * `email`
+    * `month`
+    * `number`
+    * `range`
+    * `search`
+    * `tel`
+    * `time`
+    * `url`
+    * `week`
+* `<textarea>`: Can accept larger passages of text spanning multiple lines.
+
+```html
+<input type="text" name="username">
+<input type="date" name="birthday">
+<input type="tel" name="phone-number">
+
+<textarea name="comment">Add your comment here</textarea>
+```
+
+### Multiple Choice
+
+* `radio`: Value of `type` attribute on `<input>` element. Permits users to select one option from a small list. Each radio button in a group should have the same `name` attribute.
+  * `checked`: Boolean attribute to preselect a button.
+* `checkbox`: Similar to radio buttons, but allows users to select multiple values and tie them all to one control name. Also has `checked` attribute available.
+
+```html
+<input type="radio" name="day" value="Friday" checked> Friday
+<input type="radio" name="day" value="Saturday"> Saturday
+<input type="radio" name="day" value="Sunday"> Sunday
+
+<input type="checkbox" name="day" value="Friday" checked> Friday
+<input type="checkbox" name="day" value="Saturday"> Saturday
+<input type="checkbox" name="day" value="Sunday"> Sunday
+```
+
+### Menus
+
+* `<Select>`: Wraps all of the menu options.
+  * `multiple`: Boolean attribute. Allows a user to choose more than one option from the list at a time.
+* `<option>`: Marks each menu option.
+  * `selected`: Boolean attribute. Preselects an option for users.
+
+```html
+<select name="day" multiple>
+  <option value="Friday" selected>Friday</option>
+  <option value="Saturday">Saturday</option>
+  <option value="Sunday">Sunday</option>
+</select>
 ```
