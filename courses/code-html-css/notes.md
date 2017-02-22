@@ -62,6 +62,7 @@
     * [Audio Fallbacks & Multiple Sources](#audio-fallbacks-multiple-sources)
   * [Adding Video](#adding-video)
   * [Adding Inline Frames](#adding-inline-frames)
+* [Semantically Identifying Figures & Captions](#semantically-identifying-figures-captions)
 
 <!-- tocstop -->
 
@@ -1035,4 +1036,16 @@ img {
 
 ```html
 <iframe src="https://www.google.com/maps/embed?..."></iframe>
+```
+
+## Semantically Identifying Figures & Captions
+
+* `<figure>`: Block-level element used to identify and wrap self-contained content, often in the form of media. If it is moved from the main portion of a page to another location (e.g the bottom of the page), it should not disrupt the content of legibility of the page.
+* `<figcaption>`: Serves as the caption for all content within the `<figure>` element. May appear anywhere within the `<figure>` element. Also, may replace an `<img>` element's `alt` attribute if the content provides a useful description of the visual content of the image.
+
+```html
+<figure>
+  <img src="dog.jpg">
+  <figcaption>A beautiful black, brown, and white hound dog wearing kerchief.</figcaption>
+</figure>
 ```
