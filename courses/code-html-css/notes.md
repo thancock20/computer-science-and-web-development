@@ -61,6 +61,7 @@
   * [Adding Audio](#adding-audio)
     * [Audio Fallbacks & Multiple Sources](#audio-fallbacks-multiple-sources)
   * [Adding Video](#adding-video)
+  * [Adding Inline Frames](#adding-inline-frames)
 
 <!-- tocstop -->
 
@@ -1028,4 +1029,10 @@ img {
   <source src="earth.mp4" type="video/mp4">
   Please <a href="earth.mp4" download>download</a> the video.
 </video>
+```
+
+### Adding Inline Frames
+
+```html
+<iframe src="https://www.google.com/maps/embed?..."></iframe>
 ```
