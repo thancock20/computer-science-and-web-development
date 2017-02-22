@@ -58,6 +58,9 @@
   * [Adding Images](#adding-images)
     * [Sizing Images](#sizing-images)
     * [Positioning Images](#positioning-images)
+  * [Adding Audio](#adding-audio)
+    * [Audio Fallbacks & Multiple Sources](#audio-fallbacks-multiple-sources)
+  * [Adding Video](#adding-video)
 
 <!-- tocstop -->
 
@@ -983,4 +986,46 @@ img {
   margin: 8px 0 0 20px;
   padding: 4px;
 }
+```
+
+### Adding Audio
+
+`<audio>`: Element that adds audio to a page. Attributes are:
+* `src`: URL to the source of the audio file.
+* `autoplay`: Boolean attribute. If `true`, audio file will play automatically upon loading.
+* `controls`: Boolean attribute. If `true`, displays a browser's default audio controls, including play and pause, seek, and volume controls.
+* `loop`: Boolean attribute. If `true`, audio file repeats continually, from beginning to end.
+* `preload`: Identifies what, if any, information about the audio file should be loaded before the clip is played. Values are:
+  * `none`: Won't preload any information.
+  * `auto`: Preloads all information.
+  * `metadata`: Preloads available metadata information, but not all information.
+
+```html
+<audio src="jazz.ogg" autoplay controls></audio>
+```
+
+#### Audio Fallbacks & Multiple Sources
+
+`<source>`: Used in `<audio>` element to add multiple sources. Enables adding of fallback formats for different browsers. If a browser doesn't recognize any of the audio file formats, the anchor link to download the element will be displayed.
+
+```html
+<audio controls>
+  <source src="jazz.ogg" type="audio/ogg">
+  <source src="jazz.mp3" type="audio/mpeg">
+  <source src="jazz.wav" type="audio/wav">
+  Please <a href="jazz.mp3" download>download</a> the audio file.
+</audio>
+```
+
+### Adding Video
+
+`<video>`: Element that adds video to a page. Has attributes as `<audio>` plus:
+* `poster`: Specifies a URL of an image to be shown before a video is played.
+
+```html
+<video controls poster="earth-video-screenshot.jpg">
+  <source src="earth.ogv" type="video/ogg">
+  <source src="earth.mp4" type="video/mp4">
+  Please <a href="earth.mp4" download>download</a> the video.
+</video>
 ```
