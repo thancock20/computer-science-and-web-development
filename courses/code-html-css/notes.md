@@ -1181,21 +1181,18 @@ img {
 
 ### Additional Form & Input Attributes
 
-* `disabled`
-* `placeholder`
-* `required`
-* `accept`
-* `autocomplete`
-* `autofocus`
-* `formaction`
-* `formenctype`
-* `formmethod`
-* `formnovalidate`
-* `formtarget`
-* `max`
-* `maxlength`
-* `min`
-* `pattern`
-* `readonly`
-* `selectionDirection`
-* `step`
+* `accept`: List of types the server accepts, typically a file type.
+* `autocomplete`: Indicates whether controls can by default have their values automatically completed by the browser.
+* `autofocus`: The element should be automatically focused after the page loaded.
+* `disabled`: Indicates whether the user can interact with the element.
+* `enctype`: Defines the content tpe of the form date when the `method` is `POST`.
+* `formaction`: Indicates the action of the element, ovoerriding the action defined in the `<form>`.
+* `max`: Indicates the maximum value allowed.
+* `maxlength`: Defines the maximum number of characters allowed in the element.
+* `method`: Defines which HTTP method to use when submitting the form. Can be `GET` (default) or `POST`.
+* `min`: Indicates the minimum value allowed.
+* `novalidate`: Indicates that the form shouldn't be validated when submitted.
+* `pattern`: Defines a regular expression which the element's value will be validated agains.
+* `placeholder`: Provides a hint to the user of what can be entered in the field.
+* `readonly`: Indicates whether the element can be edited.
+* `required`: Indicates whether this element is required to fill out or not.
