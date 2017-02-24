@@ -71,6 +71,7 @@
   * [Other Inputs](#other-inputs)
   * [Organizing Form Elements](#organizing-form-elements)
   * [Additional Form & Input Attributes](#additional-form-input-attributes)
+* [Tables](#tables)
 
 <!-- tocstop -->
 
@@ -1196,3 +1197,19 @@ img {
 * `placeholder`: Provides a hint to the user of what can be entered in the field.
 * `readonly`: Indicates whether the element can be edited.
 * `required`: Indicates whether this element is required to fill out or not.
+
+## Tables
+
+* `<table>`: Signifies that the information within this element will be tabular data displayed in the necessary columns and rows.
+* `<tr>`: Adds a row to a table.
+* `<td>`: Adds a data cell to a table row. Creates column.
+  * `rowspan`: Attribute used to span a single cell across multiple rows. May also be used on `<th>`.
+  * `colspan`: Attribute used to span a single cell across multiple columns.
+* `<th>`: Adds a header cell to a table. May also be used on `<th>`.
+  * `scope`: Attribute helps to identify exactly what content a header relates to.
+    * `row`
+    * `col`
+* `<caption>`: Provides a caption or title for a table. Must come immediately after the opening `<table>` tag.
+* `<thead>`: Wraps the heading row or rows of a table to denote the head.
+* `<tbody>`: Contains the primary data within a table.
+* `<tfoot>`: Contains data that outlines the contents of a table.
