@@ -1213,3 +1213,38 @@ img {
 * `<thead>`: Wraps the heading row or rows of a table to denote the head.
 * `<tbody>`: Contains the primary data within a table.
 * `<tfoot>`: Contains data that outlines the contents of a table.
+
+```html
+<table>
+  <caption>Design and Front-End Development Books</caption>
+  <thead>
+    <tr>
+      <th scope="col" colspan="2">Item</th>
+      <th scope="col">Qty</th>
+      <th scope="col">Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Don&#8217;t Make Me Think by Steve Krug</td>
+      <td>In Stock</td>
+      <td>1</td>
+      <td>$30.02</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="3">Subtotal</td>
+      <td>$135.36</td>
+    </tr>
+    <tr>
+      <td colspan="3">Tax</td>
+      <td>$13.54</td>
+    </tr>
+    <tr>
+      <td colspan="3">Total</td>
+      <td>$148.90</td>
+    </tr>
+  </tfoot>
+</table>
+```
