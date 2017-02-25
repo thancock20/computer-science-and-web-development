@@ -72,6 +72,8 @@
   * [Organizing Form Elements](#organizing-form-elements)
   * [Additional Form & Input Attributes](#additional-form-input-attributes)
 * [Tables](#tables)
+  * [Table Styling](#table-styling)
+  * [Adding Borders Between Rows](#adding-borders-between-rows)
 
 <!-- tocstop -->
 
@@ -1265,4 +1267,31 @@ img {
     </tr>
   </tfoot>
 </table>
+```
+
+### Table Styling
+
+* `border-collapse`: Determines a table's border model.
+  * `separate`: (default) All the different borders stack up next to one another.
+  * `collapse`: Condenses the borders into one, using the table cell as the primary border.
+  * `inherit`.
+* `border-spacing`: Determines how much space appears between borders, when `border-collapse` is set to `separate`.
+* `vertical-align`: Aligns text vertically in the table cell.
+
+### Adding Borders Between Rows
+
+```css
+table {
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border-bottom: 1px solid #cecfd5;
+  padding: 10px 15px;
+}
+
+tfoot tr:last-child td {
+  border-bottom: 0;
+}
 ```
