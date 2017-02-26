@@ -73,7 +73,7 @@
   * [Additional Form & Input Attributes](#additional-form-input-attributes)
 * [Tables](#tables)
   * [Table Styling](#table-styling)
-  * [Adding Borders Between Rows](#adding-borders-between-rows)
+    * [Adding Borders Between Rows](#adding-borders-between-rows)
 
 <!-- tocstop -->
 
@@ -1278,7 +1278,7 @@ img {
 * `border-spacing`: Determines how much space appears between borders, when `border-collapse` is set to `separate`.
 * `vertical-align`: Aligns text vertically in the table cell.
 
-### Adding Borders Between Rows
+#### Adding Borders Between Rows
 
 ```css
 table {
