@@ -1,5 +1,11 @@
 # Project completed in association with this item
+
+[Styles Conference Website](./styles-conference)
+
 ## Description:
-## Use Cases:
+
+Practice site built during course.
+
 ## Technologies used:
-## Skills I demonstrated via this project
+
+HTML & CSS
