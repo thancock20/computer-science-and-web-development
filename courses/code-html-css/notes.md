@@ -74,6 +74,8 @@
 * [Tables](#tables)
   * [Table Styling](#table-styling)
     * [Adding Borders Between Rows](#adding-borders-between-rows)
+    * [Table Striping](#table-striping)
+    * [Table Styling Example](#table-styling-example)
 
 <!-- tocstop -->
 
@@ -1228,28 +1230,28 @@ img {
   </thead>
   <tbody>
     <tr>
-      <td>Don&#8217;t Make Me Think by Steve Krug</td>
-      <td>In Stock</td>
-      <td>1</td>
-      <td>$30.02</td>
+      <td><strong class="book-title">Don&#8217;t Make Me Think</strong> by Steve Krug</td>
+      <td class="item-stock">In Stock</td>
+      <td class="item-qty">1</td>
+      <td class="item-price">$30.02</td>
     </tr>
   <tr>
-    <td>A Project Guide to US Design by Russ Unger &@38; Carolyn Chandler</td>
-    <td>In Stock</td>
-    <td>2</td>
-    <td>$52.94 ($26.47 &#215; 2)</td>
+    <td><strong class="book-title">A Project Guide to US Design</strong> by Russ Unger &@38; Carolyn Chandler</td>
+    <td class="item-stock">In Stock</td>
+    <td class="item-qty">2</td>
+    <td class="item-price">$52.94 ($26.47 &#215; 2)</td>
   </tr>
   <tr>
-    <td>Introducing HTML5 by Bruce Lawson &#38; Remy Sharp</td>
-    <td>Out of Stock</td>
-    <td>1</td>
-    <td>$22.23</td>
+    <td><strong class="book-title">Introducing HTML5</strong> by Bruce Lawson &#38; Remy Sharp</td>
+    <td class="item-stock">Out of Stock</td>
+    <td class="item-qty">1</td>
+    <td class="item-price">$22.23</td>
   </tr>
   <tr>
-    <td>Bulletproof Web Design by Dan Cederholm</td>
-    <td>In Stock</td>
-    <td>1</td>
-    <td>$30.17</td>
+    <td><strong class="book-title">Bulletproof Web Design</strong> by Dan Cederholm</td>
+    <td class="item-stock">In Stock</td>
+    <td class="item-qty">1</td>
+    <td class="item-price">$30.17</td>
   </tr>
   </tbody>
   <tfoot>
@@ -1285,13 +1287,120 @@ table {
   border-collapse: collapse;
 }
 
+/* Add bottotm borders to each row */
 th,
 td {
   border-bottom: 1px solid #cecfd5;
   padding: 10px 15px;
 }
 
+/* Remove bottom borders from last row */
 tfoot tr:last-child td {
   border-bottom: 0;
+}
+```
+
+#### Table Striping
+
+```css
+/* Needed to keep head and body the same width
+because <td> has border and <th> does not */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+th,
+td {
+  padding: 10px 15px;
+}
+
+/* Color entire head, which includes <th>s */
+thead {
+  background: #395870;
+  color: #fff;
+}
+
+/* Only color the even <tr>s */
+tbody tr:nth-child(even) {
+  background: #f0f0f2;
+}
+
+/* Be specific with border placement
+because border-collapse is set to separate */
+td{
+  border-bottom: 1px solid #cecfd5;
+  border-right: 1px solid #cecfd5;
+}
+
+td:first-child {
+  border-left: 1px solid #cecfd5;
+}
+```
+
+#### Table Styling Example
+
+```css
+/* Goes with table HTML example above */
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  color: #4a4a4d;
+  font: 14px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+th,
+td {
+  padding: 10px 15px;
+  vertical-align: middle;
+}
+
+thead {
+  background: #395870;
+  color: #fff;
+}
+
+th:first-child {
+  text-align: left;
+}
+
+tbody tr:nth-child(even) {
+  background: #f0f0f2;
+}
+
+td {
+  border-bottom: 1px solid #cecfd5;
+  border-right: 1px solid #cecfd5;
+}
+
+td:first-child {
+  border-left: 1px solid #cecfd5;
+}
+
+.book-title {
+  color: #395870;
+  display: block;
+}
+
+.item-stock,
+.item-qty {
+  text-align: center;
+}
+
+.item-price {
+  text-align: right;
+}
+
+.item-multiple {
+  display: block;
+}
+
+tfoot {
+  text-align: right;
+}
+
+tfoot:last-child {
+  background: #f0f0f2;
 }
 ```
