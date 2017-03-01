@@ -26,6 +26,8 @@
 * [Immutability](#immutability)
   * [Getters & Setters](#getters-setters)
 * [Faking "Classes" with Mixins](#faking-classes-with-mixins)
+* [Prototypes](#prototypes)
+  * ["Prototypal" Inheritance](#prototypal-inheritance)
 
 <!-- tocstop -->
 
@@ -658,4 +660,77 @@ var Car = mixin( Vehicle, {
     console.log( "Rolling on all " + this.wheels + " wheels!" );
   }
 } );
+```
+
+## Prototypes
+
+When attempting a property access on an object that doesn't have that property, the object's internal `[[Prototype]]` linkage defines where the `[[Get]]` operation should look next. This cascading linkage from object to object essentially defines a "prototype chain" (somewhat similar to a nested scope chain) of objects to traverse for property resolution.
+
+```js
+var anotherObject = {
+  a: 2
+};
+
+// create an object linked to `anotherObject`
+var myObject = Object.create(anotherObject);
+
+// works in lookups
+myObject.a;        // 2
+
+// also in for...in loops
+for (var k in myObject) {
+  console.log("found: " + k);
+}                  // found: a
+
+// and with the in operator
+("a" in myObject); // true
+```
+
+All normal objects have the built-in `Object.prototype` as the top of the prototype chain (like the global scope in scope look-up), where property resolution will stop if not found anywhere prior in the chain. `toString()`, `valueOf()`, and several other common utilities exist on this `Object.prototype` object, explaining how all objects in the language are able to access them.
+
+Three scenarios for the `myObject.foo = "bar"` assignment when `foo` is **not** already on `myObject` directly, but **is** at a higher level of `myObject`'s `[[Prototype]]` chain:
+
+1. If a normal data accessor property named `foo` is found anywhere higher on the `[[Prototype]]` chain, **and it's not marked as read-only (`writable:false`)** then a new property called `foo` is added directly to `myObject`, resulting in a **shadowed property**.
+2. If a `foo` is found higher on the `[[Prototype]]` chain, but it's marked as **read-only (`writable:false`)**, then both the setting of that existing property as well as the creation of the shadowed property on `myObject` **are disallowed**. If the code is running in `strict mode`, an error will be thrown. Otherwise, the setting of the property value will silently be ignored. Either way, **no shadowing occurs**.
+3. If a `foo` is found higher on the `[[Prototype]]` chain and it's a setter, then the setter will always be called. No `foo` will be added to (aka, shadowed on) `myObject`, nor will the `foo` setter be redefined.
+
+### "Prototypal" Inheritance
+
+The most common way to get two objects linked to each other is using the `new` keyword with a function call, which among its four steps, it creates a new object linked to another object.
+
+The "another object" that the new object is linked to happens to be the object referenced by the arbitrarily named `.prototype` property of the function called with `new.` Functions called with `new` are often called "constructors", despite the fact that they are not actually instantiating a class as *constructors* do in traditional class-oriented languages.
+
+While these JavaScript mechanisms can seem to resemble "class instantiation" and "class inheritance" from traditional class-oriented languages, the key distinction is that in JavaScript, no copies are made. Rather, objects end up linked to each other via an internal `[[Prototype]]` chain.
+
+For a variety of reasons, not the least of which is terminology precedent, "inheritance" (and "prototypal inheritance") and all the other OO terms just do not make sense when considering how JavaScript *actually* works (not just applied to our forced mental models).
+
+Instead, "delegation" is a more appropriate term, because these relationships are not copies but delegation **links.**
+
+```js
+// Typical prototype style code
+function Foo(name) {
+    this.name = name;
+}
+
+Foo.prototype.myName = function() {
+    return this.name;
+};
+
+function Bar(name,label) {
+    Foo.call( this, name );
+    this.label = label;
+}
+
+// here, we make a new `Bar.prototype`
+// linked to `Foo.prototype`
+Bar.prototype = Object.create( Foo.prototype );
+
+Bar.prototype.myLabel = function() {
+    return this.label;
+};
+
+var a = new Bar( "a", "obj a" );
+
+a.myName(); // "a"
+a.myLabel(); // "obj a"
 ```
