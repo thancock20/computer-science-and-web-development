@@ -28,6 +28,7 @@
 * [Faking "Classes" with Mixins](#faking-classes-with-mixins)
 * [Prototypes](#prototypes)
   * ["Prototypal" Inheritance](#prototypal-inheritance)
+* [Behavior Delegation](#behavior-delegation)
 
 <!-- tocstop -->
 
@@ -733,4 +734,60 @@ var a = new Bar( "a", "obj a" );
 
 a.myName(); // "a"
 a.myLabel(); // "obj a"
+```
+
+## Behavior Delegation
+
+Classes and inheritance are a design pattern you can *choose*, or *not choose*, in your software architecture. Most developers take for granted that classes are the only (proper) way to organize code, but there's another less-commonly talked about pattern that's actually quite powerful: **behavior delegation**.
+
+Behavior delegation suggests objects as peers of each other, which delegate amongst themselves, rather than parent and child class relationships. JavaScript's `[[Prototype]]` mechanism is, by its very designed nature, a behavior delegation mechanism. That means we can either choose to struggle to implement class mechanics on top of JS, or we can just embrace the natural state of `[[Prototype]]` as a delegation mechanism.
+
+When you design code with objects only, not only does it simplify the syntax you use, but it can actually lead to simpler code architecture design.
+
+**OLOO** (objects-linked-to-other-objects) is a code style which creates and relates objects directly without the abstraction of classes. OLOO quite naturally implements `[[Prototype]]`-based behavior delegation.
+
+```js
+// Example OLOO style code
+var Task = {
+  setID: function(ID) { this.id = ID; },
+  outputID: function() { console.log( this.id ); }
+};
+
+// make `XYZ` delegate to `Task`
+var XYZ = Object.create( Task );
+
+XYZ.prepareTask = function(ID, Label) {
+  this.setID( ID );
+  this.label = Label;
+};
+
+XYZ.outputTaskDetails = function() {
+  this.outputID();
+  console.log( this.label );
+};
+```
+
+```js
+// Same as above with ES6 concise methods
+
+// Task is declared same as before
+var Task = {
+  setID(ID) { this.id = ID; },
+  outputID() { console.log( this.id; ) }
+};
+
+// XYZ is also an object literal
+var XYZ = {
+  prepareTask(ID, Label) {
+    this.setId( ID );
+    this.label = Label;
+  },
+  outputTaskDetails() {
+    this.outputID();
+    console.log( this.label );
+  }
+};
+
+// NOW, link `XYZ` to delegate to `Task`
+Object.setPrototypeOf( XYZ, Task );
 ```
