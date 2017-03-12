@@ -10,6 +10,7 @@
   * [Boolean Expressions](#boolean-expressions)
   * [Conditionals](#conditionals)
   * [Loops](#loops)
+* [Week 2](#week-2)
 
 <!-- tocstop -->
 
@@ -229,3 +230,7 @@ for (int i = 0; i < 10; i++)
 
 }
 ```
+
+## Week 2
+
+[Lecture Notes](http://docs.cs50.net/2016/fall/notes/2/week2.html)
