@@ -11,6 +11,11 @@
   * [Conditionals](#conditionals)
   * [Loops](#loops)
 * [Week 2](#week-2)
+  * [Functions](#functions)
+  * [Variables and Scope](#variables-and-scope)
+  * [Arrays](#arrays)
+  * [Command Line Arguments](#command-line-arguments)
+  * [Magic Numbers](#magic-numbers)
 
 <!-- tocstop -->
 
@@ -234,3 +239,71 @@ for (int i = 0; i < 10; i++)
 ## Week 2
 
 [Lecture Notes](http://docs.cs50.net/2016/fall/notes/2/week2.html)
+
+### Functions
+
+```c
+// Function declaration
+// Should be above main function
+int add_two_ints(int x, int y);
+
+// Function definition
+// Usually below main function
+int add_two_ints(int x, int y)
+{
+  return x + y;
+}
+```
+
+### Variables and Scope
+
+```c
+// Variable in the global scope
+int x = 0;
+
+int main(void)
+{
+  // Variable in the local to main scope
+  int x = 0;
+}
+```
+
+### Arrays
+
+```c
+// instantiation syntax
+int truthtable[3] = { 0, 1, 1 };
+
+// individual element syntax
+bool truthtable[3];
+truthtable[0] = 0;
+truthtable[1] = 1;
+truthtable[2] = 1;
+```
+
+### Command Line Arguments
+
+```c
+// Program with no command line arguments
+int main(void)
+{
+
+}
+
+// Program with command line arguments
+int main(int argc, string argv[])
+{
+  // argc is argument count
+  // argv is argument vector
+  // argv[0] is always name of program
+}
+//
+```
+
+### Magic Numbers
+
+```c
+// In order to define symbolic constant
+// Preprocessor replaces COUNT with 52 throughout file
+#define COUNT 52
+```
