@@ -16,6 +16,7 @@
   * [Arrays](#arrays)
   * [Command Line Arguments](#command-line-arguments)
   * [Magic Numbers](#magic-numbers)
+* [Week 3](#week-3)
 
 <!-- tocstop -->
 
@@ -307,3 +308,7 @@ int main(int argc, string argv[])
 // Preprocessor replaces COUNT with 52 throughout file
 #define COUNT 52
 ```
+
+## Week 3
+
+[Lecture Notes](http://docs.cs50.net/2016/fall/notes/3/week3.html)
