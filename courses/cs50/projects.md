@@ -6,18 +6,23 @@
 
 ## Week 1:
 
-[hello.c](https://github.com/submit50/thancock20/tree/cs50/2017/x/hello)
+[hello](https://github.com/submit50/thancock20/tree/cs50/2017/x/hello)
 
-[water.c](https://github.com/submit50/thancock20/tree/cs50/2017/x/water)
+[water](https://github.com/submit50/thancock20/tree/cs50/2017/x/water)
 
-[mario.c](https://github.com/submit50/thancock20/tree/cs50/2017/x/mario/more)
+[mario](https://github.com/submit50/thancock20/tree/cs50/2017/x/mario/more)
 
-[credit.c](https://github.com/submit50/thancock20/tree/cs50/2017/x/credit)
+[credit](https://github.com/submit50/thancock20/tree/cs50/2017/x/credit)
 
 ## Week 2:
 
-[initials.c](https://github.com/submit50/thancock20/tree/cs50/2017/x/initials/more)
+[initials](https://github.com/submit50/thancock20/tree/cs50/2017/x/initials/more)
 
-[caesar.c](https://github.com/submit50/thancock20/tree/cs50/2017/x/caesar)
+[caesar](https://github.com/submit50/thancock20/tree/cs50/2017/x/caesar)
 
-[crack.c](https://github.com/submit50/thancock20/tree/cs50/2017/x/crack)
+[crack](https://github.com/submit50/thancock20/tree/cs50/2017/x/crack)
+
+## week 3:
+[find](https://github.com/submit50/thancock20/tree/cs50/2017/x/find/more)
+
+[fifteen](https://github.com/submit50/thancock20/tree/cs50/2017/x/fifteen)
