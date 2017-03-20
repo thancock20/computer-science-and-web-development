@@ -24,6 +24,7 @@
   * [Merge Sort](#merge-sort)
   * [Linear Search](#linear-search)
   * [Binary Search](#binary-search)
+* [Week 4](#week-4)
 
 <!-- tocstop -->
 
@@ -439,3 +440,7 @@ In binary search, the idea of the algorithm is to divide and conquer, reducing t
 **Worst-case scenario**: ***O(log n)*** - We have to divide a list of *n* elements in half repeatedly to find the target element, either because the target element will be found at the end of the last division or doesn't exist in the array at all.
 
 **Best-case scenario**: ***Ω(1)*** - The target element is at the midpoint of the full array, and so we can stop looking immediately after we start.
+
+## Week 4
+
+[Lecture Notes](http://docs.cs50.net/2016/fall/notes/4/week4.html)
