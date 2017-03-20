@@ -23,6 +23,7 @@
 [crack](https://github.com/submit50/thancock20/tree/cs50/2017/x/crack)
 
 ## week 3:
+
 [find](https://github.com/submit50/thancock20/tree/cs50/2017/x/find/more)
 
 [fifteen](https://github.com/submit50/thancock20/tree/cs50/2017/x/fifteen)
