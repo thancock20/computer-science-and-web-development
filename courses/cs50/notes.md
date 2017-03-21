@@ -25,6 +25,13 @@
   * [Linear Search](#linear-search)
   * [Binary Search](#binary-search)
 * [Week 4](#week-4)
+  * [Hexadecimal](#hexadecimal)
+  * [Pointers](#pointers)
+  * [Dynamic Memory Allocation](#dynamic-memory-allocation)
+  * [Structures](#structures)
+  * [Defining Custom Types](#defining-custom-types)
+  * [Recursion](#recursion)
+  * [Call Stack](#call-stack)
 
 <!-- tocstop -->
 
@@ -444,3 +451,281 @@ In binary search, the idea of the algorithm is to divide and conquer, reducing t
 ## Week 4
 
 [Lecture Notes](http://docs.cs50.net/2016/fall/notes/4/week4.html)
+
+### Hexadecimal
+
+* Most Western cultures use the decimal system, aka *base-10*, to represent numeric data.
+```
+0 1 2 3 4 5 6 7 8 9
+```
+* Computers use the binary system, aka *base-2*, to represent numeric (and indeed all) data.
+```
+0 1
+```
+* As computer scientists, it's useful to be able to express data the same way the computer does.
+* The problem, of course, is that trying to parse a huge chain of 0s and 1s can be quite difficult.
+* The **hexadecimal system**, aka *base-16*, is a much more concise way to express the data on a computer's system.
+```
+0 1 2 3 4 5 6 7 8 9 A B C D E F
+```
+* Hexadecimal makes this mapping easy because a group of four binary digits (bits) has 16 different combinations, and each of those combinations maps to a single hexadecimal digit.
+
+| Decimal | Binary | Hexadecimal |
+|:--------|:-------|:------------|
+| 0       | 0000   | 0x0         |
+| 1       | 0001   | 0x1         |
+| 2       | 0010   | 0x2         |
+| 3       | 0011   | 0x3         |
+| 4       | 0100   | 0x4         |
+| 5       | 0101   | 0x5         |
+| 6       | 0110   | 0x6         |
+| 7       | 0111   | 0x7         |
+| 8       | 1000   | 0x8         |
+| 9       | 1001   | 0x9         |
+| 10      | 1010   | 0xA         |
+| 11      | 1011   | 0xB         |
+| 12      | 1100   | 0xC         |
+| 13      | 1101   | 0xD         |
+| 14      | 1110   | 0xE         |
+| 15      | 1111   | 0xF         |
+
+* Just like binary has place values (1, 2, 4, 8...) and decimal does too (1, 10, 100, 1000...), so does hexadecimal.
+
+| 16<sup>2</sup> | 16<sup>1</sup> | 16<sup>0</sup> | Equals |
+|:---------------|:---------------|:---------------|:-------|
+| 3 (3 * 256)    | 9 (9 * 16)     | 7 (7 * 1)      | 919    |
+| A (10 * 256)   | D (13 * 16)    | C (12 * 1)     | 2780   |
+
+* To convert a binary number to hexadecimal, group four bits together from right to left. Pad the leftmost group with extra 0 bits at the front if necessary. Then use the chart above to convert those bits to something a bit more concise.
+```
+   01000110101000101011100100111101
+
+0100 0110 1010 0010 1011 1001 0011 1101
+
+  4    6    A    2    B    9    3    D
+
+                0x46A2B93D
+```
+
+### Pointers
+
+* Pointers provide an alternative way to pass data between functions.
+  * Recall that up to this point, we have passed all data **by value**, with one exception (arrays).
+  * When we pass data by value, we only pass a copy of that data.
+* If we use pointers instead, we have the power to pass the actual variable itself.
+  * That means that a change that is made in one function *can* impact what happens in a different function.
+  * Previously, this wasn't possible!
+* Before we dive into what pointers are and how to work with them, it's worth going back to basics and have a look at our computer's memory.
+* Every file on your computer lives on your disk drive, be it a hard disk drive (HDD) or a solid-state drive (SSD).
+* Disk drives are just storage space; we can't directly work there. Manipulation and use of data can only take place in RAM, so we have to move data there.
+* Memory is basically a huge array of 8-bit wide bytes.
+  * 512MB, 1GB, 2GB, 4GB...
+
+| Data Type | Size (in bytes) |
+|:----------|:----------------|
+| int       | 4               |
+| char      | 1               |
+| float     | 4               |
+| double    | 8               |
+| long long | 8               |
+| string    | ???             |
+
+* Back to this idea of memory as a big array of byte-sized cells.
+* Recall from our discussion of arrays that they not only are useful for storage of information but also for so-called **random access*
+  * We can access individual elements of the array by indicating which index location we want.
+* Similarly, each location in memory has an **address**.
+* There's only one critical thing to remember as we start working with pointers:
+  * ***POINTERS ARE JUST ADDRESSES***
+* A **pointer**, then, is a data item whose
+  * *value* is a memory address
+  * *type* describes the data located at that memory address
+* As such, pointers allow data structures and/or variables to be shared among functions.
+* Pointers make a computer environment more like the real world.
+* The simplest pointer available to us in C is the NULL pointer. This pointer points to nothing (a fact which can actually come in handy!)
+* When you create a pointer and you don't set its value immediately, you should **always** set the value of the pointer to NULL.
+* You can check whether a pointer is NULL using the equality operator (**==**).
+* Another easy way to create a pointer is simply to **extract** the address of an already existing variable. We can do this with the address extraction operator (**&**).
+* If *x* is an int-type variable, then *&x* is a pointer-to-int whose value is the address of *x*.
+* if *arr* is an array of doubles, then *&arr[i]* is a pointer-to-double whose value is the address of the *i*<sup>th</sup> element of *arr*.
+  * An array's name, then, is actually just a pointer to its first element.
+* The main purpose of a pointer is to allow us to modify or inspect the location to which it points. We do this by **dereferencing** the pointer.
+* If we have a pointer-to-char called *pc*, then **pc* is the data that lives at the memory address stored inside the variable *pc*.
+* Used in this context, `*` is known as the **dereference operator**.
+* It "goes to the reference" and accesses the data at that memory location, allowing you to manipulate it at will.
+* What happens if we try to dereference a pointer whose value is NULL?
+  * **Segmentation fault**
+* Surprisingly, this is actually good behavior! It defends against accidental dangerous manipulation of unknown pointers.
+  * That's why you should set your pointers to NULL immediately if you aren't setting them to a known, desired value.
+
+### Dynamic Memory Allocation
+
+* We can use pointers to get access to a block of **dynamically-allocated memory** at runtime.
+* Dynamically allocated memory comes from a pool of memory known as the **heap**.
+* Prior to this point, all memory we've been working with has been coming from a pool of memory known as the **stack**.
+* We get this dynamically-allocated memory by making a call to the C standart library function `malloc()`, by passing as its parameter the number of bytes requested.
+* After obtaining memory for you (if it can), `malloc()` will return a pointer to that memory.
+* If `malloc()` **can't** give you memory it'll return NULL.
+
+```c
+// statically obtain an integer
+int x;
+
+// dynamically obtain an integer
+int *px = malloc(sizeof(int));
+
+// array of floats on the stack
+float stack_array[x];
+
+// array of floats on the heap
+float *heap_array = malloc(x * sizeof(float));
+```
+
+* Here's the trouble: Dynamically-allocated memory is not automatically returned to the system for later use when the function in which it's created finishes execution.
+* Failing to return memory back to the system when you're finished with it results in a **memory leak** which can compromise your system's performance.
+* When you finish working with dynamically-allocated memory, you must `free()` it.
+
+```c
+char *word = malloc(50 * sizeof(char));
+
+// do stuff with word
+
+// now we're done working with that block
+free(word);
+```
+
+* Three golden rules:
+    1. Every block of memory that you `malloc()` must subsequently be `free()`d.
+    2. Only memory that you `malloc()` should be `free()`d.
+    3. Do not `free()` a block of memory more than once.
+
+### Structures
+
+* Structures provide a way to unify several variables of different types into a single, new variable type which can be assigned its own type name.
+* We use structures (structs) to group together elements of a variety of data types that have a logical connection.
+* Think of a structure like a "super-variable".
+
+```c
+struct car
+{
+  int year;
+  char model[10];
+  char plate[7];
+  int odometer;
+  double engine_size;
+};
+```
+
+* Once we have defined a structure, which we typically do in separate .h files or atop our programs outside of any functions, we have effectively created a new type.
+* That means we can create variables of that type using familiar syntax.
+* We can also access the various **fields** (also known as **members**) of the structure using the dot operator (`.`)
+
+```c
+// variable declaration
+struct car mycar;
+
+// field accessing
+mycar.year = 2011;
+mycar.plate = "CS50";
+mycar.odometer = 50505;
+```
+
+* Structures, like variables of other data types, do not need to be created on the stack. We can dynamically allocate structures at run time if our program requires it.
+* In order to access the fields of our structures in that situation, we first need to dereference the pointer to the structure, and then we can access its fields.
+
+```c
+//variable declaration
+struct car *mycar = malloc(sizeof(struct car));
+
+// field accessing
+(*mycar).year = 2011;
+(*mycar).plate = "CS50";
+(*mycar).odometer = 50505;
+```
+
+* This is a little annoying. And so as you might expect, there's a shorter way!
+* The arrow operator (`->`) makes this process easier. It's an operator that does two things back-to-back:
+  * First, it **dereferences** the pointer on the left side of the operator.
+  * Second, it **accesses** the field on the right side of the operator.
+
+```c
+// variable declaration
+struct car *mycar = malloc(sizeof(struct car));
+
+// field accessing
+mycar->year = 2011;
+mycar->plate = "CS50";
+mycar->odometer = 50505;
+```
+
+### Defining Custom Types
+
+* The C keyword `typedef` provides a way to create a shorthand or rewritten name for data types.
+* The basic idea is to first define a type in the normal way, then alias it to something else.
+
+```c
+typedef <old name> <new name>;
+
+typedef unsigned char byte;
+
+typedef char* string;
+```
+
+```c
+typedef struct car
+{
+  int year;
+  char model[10];
+  char plate[7];
+  int odometer;
+  double engine_size;
+}
+car_t;
+
+// variable declaration
+car_t mycar;
+```
+
+### Recursion
+
+* We might describe an implementation of an algorithm as being particularly "elegant" if it solves a problem in a way that is both interesting and easy to visualize.
+* The technique of **recursion** is a very common way to implement such an "elegant" solution.
+* The definition of a recursive function is one that, as part of its execution, invokes itself.
+* Every recursive function has two cases that could apply, given any input.
+  * The *base case*, which when triggered will terminate the recursive process.
+  * The *recursive case*, which is where the recursion will actually occur.
+
+```c
+// factorial function
+int fact(int n)
+{
+  if (n == 1)
+    return 1;
+  else
+    return n * fact(n-1);
+}
+```
+
+* In general, but not always, recursive functions replace loops in non-recursive function.
+
+```c
+int fact2(int n)
+{
+  int product = 1;
+  while (n > 0)
+  {
+    product *= n;
+    n--;
+  }
+  return product;
+}
+```
+
+* It's also possible to have more than one base or recursive case, if the program might recurse or terminate in different ways, depending on the input being passed in.
+
+### Call Stack
+
+* When you call a function, the system sets aside space in memory for that function to do its necessary work. We frequently call such chunks of memory **stack frames** or **function frames**.
+* More than one function's stack frame may exist in memory at a given time. if `main()` calls `move()`, when then calls `direction()`, all three funcitons have open frames.
+* These frames are arranged in a **stack**. The frame for the most recently called function is always on the top of the stack.
+* When a new function is called, a new frame is **pushed** onto the top of the stack and becomes the active frame.
+* When a function finishes its work, its frame is **popped** off of the stack, and the frame immediately below it becomes the new, active, function on the top of the stack. This function picks up immediately where it left off.
