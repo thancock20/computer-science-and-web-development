@@ -22,8 +22,16 @@
 
 [crack](https://github.com/submit50/thancock20/tree/cs50/2017/x/crack)
 
-## week 3:
+## Week 3:
 
 [find](https://github.com/submit50/thancock20/tree/cs50/2017/x/find/more)
 
 [fifteen](https://github.com/submit50/thancock20/tree/cs50/2017/x/fifteen)
+
+## Week 4:
+
+[whodunit](https://github.com/submit50/thancock20/tree/cs50/2017/x/whodunit)
+
+[resize](https://github.com/submit50/thancock20/tree/cs50/2017/x/resize/more)
+
+[recover](https://github.com/submit50/thancock20/tree/cs50/2017/x/recover)
