@@ -32,6 +32,7 @@
   * [Defining Custom Types](#defining-custom-types)
   * [Recursion](#recursion)
   * [Call Stack](#call-stack)
+* [Week 5](#week-5)
 
 <!-- tocstop -->
 
@@ -729,3 +730,7 @@ int fact2(int n)
 * These frames are arranged in a **stack**. The frame for the most recently called function is always on the top of the stack.
 * When a new function is called, a new frame is **pushed** onto the top of the stack and becomes the active frame.
 * When a function finishes its work, its frame is **popped** off of the stack, and the frame immediately below it becomes the new, active, function on the top of the stack. This function picks up immediately where it left off.
+
+## Week 5
+
+[Lecture Notes](http://docs.cs50.net/2016/fall/notes/5/week5.html)
