@@ -33,6 +33,13 @@
   * [Recursion](#recursion)
   * [Call Stack](#call-stack)
 * [Week 5](#week-5)
+  * [File Pointers](#file-pointers)
+  * [Singly-Linked Lists](#singly-linked-lists)
+  * [Doubly-Linked Lists](#doubly-linked-lists)
+  * [Stacks](#stacks)
+  * [Queues](#queues)
+  * [Hash Tables](#hash-tables)
+  * [Tries](#tries)
 
 <!-- tocstop -->
 
@@ -734,3 +741,433 @@ int fact2(int n)
 ## Week 5
 
 [Lecture Notes](http://docs.cs50.net/2016/fall/notes/5/week5.html)
+
+### File Pointers
+
+* The ability to read data from and write data to files is the primary means of storing **persistent data**, data that does not disappear when your program stops running.
+* The abstraction of files that C provides is implemented in a data structure known as a `FILE`.
+  * Almost universally when working with files, we will be using pointers to them, `FILE*`.
+* The file manipulation functions all live in `stdio.h`.
+  * All of them accept `FILE*` as one of their parameters, except for the function `fopen()`, which is used to get a file pointer in the first place.
+* Some of the most common file input/output (I/O) functions that we'll be working with are:
+  * `fopen()`
+    * Opens a file and returns a file pointer to it.
+    * Always check the return value to make sure you don't get back `NULL`.
+    ```c
+    // syntax
+    FILE *ptr = fopen(<filename>, <operation>);
+
+    // example
+    FILE *ptr1 = fopen("file3.txt", "a");
+    ```
+  * `fclose()`
+    * Closes the file pointed to by the given file pointer.
+    ```c
+    // syntax
+    fclose(<file pointer>);
+
+    // example
+    fclose(ptr1);
+    ```
+  * `fgetc()`
+    * Reads and returns the next character from the file pointed to.
+    * Note: The operation of the file pointer passed in as a parameter must be `"r"` for read, or you will suffer an error.
+    ```c
+    // syntax
+    char ch = fgetc(<file pointer>);
+
+    // example
+    char ch = fgetc(ptr1);
+    ```
+    * The ability to get single characters from files, if wrapped in a loop, means we could read all the characters, one-by-one, essentially.
+    ```c
+    char ch;
+    while ((ch = fgetc(ptr)) != EOF)
+      printf("%c", ch);
+    ```
+    * We might put this in a file called `cat.c`, after the Linux command "cat" which essentially does just this.
+  * `fputc()`
+    * Writes or appends the specified character to the pointed-to file.
+    * Note: The operation of the file pointer passed in as a parameter must be `"w"` for write or `"a"` for append, or  you will suffer an error.
+    ```c
+    // syntax
+    fputc(<character>, <file pointer>);
+
+    // example
+    fputc('A', ptr1);
+    ```
+    * Now we can read characters from files and write characters to them. Let's extend our previous example to copy one file to another, instead of printing to the screen.
+    ```c
+    char ch;
+    while ((ch = fgetc(ptr)) != EOF)
+      fputc(ch, ptr1);
+    ```
+    * We might put this in a file called `cp.c`, after the Linux command "cp" which essentially does just this.
+  * `fread()`
+    * Reads `<qty>` units of size `<size>` from the file pointed to and stores them in memory in a buffer (usually an array) pointed to by `<buffer>`.
+    * Note: The operation of the file pointer passed in as a parameter must be `"r"` for read, or you will suffer an error.
+    ```c
+    //syntax
+    fread(<buffer>, <size>, <qty>, <file pointer>);
+
+    // simple example
+    int arr[10];
+    fread(arr, sizeof(int), 10, ptr1);
+
+    // more complex example
+    double *arr2 = malloc(sizeof(double) * 80);
+    fread(arr2, sizeof(double), 80, ptr1);
+
+    // works like char c = fgetc(ptr1)
+    char c;
+    fread(&c, sizeof(char), 1, ptr1);
+    ```
+  * `fwrite()`
+    * Writes `<qty>` units of size `<size>` to the file pointed to by reading them from a buffer (usually an array) pointed to by `<buffer>`.
+    * Note: The operation of the file pointer passed in as a parameter must be `"w"` for write or `"a"` for append, or you will suffer an error.
+    ```c
+    // syntax
+    fwrite(<buffer>, <size>, <qty>, <file pointer>);
+    ```
+* Lots of other useful functions abound in `stdio.h` for you to work with. Here are some of the ones you may find useful!
+
+| Function  | Description                                                     |
+|:----------|:----------------------------------------------------------------|
+| fgets()   | Reads a full string from a file.                                |
+| fputs()   | Writes a full string to a file.                                 |
+| fprintf() | Writes a formatted string to a file.                            |
+| fseek()   | Allows you to rewind or fast-forward within a file.             |
+| ftell()   | Tells you at what (byte) position you are at within a file.     |
+| feof()    | Tells you whether you've read to the end of a file.             |
+| ferror()  | Indicates whether an error has occurred in working with a file. |
+
+### Singly-Linked Lists
+
+* So far we've only had one kind of data structure for representing collections of like values.
+  * Structs, recall, give us "containers" for holding variables of different data types, typically.
+* Arrays are great for element lookup, but unless we want to insert at the very end of the array, inserting elements is quite costly---remember insertion sort?
+* Arrays also suffer from a great inflexibility---what happens if we need a larger array than we thought?
+* Through clever use of pointers, dynamic memory allocation, and structs, we can put the pieces together to develop a new kind of data structure that gives us the ability to grow and shrink a collection of like values to fit our needs.
+* We call this combination of elements, when used in this way, a **linked list**.
+* A linked list **node** is a special kind of struct with two members:
+  * Data of some type (int, char, float..)
+  * A pointer to another node of the same type
+* In this way, a set of nodes together can be thought of as forming a chain of elements that we can follow from beginning to end.
+```c
+typedef struct sllist
+{
+  VALUE val;
+  struct sllist *next;
+}
+sllnode;
+```
+* In order to work with linked lists effectively, there are a number of operations that we need to understand:
+  * Create a linked list when it doesn't already exist.
+    ```c
+    sllnode* create(VALUE val);
+    ```
+    * Steps involved:
+      1. Dynamically allocate space for a new sllnode.
+      2. Check to make sure we didn't run out of memory.
+      3. Initialize the node's val field.
+      4. initialize the node's next field.
+      5. Return a pointer to the newly created sllnode.
+  * Search through a linked list to find an element.
+    ```c
+    bool find(sllnode *head, VALUE val);
+    ```
+    * Steps involved:
+      1. Create a traversal pointer pointing to the list's head.
+      2. If the current node's val field is what we're looking for, report success.
+      3. If not, set the traversal pointer to the next pointer in the list and go back to step 2.
+      4. If you've reached the end of the list, report failure.
+  * Insert a new node into the linked list.
+    ```c
+    sllnode* insert(sllnode *head, VALUE val);
+    ```
+    * Steps involved:
+      1. Dynamically allocate space for a new sllnode.
+      2. Check to make sure we didn't run out of memory.
+      3. Populate and insert the node at the beginning of the linked list.
+      4. Return a pointer to the new head of the linked list.
+  * Delete a single element from a linked list.
+    * Tricky, because previous node needs to be kept track of.
+  * Delete an entire linked list.
+    ```c
+    void destroy(sllnode *head);
+    ```
+    * Steps involved:
+      1. If you've reached a null pointer, stop.
+      2. Delete the rest of the list.
+      3. Free the current node.
+
+### Doubly-Linked Lists
+
+* Singly-linked lists really extend our ability to collect and organize data, but they suffer from a crucial limitation.
+  * We can only ever move in one direction through the list.
+* Consider the implication that would have for trying to delete a node.
+* A doubly-linked list, by contrast, allows us to move forward and backward through the list, all by simply adding one extra pointer to our struct definition.
+
+```c
+typedef struct dllist
+{
+  VALUE val;
+  struct dllist *prev;
+  struct dllist *next;
+}
+dllnode;
+```
+* In order to work with linked lists effectively, there are a number of operations that we need to understand:
+  * Create a linked list when it doesn't already exist.
+    * Pretty much the same as singly-linked list.
+  * Search through a linked list to find an element.
+    * Pretty much the same as singly-linked list.
+  * Insert a new node into the linked list.
+    ```c
+    dllnode* insert(dllnode *head, VALUE val);
+    ```
+    * Steps involved:
+      1. Dynamically allocate space for a new dllnode.
+      2. Check to make sure we didn't run out of memory.
+      3. Populate and insert the node at the beginning of the linked list.
+      4. **Fix the prev pointer of the old head of the linked list.**
+      5. Return a pointer to the new head of the linked list.
+  * Delete a single element from a linked list.
+    ```c
+    void delete(dllnode *target);
+    ```
+    * Steps involved:
+      1. Fix the pointers of the surrounding nodes to "skip over" target.
+      2. Free target.
+  * Delete an entire linked list.
+    * Pretty much the same as singly-linked list.
+* Linked lissts, of both the singly- and doubly-linked varieties, support extremely efficient *insertion* and *deletion* of elements.
+  * In fact, these operations can be done in **constant time**.
+* What's the downside? Remember how we had to find an element? We've lost the ability to randomly-access list elements.
+  * Accessing a desired element may now take **linear time**.
+
+### Stacks
+
+* A stack is a special type of structure that can be used to maintain data in an organized way.
+* This data structure is commonly implemented in one of two ways: as an **array** or as a **linked list**.
+* In either case, the important rule is that when data is added to the stack, it sits "on top," and so if an element needs to be removed, the most recently added element is the only element that can legally be removed.
+  * *Last in, first out (LIFO)*
+* There are only two operations that may legally be performed on a stack.
+  * **Push**: Add a new element to the top of the stack.
+  * **Pop**: Remove the most recently-added element from the top of the stack.
+* Array-based implementation:
+  ```c
+  // definition
+  typedef struct _stack
+  {
+    VALUE array[CAPACITY];
+    int top;
+  }
+  stack;
+
+  // initialization
+  stack s;
+  s.top = 0;
+  ```
+  * Push:
+    ```c
+    void push(stack *s, VALUE data);
+
+    push(&s, 29);
+    ```
+    * In the general case, `push()` needs to:
+      1. Accept a pointer to the stack.
+      2. Accept data of type VALUE to be added to the stack.
+      3. Add that data to the stack at the top of the stack.
+      4. Change the location of the top of the stack.
+  * Pop:
+    ```c
+    VALUE pop(stack *s);
+
+    int x = pop(&s);
+    ```
+    * In the general case. `pop()` needs to:
+      1. Accept a pointer to the stack.
+      2. Change the location of the top of the stack.
+      3. Return the value that was removed from the stack.
+* Linked list-based implementation:
+  ```c
+  typedef struct _stack
+  {
+    VALUE val;
+    struct _stack *next;
+  }
+  stack;
+  ```
+  * Just make sure to always maintain a pointer to the head of the linked list!
+  * Push:
+    ```c
+    void push(stack *list, VALUE data);
+
+    push (list, 10);
+    ```
+    1. Dynamically allocate a new node.
+    2. Set its next pointer to point to the current head of the list.
+    3. Move the head pointer to the newly-created node.
+  * Pop:
+    ```c
+    VALUE pop(stack *list);
+
+    int x = pop(list);
+    ```
+    1. Traverse the linked list to its second element (if it exists).
+    2. Free the head of the list.
+    3. Move the head pointer to the (former) second element.
+
+### Queues
+
+* A queue is a special type of structure that can be used to maintain data in an organized way.
+* This data structure is commonly implemented in one of two ways: as an **array** or as a **linked list**.
+* In either case, the important rule is that when data is added to the queue, it is tacked onto the end, and so if an element needs to be removed, the element at the front is the only element that can legally be removed.
+  * *First in, first out (FIFO)*
+* There are only two operations that may legally be performed on a queue.
+  * **Enqueue**: Add a new element to the end of the queue.
+  * **Dequeue**: Remove the oldest element from the front of the queue.
+* Array-based implementation
+  ```c
+  // definition
+  typedef struct _queue
+  {
+    VALUE array[CAPACITY];
+    int front;
+    int size;
+  }
+  queue;
+
+  // initialization
+  queue q;
+  ```
+  * Enqueue:
+    ```c
+    void enqueue(queue *q, VALUE data);
+
+    enqueue(&q, 29);
+    ```
+    * In the general case, `enqueue()` needs to:
+        1. Accept a pointer to the queue.
+        2. Accept data of type VALUE to be added to the queue.
+        3. Add that data to the queue at the end of the queue.
+        4. Change the size of the queue.
+  * Dequeue:
+    ```c
+    VALUE dequeue(queue *q);
+
+    int x = dequeue(&q);
+    ```
+    * In the general case, `dequeue()` needs to:
+      1. Accept a pointer to the queue.
+      2. Change the location of the front of the queue.
+      3. Decrease the size of the queue.
+      4. Return the value that was removed from the queue.
+* Linked list-based implementaion
+  ```c
+  // definition
+  typedef struct _queue
+  {
+    VALUE val;
+    struct _queue *prev;
+    struct _queue *next;
+  }
+  queue;
+  ```
+  * Just make sure to always maintain pointers to the head **and** tail of the linked list! (probably global)
+  * Enqueue:
+    ```c
+    void enqueue(queue *tail, VALUE data);
+
+    enqueue(tail, 10);
+    ```
+    1. Dynamically allocate a new node;
+    2. Set its next pointer to NULL, set its prev pointer to the tail;
+    3. Set the tail's next pointer to the new node;
+    4. Move the tail pointer to the newly-created node.
+  * Dequeue:
+    ```c
+    VALUE dequeue(queue *head);
+
+    int x = dequeue(head);
+    ```
+    1. Traverse the linked list to its second element (if it exists);
+    2. Free the head of the list;
+    3. Move the head pointer to the (former) second element;
+    4. Make that node's prev pointer point to NULL.
+
+### Hash Tables
+
+* Hash tables combine the random access ability of an array with the dynamism of a linked list.
+* This means (assuming we define our has table well):
+  * Insertion can start to tend toward θ(1)
+  * Deletion can start to tend toward θ(1)
+  * Lookup can start to tend toward θ(1)
+* We're gaining the advantages of both types of data structure, while mitigating the disadvantages.
+* To get this performance upgrade, we create a new structure whereby when we insert data into the structure, the data itself gives us a clue about where we will find the data, should we need to later look it up.
+* The trade off is that hash tables are not great at ordering or sorting data, but if we don't care about that, then we're good to go!
+* A hash table amounts to a combination of two things with which we're quite familiar.
+  1. A **hash function**, which returns a nonnegative integer value called a *hash code*.
+  2. An **array** capable of storing data of the type we wish to place into the data structure.
+* The idea is that we run our data through the hash function, and then store the data in the element of the array represented by the returned hash code.
+* How to define a hash function? Really no limit to the number of possible hash functions.
+* A good hash function should:
+  * Use only the data being hashed
+  * Use all of the data being hashed
+  * Be deterministic
+  * Uniformly distribute data
+  * Generate very different hash codes for very similar data
+```c
+// example possible hash function
+unsigned int hash(char *str)
+{
+  int sum = 0;
+  for (int j = 0; str[j] != '\0'; j++)
+  {
+    sum += str[j];
+  }
+  return sum % HASH_MAX;
+}
+```
+* Best to use hash function found on the Internet. (and be sure to cite the source)
+* A **collision** occurs when two pieces of data, when run through the hash function, yield the same hash code.
+* Presumably we want to store *both* pieces of data in the hash table, wo we shouldn't simply overwrite the data that happened to be placed in there first.
+* We need to find a way to get both elements into the hash table while trying to preserve quick insertion and lookup.
+* Resolving collisions: *Linear probing*
+  * In this method, if we have a collision, we try to place the data in the next consecutive element in the array (wrapping arround to the beginning if necessary) until we find a vacancy.
+  * That way, if we don't find what we're looking for in the first location, at least hopefully the element is somewhere nearby.
+  * Linear probing is subject to a problem called **clustering**. Once there's a miss, two adjacent cells will contain data, making it more likely in the future that the cluster will grow.
+  * Even if we switch to another probing technique, we're still limited. We can only store as much data as we have location in our array.
+* Resolving collisions: *Chaining*
+  * Let's start to pull it all together.
+  * What if instead of each element of the array holding just one piece of data, it held multiple pieces of data?
+  * If each element of the array is a pointer to the head of a linked list, then multiple pieces of data can yield the same hash code and we'll be able to store it all!
+  * We've eliminated clustering.
+  * We know from experience with linked lists that insertion (and creation, if necessary) into a linked list is an O(1) operation.
+  * For lookup, we only need to search through what is hopefully a small list, since we're distributing what would otherwise be one huge list across *n* lists.
+
+### Tries
+
+* We have a seen a few data structures that handle the mapping of key-value pairs.
+  * Arrays: The key is the element index, the value is the data at that location.
+  * Hash tables: The key is the hash code of the data, the value is a linked list of data hashing to that hash code.
+* What about a slightly different kind of data structure where the key is guaranteed to be unique, and the value could be as simple as a Boolean that tells you whether the data exists in the structure?
+* Tries combine structures and pointers together to store data in an interesting way.
+* The data to be searched for in the trie is now a roadmap.
+  * If you can follow the map from beginning to end, the data exists in the trie.
+  * If you can't, it doesn't.
+* Unlike with a hash table, there are no collisions, and no two pieces of data (unless they are identical) have the same path.
+* Let's map key-value pairs where the keys are four-digit years (YYYY) and the values are names of universities founded during those years.
+* In a trie, the paths from a central **root** node to a **leaf** node (where the schools names would be), would be labeled with digits of the year.
+* Each node on the path from root to leaf could have 10 pointers emanating from it, one for each digit.
+```c
+typedef struct _trie
+{
+  char university[20];
+  struct _trie *paths[10];
+}
+trie;
+```
+* To insert an element into the trie, simply build the correct path from the root to the leaf.
+* To search for an element in the trie, use successive digits to navigate from the root, and if you can make it to the end without hitting a dead end (a NULL pointer), you've found it.
