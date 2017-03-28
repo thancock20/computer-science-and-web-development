@@ -35,3 +35,7 @@
 [resize](https://github.com/submit50/thancock20/tree/cs50/2017/x/resize/more)
 
 [recover](https://github.com/submit50/thancock20/tree/cs50/2017/x/recover)
+
+## Week 5:
+
+[speller](https://github.com/submit50/thancock20/tree/cs50/2017/x/speller)
