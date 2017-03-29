@@ -41,6 +41,10 @@
   * [Hash Tables](#hash-tables)
   * [Tries](#tries)
 * [Week 6](#week-6)
+  * [Internet Primer](#internet-primer)
+  * [Internet Protocol (IP)](#internet-protocol-ip)
+  * [Transmission Control Protocol (TCP)](#transmission-control-protocol-tcp)
+  * [Hypertext Transfer Protocol](#hypertext-transfer-protocol)
 
 <!-- tocstop -->
 
@@ -1176,3 +1180,105 @@ trie;
 ## Week 6
 
 [Lecture Notes](http://docs.cs50.net/2016/fall/notes/6/week6.html)
+
+### Internet Primer
+
+* We've reached the point where we begin the transition away from the command-line oriented world of C and start considering the web-based world.
+* Before we dive headlong into that world, it's a good idea to have a basic understanding of how humans and computers interact over the internet.
+* **IP Address**
+  * In order for your machine to uniquely identify itself on the Internet, it needs an address.
+    * This way, it can send information out and also receive information back to the correct location.
+  * The addressing scheme used by computers is known as IP addressing.
+  * As originally developed, the IP addressing scheme would effectively allocate a unique 32-bit address to each device hopting to connect to teh internet.
+  * Instead of representing these 32-bit addresses as hexadecmal, we represent them as four clusters of 8-bits using decimal notation.
+  ```
+  w.x.y.z
+  ```
+  * Each of w, x, y, and z can be a nonnegative value in the range [0,255].
+  * If each IP address is 32 bits, that means there are roughly 4 billion addresses to give out.
+  * The population of the world is somewhere in excess of 7 billion, and most folks in the western world have more than 1 device capable of Internet connectivity.
+    * Some workarounds have allowed us to deal with this problem (for now).
+  * In recent years, we've been slowly phasing out this old scheme (IPv4) and replacing it with a newer scheme (IPv6) that assigns computers 128-bit addresses, instead of 32-bit addresses.
+    ```
+    s:t:u:v:w:x:y:z
+    ```
+    * Each of s, t, u, v, w, x, y, and z is represented by 1 to 4 hexadecimal digits in the range [0, ffff].
+* **DHCP**
+  * How do we get an IP address in the first place though? Surely we can't just choose any one we want. What if the one we want is already taken?
+  * Somewhere between your computer and the Internet at large exists a *Dynamic Host Configuration Protocol* (DHCP) server, whose role is to assign IP addresses to devices.
+  * Prior to the widespread promulgation of DHCP, the task of assigning IP addresses fell to a system administrator, who would need to manually assign such addresses.
+* **DNS**
+  * Odds are, you've never actually tried to visit a website by typing its IP address into your browser.
+  * The Domain Name System (DNS) exists to help us translate IP addresses to more memorable names that are more human-comprehensible.
+  * In this way, DNS is somewhat like the yellow pages of the web.
+  * Much like there is no yellow pages of the world, there is really no DNS record of the entire internet.
+  * Rather, large DNS server systems (like Google's own) are more like aggregators, collecting smaller sets of DNS information and pooling them together, updating frequently.
+  * In that way, large DNS servers are like libraries that stock many different sets of local yellow page books. In order to have the most up-to-date phone numbers for businesses, libraries must update the books they have on hand.
+  * DNS record sets are thus fairly decentralized.
+* **Access Points**
+  * One of the ways we've dealt with the IPv4 addressing problem is to start assigning multiple people to the same IP address.
+  * The IP address is assigned to a *router*, whose job it is to act as a traffic cop that allows data requests from all of the devices on your local network (your home or business, e.g.) to be processed through a single IP address.
+  * Modern home networks consist of access points that combine a router, a modem, a switch, and other technologies together into a single device.
+  * Modern business networks or large-scale wide-are networks (WANs) still frequently have these as separate devices to allow the size of their network to scale more easily.
+* This isn't a course on networking, so this is far from the whole story, but it's enough to get us started.
+* At home or at work we have local, small networks, and these networks are woven together to create a large, interconnected network---an Internet.
+  * If you think about each of these small networks being isolated communities with only a single road in or out, the picture becomes a bit clearer.
+
+### Internet Protocol (IP)
+
+* As discussed previously, "the Internet" is really an *interconnected network* comprised of smaller netwoks woven together and agreeing to communicate with one another.
+* How do these networks know how to communicate with on another? This is the responsibility of the Internet Protocol (IP).
+* Instead of being connected to every other network, each network is connected to a limited number of routers (each of which is connected to other routers), and each router has instructions built into it on how to move information toward its destination.
+* This information is stored in a routing table, inside of the router.
+* Any slowdown caused by sending a large amount of data would have a ripple effect that would throttle the network for all the other users.
+* As such, another crucial part of IP is splitting data into *packets*.
+* IP is also known as a *connectionless* protocol. There is not necessarily a defined path from the sender to the receiver, and vice versa.
+* This means that in response to traffic that might be "clogging" up one particular path through the Internet, some packets can be "re-routed" around the traffic jam to follow the monst optimal path, based on the current state of the network.
+* The routing table then probably consists of more information than just "where do I send this packet from here," but also "what is the cost of using that particular route?"
+* Another side effect of being connectionless is that delivery cannot be guaranteed, since the path from sender to receiver is not guaranteed to be consistent.
+
+### Transmission Control Protocol (TCP)
+
+* If IP is thought of as the protocol for getting information from a sending machine to a receiving machine, then Transmission Control Protocol (TCP) can be thought of as directing the transmitted packet to the correct program on the receiving machine.
+* As you might imagine, it is important to be able to identify both *where* the receiver is and *what* the packet is for, so TCP and IP are almost an inseparable pair: TCP/IP.
+* Each program/utility/service on a machine is assigned a *port number*. Coupled with an IP address, we can now uniquely identify a specific program on a specific machine.
+* The other thing that TCP is crucial for is *guaranteeing delivery* of packets, which IP alone does not do.
+* TCP does this by including information about how many packets the receiver should expect to get, and in what order, and transmitting that information alongside the data.
+* Some ports are so commonly used that they have been standardized across all computers.
+  * FTP (file transfer) uses port **21**.
+  * SMTP (e-mail) uses port **25**.
+  * DNS uses port **53**.
+  * HTTP (web browsing) uses port **80**.
+  * HTTPS (secure web browsing) uses port **443**.
+* Steps of the TCP/IP process
+  1. When a program goes to send data, TCP breaks it into smaller chunks and communicates those packets to the computer's network software, adding a TCP layer onto the packet.
+  2. IP routes the individual packets from sender to receiver; this info is part of the IP layer surrounding the packet.
+  3. When the destination computer gets the packet, TCP looks at the header to see which program it belongs to; and since the routes packets take may differ, TCP also must present those packets to the destination program in the proper order.
+* If at any point along the way a router delivering information using the Internet Protocol *dropped* the packet, TCP would use additional information inside the headers to request that the sender pass along the extra packet so it could complete assembly.
+* After the packets arrived, TCP ensures they are organized in the correct order and can then be reassembled into the intended unit of data and delivered to the correct service.
+
+### Hypertext Transfer Protocol
+
+* In addition to protocols that dictate how informations is communicated from machine to machine and application to application (IP and TCP, respectively), it is frequently the case that the applicaiton itself has a system of rules for how to interpret the data that was sent.
+* HTTP is one example of an *application layer protocol*, which specifically dictates the format by which clients *request* web pages from a server, and the format via which servers *return* information to clients.
+* Other application layer protocols include:
+  * File Transfer Protocol (FTP)
+  * Simple Mail Transfer Protocol (SMTP)
+  * Data Distribution Service (DDS)
+  * Remote Desktop Protocol (RDP)
+  * Extensible Message and Presence Protocol (XMPP)
+* A line of the form `method request-target http-version` is a simple example of an *HTTP request line*, a crucial part of an overall HTTP request that client may make to a server.
+* The host name (domain name of the server)is also included as a separate line of the overall HTTP request.
+* Taken together, the host name and the request target from the request line specify a specific resource being sought.
+* Based on whether the resource exists and whether the server is empowered to deliver that resource pusuant to the client's request, a number of *status codes* can result.
+* A status code is part of the first line that a server will use to respond to an HTTP request. `http-version status`.
+
+| Class        | Code | Text                  | Comments                                                                      |
+|:-------------|:-----|:----------------------|:------------------------------------------------------------------------------|
+| Success      | 200  | OK                    | All is well, valid request and response.                                      |
+| Redirection  | 301  | Moved Permanently     | Page is now at a new location, automatic redirects built in to most browsers. |
+|              | 302  | Found                 | Page is now at a new location *temporarily*.                                  |
+| Client Error | 401  | Unauthorized          | Page typically requires login credentials.                                    |
+|              | 403  | Forbidden             | Server will not allow this request.                                           |
+|              | 404  | Not Found             | Server cannot find what was asked for.                                        |
+| Server Error | 500  | Internal Server Error | Generic server failure in responding to the otherwise-valid request.          |
