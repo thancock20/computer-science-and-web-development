@@ -40,6 +40,7 @@
   * [Queues](#queues)
   * [Hash Tables](#hash-tables)
   * [Tries](#tries)
+* [Week 6](#week-6)
 
 <!-- tocstop -->
 
@@ -1171,3 +1172,7 @@ trie;
 ```
 * To insert an element into the trie, simply build the correct path from the root to the leaf.
 * To search for an element in the trie, use successive digits to navigate from the root, and if you can make it to the end without hitting a dead end (a NULL pointer), you've found it.
+
+## Week 6
+
+[Lecture Notes](http://docs.cs50.net/2016/fall/notes/6/week6.html)
