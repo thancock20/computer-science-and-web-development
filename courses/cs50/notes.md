@@ -1282,3 +1282,7 @@ trie;
 |              | 403  | Forbidden             | Server will not allow this request.                                           |
 |              | 404  | Not Found             | Server cannot find what was asked for.                                        |
 | Server Error | 500  | Internal Server Error | Generic server failure in responding to the otherwise-valid request.          |
+
+## Week 7
+
+[Lecture Notes](http://docs.cs50.net/2016/fall/notes/7/week7.html)
