@@ -1286,3 +1286,5 @@ trie;
 ## Week 7
 
 [Lecture Notes](http://docs.cs50.net/2016/fall/notes/7/week7.html)
+
+[Notebook](http://cdn.cs50.net/2016/fall/lectures/7/notes7.html)
