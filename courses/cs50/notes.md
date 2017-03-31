@@ -45,6 +45,8 @@
   * [Internet Protocol (IP)](#internet-protocol-ip)
   * [Transmission Control Protocol (TCP)](#transmission-control-protocol-tcp)
   * [Hypertext Transfer Protocol](#hypertext-transfer-protocol)
+* [Week 7](#week-7)
+* [Week 8](#week-8)
 
 <!-- tocstop -->
 
@@ -1288,3 +1290,7 @@ trie;
 [Lecture Notes](http://docs.cs50.net/2016/fall/notes/7/week7.html)
 
 [Notebook](http://cdn.cs50.net/2016/fall/lectures/7/notes7.html)
+
+## Week 8
+
+[Lecture Notes](http://docs.cs50.net/2016/fall/notes/8/week8.html)
