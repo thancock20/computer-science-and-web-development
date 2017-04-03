@@ -39,3 +39,7 @@
 ## Week 5:
 
 [speller](https://github.com/submit50/thancock20/tree/cs50/2017/x/speller)
+
+## Week 8:
+
+[pset6](https://github.com/submit50/thancock20/tree/cs50/2017/x/pset6)
