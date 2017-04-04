@@ -47,6 +47,7 @@
   * [Hypertext Transfer Protocol](#hypertext-transfer-protocol)
 * [Week 7](#week-7)
 * [Week 8](#week-8)
+* [Week 9](#week-9)
 
 <!-- tocstop -->
 
@@ -1294,3 +1295,7 @@ trie;
 ## Week 8
 
 [Lecture Notes](http://docs.cs50.net/2016/fall/notes/8/week8.html)
+
+## Week 9
+
+[Lecture Notes](http://docs.cs50.net/2016/fall/notes/9/week9.html)
