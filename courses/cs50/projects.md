@@ -43,3 +43,7 @@
 ## Week 8:
 
 [pset6](https://github.com/submit50/thancock20/tree/cs50/2017/x/pset6)
+
+## Week 9:
+
+[pset7](https://github.com/submit50/thancock20/tree/cs50/2017/x/pset7)
