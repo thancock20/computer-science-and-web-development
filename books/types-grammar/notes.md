@@ -82,3 +82,42 @@ if (typeof atob === 'undefined') {
     atob = function() { /* .. */ };
 }
 ```
+
+## Values
+
+### Arrays
+
+```js
+// arrays are just containers for any type of value
+var a = [ 1, '2', [3] ];
+
+a.length; // 3
+a[0] === 1; // true
+a[2][0] === 3; // true
+```
+
+```js
+// arrays don't need to be presized
+var a = [];
+
+a.length; // 0
+
+a[0] = 1;
+a[1] = '2';
+a[2] = [ 3 ];
+
+a.length; // 3
+```
+
+```js
+// be careful about creating "sparse" arrays
+var a = [];
+
+a[0] = 1;
+// no a[1] slot set here
+a[2] = [ 3 ];
+
+a[1]; // undefined -- does not behave the same as explicitly set to undefined
+
+a.length // 3
+```
