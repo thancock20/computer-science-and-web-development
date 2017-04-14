@@ -121,3 +121,9 @@ a[1]; // undefined -- does not behave the same as explicitly set to undefined
 
 a.length // 3
 ```
+
+### Strings
+
+It's a very common belief that `string`s are essentially just `array`s of characters. But this is not true, because `string`s are immutable. None of the `string` methods that alter its contents can modify in-place, but rather must create and return new `string`s.
+
+If you are more commonly doing tasks on "strings" that treat them as basically arrays of characters, it's better to actually store them as `array`y and call `join("")` whenever you actually need the `string` representation.
