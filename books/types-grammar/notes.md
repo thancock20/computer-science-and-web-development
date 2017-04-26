@@ -11,6 +11,10 @@
   * [Numbers](#numbers)
     * [Small Decimal Values](#small-decimal-values)
   * [Special Values](#special-values)
+* [Natives](#natives)
+  * [Boxing Wrappers](#boxing-wrappers)
+  * [Unboxing](#unboxing)
+  * [Natives as Constructors](#natives-as-constructors)
 
 <!-- tocstop -->
 
@@ -290,3 +294,107 @@ if (!Object.is) {
         return v1 === v2;
     };
 }
+```
+
+## Natives
+
+The most commonly used natives are:
+* `String()`
+* `Number()`
+* `Boolean()`
+* `Array()`
+* `Object()`
+* `Function()`
+* `RegExp()`
+* `Date()`
+* `Error()`
+* `Symbol()` -- added in ES6!
+
+```js
+// creates a string wrapper object, not the primitive value itself
+var a = new String( "Hello World!" );
+
+console.log( a.toString() );         // "Hello World"
+
+typeof a;                            // "object" ... not "String"
+
+a instanceof String;                 // true
+
+Object.prototype.toString.call( a ); // "[object String]"
+```
+
+### Boxing Wrappers
+
+```js
+// primitive values don't have properties or methods,
+// so JS will automatically box the primitive value to fulfill such accesses
+var a = 'abc';
+
+a.length;        // 3
+a.toUpperCase(); // "ABC"
+```
+
+```js
+// remember, objects are truthy
+var a = new Boolean( false );
+
+if (!a) {
+  console.log( "Oops" ); // never runs
+}
+```
+
+There's basically no reason to use the object form of primitives (`string`, `number`, `boolean`) directly. It's better to just let the boxing happen implicitly where necessary.
+
+### Unboxing
+
+```js
+// get at the underlying primitive value with the valueOf() method
+var a = new String( "abc" );
+var b = new Number( 42 );
+var c = new Boolean( true );
+
+a.valueOf(); // "abc"
+b.valueOf(); // 42
+c.valueOf(); // true
+```
+
+### Natives as Constructors
+
+For `array`, `object`, `function`, and regular-expression values, it's almost universally preferred to use the literal form for creating the values, but the literal form creates the same sort of object as the constructor form does (that is, there is no nonwrapped value).
+
+```js
+var a = new Array(1, 2, 3);
+a; // [1, 2, 3]
+
+var b = [1, 2, 3];
+b; // [1, 2, 3]
+
+var c = new Object();
+c.foo = "bar";
+c; // { foo: "bar" }
+
+var d = { foo: "bar" };
+d; // { foo: "bar" }
+
+var e = new Function( "a", "return a * 2;" );
+var f = function(a) { return a * 2; };
+function g(a) { return a * 2; }
+
+var h = new RegExp( "^a*b+", "g" );
+var i = /^a*b+/g;
+```
+
+```js
+// to create an array of undefined values
+var a = Array.apply( null, { length: 3 } );
+a; // [ undefined, undefined, undefined ]
+```
+
+```js
+// the RegExp constructor can be used to
+// dynamically define the pattern
+var name = 'Kyle';
+var namePattern = new RegExp( "\\b(?:" + name + ")+\\b", "ig" );
+
+var matches = someText.match( namePattern );
+```
