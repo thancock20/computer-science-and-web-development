@@ -32,19 +32,19 @@ The `typeof` operator inspects the type of the given value, and returns one of s
 
 ```js
 typeof undefined === 'undefined'; // true
-typeof true === 'boolean'; // true
-typeof 42 === 'number'; // true
-typeof '42' === 'string'; // true
+typeof true === 'boolean';        // true
+typeof 42 === 'number';           // true
+typeof '42' === 'string';         // true
 typeof { life: 42 } === 'object'; // true
-typeof Symobl() === 'symbol'; // true
-typeof null === 'object'; // true -- this is a bug
+typeof Symobl() === 'symbol';     // true
+typeof null === 'object';         // true -- this is a bug
 
 // to test for a null value
 var a = null;
-(!a && typeof a === 'object'); // true
+(!a && typeof a === 'object');                  // true
 
 typeof function a(){ /* .. */ } === 'function'; // true -- but is actually a subtype of object
-typeof [1,2,3] === 'object'; // true
+typeof [1,2,3] === 'object';                    // true
 ```
 
 In JavaScript, variables don't have types -- **values have types**. If you use `typeof` against a variable, it's not asking "what's the type of the variable?" Instead, it's asking "what's the type of the value in the variable?"
@@ -69,8 +69,8 @@ typeof c; // 'undefined'
 ```js
 var a;
 
-a; // undefined
-b; // ReferenceError: b is not defined -- actually undeclared
+a;        // undefined
+b;        // ReferenceError: b is not defined -- actually undeclared
 
 typeof a; // 'undefined'
 typeof b; // 'undefined' -- actually undeclared
@@ -105,8 +105,8 @@ if (typeof atob === 'undefined') {
 // arrays are just containers for any type of value
 var a = [ 1, '2', [3] ];
 
-a.length; // 3
-a[0] === 1; // true
+a.length;      // 3
+a[0] === 1;    // true
 a[2][0] === 3; // true
 ```
 
@@ -131,7 +131,7 @@ a[0] = 1;
 // no a[1] slot set here
 a[2] = [ 3 ];
 
-a[1]; // undefined -- does not behave the same as explicitly set to undefined
+a[1];    // undefined -- does not behave the same as explicitly set to undefined
 
 a.length // 3
 ```
@@ -156,14 +156,14 @@ b; // 42
 ```js
 // Very large or very small numbers will be outputted in exponent form
 var a = 5E10;
-a;  //  50000000000
+a;                 //  50000000000
 a.toExponential(); // "5e+10"
 
 var b = a *a;
-b;  // 2.5e+21
+b;                 // 2.5e+21
 
 var c = 1 / a;
-c; // 2e-11
+c;                 // 2e-11
 ```
 
 ```js
@@ -209,7 +209,7 @@ function numbersCloseEnoughToEqual(n1,n2) {
 var a = 0.1 + 0.2;
 var b = 0.3;
 
-numbersCloseEnoughToEqual( a, b );  // true
+numbersCloseEnoughToEqual( a, b );                // true
 numbersCloseEnoughToEqual( .0000001, 0.0000002 ); // false
 ```
 
@@ -229,10 +229,10 @@ numbersCloseEnoughToEqual( .0000001, 0.0000002 ); // false
 // NaN is never equal to another NaN
 var a = 2 / "foo";
 
-a == NaN; // false
-a === NaN; // false
+a == NaN;          // false
+a === NaN;         // false
 
-// ES6 introduces Number.isNaN()
+ // ES6 introduces Number.isNaN()
 Number.isNaN( a ); // true
 
 // pre ES6 polyfill
@@ -244,25 +244,25 @@ if (!Number.isNaN) {
 ```
 * Infinities
 ```js
-var a = 1 / 0; // Infinity
-var b = -1 / 0; // -Infinity
+var a = 1 / 0;       // Infinity
+var b = -1 / 0;      // -Infinity
 
 Infinity / Infinity; // NaN
-1 / Infinity; // 0
+1 / Infinity;        // 0
 ```
 * Zeros
 ```js
 var a = 0;
 var b = 0 / -3; // -0
 
-a == b; // true
--0 == 0; // true
+a == b;         // true
+-0 == 0;        // true
 
-a === b; // true
--0 === 0; // true
+a === b;        // true
+-0 === 0;       // true
 
-0 > -0; // false
-a > b; // false
+0 > -0;         // false
+a > b;          // false
 ```
 
 ```js
@@ -271,9 +271,9 @@ var a = 2 / "foo";
 var b = -3 * 0;
 
 Object.is(a, NaN); // true
-Object.is(b, -0); // true
+Object.is(b, -0);  // true
 
-Object.is(b, 0); // false
+Object.is(b, 0);   // false
 
 // pre-ES6 polyfill
 if (!Object.is) {
