@@ -1,5 +1,19 @@
 # Notes for YDKJS: Types & Grammar
 
+
+<!-- toc orderedList:0 depthFrom:2 depthTo:6 -->
+
+* [Types](#types)
+  * [`undefined` vs "undeclared"](#undefined-vs-undeclared)
+* [Values](#values)
+  * [Arrays](#arrays)
+  * [Strings](#strings)
+  * [Numbers](#numbers)
+    * [Small Decimal Values](#small-decimal-values)
+  * [Special Values](#special-values)
+
+<!-- tocstop -->
+
 ## Types
 
 **type**: An intrinsic, built-in set of characteristics that uniquely identifies the behavior of a particular value and distinguishes it from other values, both to the engine and to the developer.
