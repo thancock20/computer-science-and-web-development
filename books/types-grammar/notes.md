@@ -398,3 +398,46 @@ var namePattern = new RegExp( "\\b(?:" + name + ")+\\b", "ig" );
 
 var matches = someText.match( namePattern );
 ```
+
+The `Date()` and `Error()` native constructors are much more useful than the other natives, because there is no literal form for either.
+
+```js
+// get the current timestamp
+Date.now();
+
+// polyfill for pre-ES5
+if (!Date.now) {
+  Date.now = function() {
+    return (new Date()).getTime();
+  };
+}
+```
+
+The main reason you'd want to create an error object is that it captures the current execution stack context into the object (in most JS engines, revealed as a read-only `.stack` property once constructed). This stack context includes the function call-stack and the line-number where the error object was created, which makes debugging that error much easier.
+
+```js
+// You would typically use such an error object with the throw operator
+function foo(x) {
+  if (!x) {
+    throw new Error( "x wasn't provided" );
+  }
+  // ...
+}
+```
+
+```js
+// to use a predefined symbol, do something like this
+obj[Symbol.iterator] = function() { /*..*/ };
+
+// to define your own custom symbol
+var mysym = Symbol( "my own symbol" ); // don't use new
+mysym;                                 // Symbol(my own symbol)
+mysym.toString();                      // "Symbol(my own symbol)"
+typeof mysym;                          // "symbol"
+
+var a = {  };
+a[mysym] = "foobar";
+
+Object.getOwnPropertySymbols( a ); // [ Symbol(my own symbol) ]
+```
+ **Note**: `Symbol`s are *not* `object`s, they are simple scalar primitives.
