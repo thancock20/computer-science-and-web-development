@@ -15,6 +15,7 @@
   * [Boxing Wrappers](#boxing-wrappers)
   * [Unboxing](#unboxing)
   * [Natives as Constructors](#natives-as-constructors)
+* [Coercion](#coercion)
 
 <!-- tocstop -->
 
@@ -440,4 +441,12 @@ a[mysym] = "foobar";
 
 Object.getOwnPropertySymbols( a ); // [ Symbol(my own symbol) ]
 ```
- **Note**: `Symbol`s are *not* `object`s, they are simple scalar primitives.
+ **Note**: `Symbol`sare *not* `object`s, they are simple scalar primitives.
+
+ ## Coercion
+
+ *Explicit* coercion is code which is obvious that the intent is to convert a value from one type to another. The benefit is improvement in readability and maintainability of code by reducing confusion.
+
+ *Implicit* coercion is "hidden" as a side-effect of some other operation, where it's not as obvious that the type conversion will occur.
+
+ Especially for *implicit*, coercion must be used responsibly and consciously. Know why you're writing the code you're writing, and how it works. Strive to write code that others will easily be able to learn from and understand as well.
