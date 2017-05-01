@@ -16,6 +16,8 @@
   * [Unboxing](#unboxing)
   * [Natives as Constructors](#natives-as-constructors)
 * [Coercion](#coercion)
+  * [Explicit Coercion](#explicit-coercion)
+  * [Implicit Coercion](#implicit-coercion)
 
 <!-- tocstop -->
 
@@ -450,3 +452,116 @@ Object.getOwnPropertySymbols( a ); // [ Symbol(my own symbol) ]
  *Implicit* coercion is "hidden" as a side-effect of some other operation, where it's not as obvious that the type conversion will occur.
 
  Especially for *implicit*, coercion must be used responsibly and consciously. Know why you're writing the code you're writing, and how it works. Strive to write code that others will easily be able to learn from and understand as well.
+
+ ### Explicit Coercion
+
+ ```js
+ var a = 42;
+ var b = String(a); // no new keyword
+
+ var c = "3.14";
+ var d = Number(c);
+
+ b; // "42"
+ d; // 3.14
+ ```
+
+ ```js
+var a = 42;
+var b = a.toString(); // boxes the number first
+
+var c = "3.14";
+var d = +c; // unary + operator
+
+b; // "42"
+d; // 3.14
+```
+
+```js
+// parseInt will get integer part at beginning of string
+var a = "42";
+var b = "42px";
+
+Number(a); // 42
+parseInt(a); // 42
+
+Number(b); // NaN
+parseInt(b); // 42
+```
+
+```js
+// coerce to boolean using native function
+var a = "0";
+var b = [];
+var c = {};
+
+var d = "";
+var e = 0;
+var f = null;
+var g; // undefined
+
+Boolean(a); // true
+Boolean(b); // true
+Boolean(c); // true
+
+Boolean(d); // false
+Boolean(e); // false
+Boolean(f); // false
+Boolean(g); // false
+```
+
+```js
+// coerce to boolean using !!
+var a = "0";
+var b = [];
+var c = {};
+
+var d = "";
+var e = 0;
+var f = null;
+var g; // undefined
+
+!!a; // true
+!!b; // true
+!!c; // true
+
+!!d; // false
+!!e; // false
+!!f; // false
+!!g; // false
+```
+
+### Implicit Coercion
+
+```js
+// coerce number to string by adding blank string
+var a = 42;
+var b = a + "";
+
+b; // "42"
+```
+
+```js
+// coerce string to number by subtracting 0
+var a = "3.14";
+var b = a - 0;
+
+b; // 3.14
+```
+
+```js
+// boolean to number coercion can simplify this...
+function onlyOne(a,b,c) {
+  return !!((a && !b && !c) ||
+          (!a && b && !c) || (!a && !b && c));
+}
+
+// ...to this, and use any number of arguments
+function onlyOne() {
+  var sum = 0;
+  for (var i = 0; i < arguments.length; i++) {
+    sum += !!arguments[i];
+  }
+  return sum == 1;
+}
+```
