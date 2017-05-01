@@ -86,14 +86,14 @@ ajax( "http://some.url.2", bar );
 var a;
 
 function foo(x) {
-  if (a == undefined) {
+  if (a == undefined) { // latch
     a = x * 2;
     baz();
   }
 }
 
 function bar(x) {
-  if (a == undefined) {
+  if (a == undefined) { // latch
     a = x / 2;
     baz();
   }
