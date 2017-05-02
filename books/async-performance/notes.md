@@ -5,6 +5,7 @@
 
 * [Asynchrony: Now & Later](#asynchrony-now-later)
 * [Callbacks](#callbacks)
+* [Promises](#promises)
 
 <!-- tocstop -->
 
@@ -124,3 +125,82 @@ Inventing ad hoc logic to solve these trust issues is possible, but it's more di
 We need a generalized solution to **all of the trust issues**, one that can be reused for as many callbacks as we create without all the extra boilerplate overhead.
 
 We need something better than callbacks. They've served us well to this point, but the *future* of JavaScript demands more sophisticated and capable async patterns. The subsequent chapters in this book will dive into those emerging evolutions.
+
+## Promises
+
+```js
+// Promise constructor
+var p = new Promise( function(resolve, reject) {
+  // resolve(..) to resolve/fulfill the promise
+  // reject(..) to reject the promise
+} );
+```
+
+```js
+// Promise.reject(..) is shortcut for creating already-rejected promise
+// these two promises are equivalent
+var p1 = new Promise( function(resolve, reject) {
+  reject( "Oops" );
+} );
+
+var p2 = Promise.reject( "Oops" );
+```
+
+```js
+// Promise.resolve(..) creates an already-fulfilled promise
+// and also unwraps thenable values and adopts the final resolution
+// either fulfillment or rejection
+var fulfilledTh = {
+  then: function(cb) { cb( 42 ); }
+};
+var rejectedTh = {
+  then: function(cb, errCb) {
+    errCb( "Oops" );
+  }
+};
+
+var p1 = Promise.resolve( fulfilledTh );
+var p2 = Promise.resolve( rejectedTh );
+
+// p1 will be a fulfilled promise
+// p2 will be a rejected promise
+```
+
+```js
+// a promise instance has a then method
+p.then( fulfilled, rejected );
+
+// if no rejected callback, then the error is rethrown
+p.then( fulfilled );
+
+// if null fulfilled callback, then message is passed along
+p.then( null, rejected );
+
+// catch method is equivalent to null fulfilled
+p.catch( rejected );
+```
+
+`Promise.all([..])`: A "gate" for promises. All promises in the array must be fulfilled for the return promise to fulfill. Returns array of fulfillment values, or the first promise rejection value.
+
+`Promise.race([..])`: A "latch" for promises. The first promise to resolve (fulfillment or rejection) becomes the resolution of the returned promise.
+
+```js
+var p1 = Promise.resolve( 42 );
+var p2 = Promise.resolve( "Hello World" );
+var p3 = Promise.reject( "Oops" );
+
+Promise.race( [p1,p2,p3] )
+.then( function(msg) {
+  console.log( msg ); // 42
+} );
+
+Promise.all( [p1,p2,p3] )
+.catch( function(err) {
+  console.log( err ); // "Oops"
+} );
+
+Promise.all( [p1,p2] )
+.then( function(msgs) {
+  console.log( msgs ); // [42, "Hello World"]
+} );
+```
