@@ -68,7 +68,7 @@ The **only things** that you need to know are how to use **Git** and **GitHub**.
 
 
 
-###Tier 3 - add more rigor
+### Tier 3 - add more rigor
 * Book: [Professor Frisby's Mostly Adequate Guide to Functional Programming](https://www.gitbook.com/book/drboolean/mostly-adequate-guide/details)    
 * Course: [Software Testing](https://www.udacity.com/course/software-testing--cs258)    
 * Course: [Software Debugging](https://www.udacity.com/course/software-debugging--cs259)  
