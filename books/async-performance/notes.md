@@ -7,6 +7,9 @@
 * [Callbacks](#callbacks)
 * [Promises](#promises)
 * [Generators](#generators)
+  * [Multiple Iterators](#multiple-iterators)
+  * [Generator Iterator](#generator-iterator)
+  * [Generator Delegation](#generator-delegation)
 
 <!-- tocstop -->
 
@@ -212,8 +215,150 @@ Generators are a new ES6 function type that does not run-to-completion like norm
 
 This pause/resume interchange is cooperative rather than preemptive, which means that the generator has the sole capability to pause itself, using the yield keyword, and yet the *iterator* that controls the generator has the sole capability (via `next(..)`) to resume the generator.
 
+```js
+var x = 1;
+
+function* foo() { // function* marks a generator
+  x++;
+  yield;          // pause!
+  console.log( "x: ", x );
+}
+
+function bar() {
+  x++;
+}
+
+// construct an iterator `it` to control the generator
+var it = foo();
+
+// start `foo()` here!
+it.next();
+x;         // 2
+bar();
+x;         // 3
+it.next(); // x: 3
+```
+
 The `yield` / `next(..)` duality is not just a control mechanism, it's actually a two-way message passing mechanism. A `yield ..` expression essentially pauses waiting for a value, and the next `next(..)` call passes a value (or implicit `undefined`) back to that paused `yield` expression.
+
+```js
+function* foo(x) {
+  var y = x * (yield "Hello"); // <-- yield a value!
+  return y;
+}
+
+var it = foo( 6 );
+
+var res = it.next(); // first `next()`, don't pass anything
+res.value;           // "Hello"
+
+res = it.next( 7 );  // pass `7` to waiting `yield`
+res.value;           // 42
+```
 
 The key benefit of generators related to async flow control is that the code inside a generator expresses a sequence of steps for the task in a naturally sync/sequential fashion. The trick is that we essentially hide potential asynchrony behind the `yield` keyword -- moving the asynchrony to the code where the generator's *iterator* is controlled.
 
 In other words, generators preserve a sequential, synchronous, blocking code pattern for async code, which lets our brains reason about the code much more naturally, addressing one of the two key drawbacks of callback-based async.
+
+### Multiple Iterators
+
+You can have multiple instances of the same generator running at the same time, and they can even interact.
+
+```js
+function* foo() {
+  var x = yield 2;
+  z++;
+  var y = yield (x * z);
+  console.log( x, y, z );
+}
+
+var z = 1;
+
+var it1 = foo();
+var it2 = foo();
+
+var val1 = it1.next().value;        // 2 <-- yield 2
+var val2 = it2.next().value;        // 2 <-- yield 2
+
+val1 = it1.next( val2 * 10 ).value; // 40 <-- x:20, z:2
+val2 = it2.next( val1 * 5 ).value;  // 6000 <-- x:200, z:3
+
+it1.next( val2 / 2 );               // 20 300 3 <-- y:300
+it2.next( val1 / 4 );               // 200 10 3 <-- y:10
+```
+
+### Generator Iterator
+
+Running a generator function produces an *iterable* that can be used with a `for..of` loop.
+
+```js
+function* something() {
+  var nextVal;
+
+  while(true) {
+    if (nextVal === undefined) {
+      nextVal = 1;
+    }
+    else {
+      nextVal = (3 * nextVal) + 6;
+    }
+  }
+
+  yield nextVal;
+}
+
+for (var v of something()) {
+  console.log( v );
+
+  // don't let the loop run forever!
+  if (v > 500) {
+    break;
+  }
+}
+// 1 9 33 105 321 969
+```
+
+### Generator Delegation
+
+```js
+function* foo() {
+	console.log( "inside `*foo()`:", yield "B" );
+
+	console.log( "inside `*foo()`:", yield "C" );
+
+	return "D";
+}
+
+function* bar() {
+	console.log( "inside `*bar()`:", yield "A" );
+
+	// `yield`-delegation!
+	console.log( "inside `*bar()`:", yield* foo() );
+
+	console.log( "inside `*bar()`:", yield "E" );
+
+	return "F";
+}
+
+var it = bar();
+
+console.log( "outside:", it.next().value );
+// outside: A
+
+console.log( "outside:", it.next( 1 ).value );
+// inside `*bar()`: 1
+// outside: B
+
+console.log( "outside:", it.next( 2 ).value );
+// inside `*foo()`: 2
+// outside: C
+
+console.log( "outside:", it.next( 3 ).value );
+// inside `*foo()`: 3
+// inside `*bar()`: D
+// outside: E
+
+console.log( "outside:", it.next( 4 ).value );
+// inside `*bar()`: 4
+// outside: F
+```
