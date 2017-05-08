@@ -15,6 +15,7 @@
     * [Computed Property Names](#computed-property-names)
   * [Template Literals](#template-literals)
     * [Tagged Template Literals](#tagged-template-literals)
+  * [Arrow Functions](#arrow-functions)
 
 <!-- tocstop -->
 
@@ -452,3 +453,61 @@ console.log( text );
 // product cost was $11.99, which with tax
 // comes out to $12.95.
  ```
+
+ ### Arrow Functions
+
+ ```js
+ function foo(x,y) {
+   return x + y;
+ }
+
+ // versus
+
+ var foo = (x,y) => x + y;
+ ```
+
+ ```js
+ // other variations
+ f1 = () => 12;
+ f2 = x => x * 2;
+ f3 = (x,y) => {
+   var z = x * 2 +y;
+   y++;
+   x *= 3;
+   return (x + y + z) / 2;
+ };
+```
+
+In arrow functions, `this` binding is lexical
+
+```js
+// old way
+var controller = {
+  makeRequest: function(..) {
+    var self = this;
+
+    btn.addEventListener( "click", function() {
+      // ..
+      self.makeRequest(..);
+    }, false );
+  }
+};
+
+// with arrow function
+var controller = {
+  makeRequest: function(..) {
+    btn.addEventListener( "click", () => {
+      // ..
+      this.makeRequest(..);
+    }, false );
+  }
+};
+```
+
+"Rules" for when `=>` is apprpriate and not:
+* If you have a short, single-statement inline function expression, where the only statement is a `return` of some computed value, *and* that function doesn't already make a `this` reference inside it, *and* there's no self-reference (recursion, event binding/unbinding), *and* you don't reasonably expect the function to ever be that way, you can probably safely refactor it to be an `=>` arrow function.
+* If you have an inner function expression that's relying on a `var self = this` hack or a `.bind(this)` call on it in the enclosing function to ensure proper `this` binding, that inner function expression can probably safely become an `=>` arrow function.
+* If you have an inner function expression that's relying on something like `var args = Array.prototype.slice.call(arguments)` in the enclosing function to make a lexical copy of `arguments`, that inner function expression can probably safely become an `=>` arrow function.
+* For everything else -- normal function declarations, longer multistatement function expressions, functions that need a lexical name identifier self-reference (recursion, etc.), and any other function that doesn't fit the previous characteristics -- you should probably avoid `=>` function syntax.
+
+![Arrow-decision](./arrow-decision.png)
