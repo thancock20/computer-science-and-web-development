@@ -16,6 +16,15 @@
   * [Template Literals](#template-literals)
     * [Tagged Template Literals](#tagged-template-literals)
   * [Arrow Functions](#arrow-functions)
+  * [`for..of` Loops](#forof-loops)
+  * [Regular Expressions](#regular-expressions)
+    * [Unicode Flag](#unicode-flag)
+    * [Sticky Flag](#sticky-flag)
+    * [Regular Expressiong `flags`](#regular-expressiong-flags)
+  * [Number Literal Extensions](#number-literal-extensions)
+  * [Symbols](#symbols)
+    * [Global Symbol Registry](#global-symbol-registry)
+    * [Symbols as Object Properties](#symbols-as-object-properties)
 
 <!-- tocstop -->
 
@@ -511,3 +520,160 @@ var controller = {
 * For everything else -- normal function declarations, longer multistatement function expressions, functions that need a lexical name identifier self-reference (recursion, etc.), and any other function that doesn't fit the previous characteristics -- you should probably avoid `=>` function syntax.
 
 ![Arrow-decision](./arrow-decision.png)
+
+### `for..of` Loops
+
+```js
+var a = ['a','b','c','d','e'];
+
+// for..in loop
+for (var idx in a) {
+  console.log( idx );
+}
+// 0 1 2 3 4
+
+// for..of loop
+for (var val of a) {
+  console.log( val );
+}
+// "a" "b" "c" "d" "e"
+```
+
+The value looped over in a `for..of` loop must be an *iterable*. Standard built-in iterables include:
+* Arrays
+* Strings
+* Generators
+* Collections/TypedArrays
+
+### Regular Expressions
+
+#### Unicode Flag
+
+```js
+/𝄞/.test( "𝄞-clef" );			     // true
+/^.-clef/ .test( "𝄞-clef" );		// false -- 𝄞 is two separate characters
+/^.-clef/u.test( "𝄞-clef" );	 // true -- 𝄞 is single character
+```
+
+#### Sticky Flag
+
+```js
+var re1 = /foo/,    // <-- no sticky flag
+	str = "++foo++";
+
+re1.lastIndex;			// 0
+re1.test( str );		// true
+re1.lastIndex;			// 0 -- not updated
+
+re1.lastIndex = 4;
+re1.test( str );		// true -- ignored `lastIndex`
+re1.lastIndex;			// 4 -- not updated
+
+var re2 = /foo/y,		// <-- notice the `y` sticky flag
+	str = "++foo++";
+
+re2.lastIndex;			// 0
+re2.test( str );		// false -- "foo" not found at `0`
+re2.lastIndex;			// 0
+
+re2.lastIndex = 2;
+re2.test( str );		// true
+re2.lastIndex;			// 5 -- updated to after previous match
+
+re2.test( str );		// false
+re2.lastIndex;			// 0 -- reset after previous match failure
+```
+
+#### Regular Expressiong `flags`
+
+```js
+var re = /foo/ig;
+re.flags;                            // "gi"
+
+var re1 = /foo*/y;
+re1.source;                          // "foo*"
+re1.flags;                           // "y"
+
+var re2 = new RegExp( re1 );
+re2.source;                          // "foo*"
+re2.flags;                           // "y"
+
+var re3 = new RegExp( re1, "ig" );
+re3.source;                          // "foo*"
+re3.flags;                           // "gi"
+```
+
+### Number Literal Extensions
+
+```js
+// ES6 literal forms
+var dec = 42,
+    oct = 0o52,     // or '0O52' :(
+    hex = 0x2a,     // or '0X2a' :/
+    bin = 0b101010; // or '0B101010' :/
+
+// coerced to number
+Number( "42" );       // 42
+Number( "0o52" );     // 42
+Number( "0x2a" );     // 42
+Number( "0b101010" ); // 42
+
+// coerced from number
+var a = 42;
+
+a.toString();     // "42" -- also `a.toString(10)`
+a.toString( 8 );  // "52"
+a.toString( 16 ); // "2a"
+a.toString( 2 );  // "101010"
+```
+
+### Symbols
+
+```js
+var sym = Symbol( "some optional description" );
+
+typeof sym; // "symbol"
+
+sym.toString(); // "Symbol(some optional description)"
+```
+
+The main point of a symbol is to create a string-like value that can't collide with any other value.
+
+```js
+const EVT_LOGIN = Symbol( "event.login" );
+
+evthub.listen(EVT_LOGIN, function(data) {
+  // ..
+});
+```
+
+#### Global Symbol Registry
+
+```js
+// add a symbol to the registry
+const s = Symbol.for( "something cool" );
+console.log( s ); // Symbol("something cool")
+
+// retrieve the symbol's key
+var desc = Symbol.keyFor( s );
+console.log( desc ); // "something cool"
+
+// get the symbol from the registry again
+var s2 = Symbol.for( desc );
+
+s2 === s; // true
+```
+
+#### Symbols as Object Properties
+
+```js
+var o = {
+  foo: 42,
+  [ Symbol( "bar" ) ]: "hello world",
+  baz: true
+};
+
+Object.getOwnPropertyNames( o ); // [ "foo", "baz" ]
+
+Object.getOwnPropertySymbols( o ); // [ Symbol(bar) ]
+```
