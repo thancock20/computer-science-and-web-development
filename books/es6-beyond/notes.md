@@ -9,6 +9,12 @@
   * [Spread/Rest](#spreadrest)
   * [Default Parameter Values](#default-parameter-values)
   * [Destructuring](#destructuring)
+  * [Object Literal Extensions](#object-literal-extensions)
+    * [Concise Properties](#concise-properties)
+    * [Concise Methods](#concise-methods)
+    * [Computed Property Names](#computed-property-names)
+  * [Template Literals](#template-literals)
+    * [Tagged Template Literals](#tagged-template-literals)
 
 <!-- tocstop -->
 
@@ -281,6 +287,7 @@ console.log( x, y, z, w ); // 4 5 6 20
 ```
 
 ```js
+// destructuring and restructuring
 var defaults = {
   options: {
     remove: true,
@@ -322,3 +329,126 @@ var config = {
   };
 }
 ```
+
+### Object Literal Extensions
+
+#### Concise Properties
+
+```js
+// old way
+var x = 2, y = 3, o = {
+  x: x,
+  y: y
+};
+
+// ES6 way
+var x = 2, y = 3, o = {
+  x,
+  y
+};
+```
+
+#### Concise Methods
+
+```js
+// old way
+var o = {
+  x: function() {
+    // ..
+  },
+  y: function() {
+    // ..
+  }
+};
+
+// ES6 way
+var o = {
+  x() {
+    // ..
+  },
+  y() {
+    // ..
+  }
+};
+```
+
+#### Computed Property Names
+
+```js
+var prefix = "user_";
+
+var o = {
+  baz: function(..){..},
+  [ prefix + "foo" ]: function(..){..},
+  [ prefix + "bar" ]: function(..){..}
+  ..
+};
+```
+
+### Template Literals
+
+```js
+// old way
+var name = "Kyle";
+
+var greeting = "Hello " + name + "!";
+
+console.log( greeting );        // "Hello Kyle!"
+console.log( typeof greeting ); // "string"
+
+// ES6 way
+var name = "Kyle";
+
+var greeting = `Hello ${name}!`;
+
+console.log( greeting );        // "Hello Kyle!"
+console.log( typeof greeting ); // "string"
+```
+
+#### Tagged Template Literals
+
+```js
+function foo(strings, ...values) {
+  console.log(strings);
+  console.log(values);
+}
+
+var desc = "awesome";
+
+foo`Everything is ${desc}!`;
+// [ "Everything is ", "!" ]
+// [ "awesome" ]
+```
+
+```js
+function dollabillsyall(strings, ...values) {
+	return strings.reduce( function(s,v,idx){
+		if (idx > 0) {
+			if (typeof values[idx-1] == "number") {
+				// look, also using interpolated
+				// string literals!
+				s += `$${values[idx-1].toFixed( 2 )}`;
+			}
+			else {
+				s += values[idx-1];
+			}
+		}
+
+		return s + v;
+	}, "" );
+}
+
+var amt1 = 11.99,
+	amt2 = amt1 * 1.08,
+	name = "Kyle";
+
+var text = dollabillsyall
+`Thanks for your purchase, ${name}! Your
+product cost was ${amt1}, which with tax
+comes out to ${amt2}.`
+
+console.log( text );
+// Thanks for your purchase, Kyle! Your
+// product cost was $11.99, which with tax
+// comes out to $12.95.
+ ```
