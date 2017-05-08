@@ -27,6 +27,12 @@
     * [Symbols as Object Properties](#symbols-as-object-properties)
 * [Organization](#organization)
 * [Async Flow Control](#async-flow-control)
+* [Collections](#collections)
+  * [TypedArrays](#typedarrays)
+  * [Maps](#maps)
+  * [WeakMaps](#weakmaps)
+  * [Sets](#sets)
+  * [WeakSets](#weaksets)
 
 <!-- tocstop -->
 
@@ -699,3 +705,127 @@ Thankfully, ES6 adds Promises to address one of the major shortcomings of callba
 But it's the combination of Promises with generators that fully realizes the benefits of rearranging our async flow control code to de-emphasize and abstract away that ugly callback soup (aka "hell").
 
 Right now, we can manage these interactions with the aide of various async libraries' runners, but JavaScript is eventually going to support this interaction pattern with dedicated syntax alone!
+
+## Collections
+
+### TypedArrays
+
+**TypedArrays** provide "view"s of binary data buffers that align with various number types, like 8bit unsigned integers and 32-bit floats. The array access to binary data makes operations much easier to express and maintain, which enables you to more easily work with complex data like video, audio, canvas data, and so on.
+
+```js
+var buf = new ArrayBuffer( 32 );
+buf.byteLength;                    // 32
+
+var arr = new Uint16Array( buf );
+arr.length;                        // 16
+```
+
+TypedArray constructors:
+* `Int8Array` (8-bit signed integers), `Uint8Array` (8-bit unsigned integers)
+  * `Uint8ClampedArray` (8-bit unsigned integers, each value clamped on setting to the `0`-`255` range)
+* `Int16Array` (16-bit signed integers), `Uint16Array` (16-bit unsigned integers)
+* `Int32Array` (32-bit signed integers), `Uint32Array` (32-bit unsigned integers)
+* `Float32Array` (32-bit floating point, IEEE-754)
+* `Float64Array` (64-bit floating point, IEEE-754)
+
+### Maps
+
+*Maps* are key-value pairs where the key can be an object instead of just a string/primitive.
+
+```js
+var m = new Map();
+
+var x = { id: 1 }, y = { id: 2 };
+
+m.set( x, "foo" );
+m.set( y, "bar" );
+
+m.get( x );                    // "foo"
+m.get( y );                    // "bar"
+m.size;                        // 2
+
+var vals = [ ...m.values() ];
+vals;                          // ["foo","bar"]
+
+var keys = [ ...m.keys() ];
+keys[0] === x;                 // true
+keys[1] === y;                 // true
+
+m.delete( y );
+m.size;                        // 1
+
+m.has( x );                    // true
+m.has( y );                    // false
+
+m.clear();
+m.size;                        // 0
+
+var m2 = new Map( m );
+```
+
+### WeakMaps
+
+**WeakMaps** are maps where the key (object) is weakly held, so that GC is free to collect the entry if it's the last reference to an object.
+
+```js
+var m = new WeakMap();
+
+var x = {id: 1}, y = {id: 2}, z = {id: 3}, w = {id: 4};
+
+m.set( x, y );
+
+x = null; // {id: 1} is GC-eligible
+y = null; // {id: 2} is GC-eligible -- only because {id: 1} is
+
+m.set( z, w );
+
+w = null; // {id: 4} is not GC-eligible
+```
+
+### Sets
+
+**Sets** are unique lists of values (of any type).
+
+```js
+var s = new Set();
+
+var x = { id: 1 }, y = { id: 2 };
+
+s.add( x );
+s.add( y );
+s.add( x );
+
+s.size;     // 2
+
+s.delete( y );
+s.size;     // 1
+
+s.has( x ); // true
+s.has( y ); // false
+
+s.clear();
+s.size;     // 0
+```
+
+```js
+var s = new Set( [1,2,3,4,"1",2,4,"5"] );
+var uniques = [ ...s ];
+
+uniques; // [1,2,3,4,"1","5"]
+```
+
+### WeakSets
+
+**WeakSets** are sets where the value is weakly held, so that GC can remove the entry if it's the last reference to that object.
+
+```js
+var s = new WeakSet();
+
+var x = {id: 1}, y = { id: 2 };
+
+s.add( x );
+s.add( y );
+
+x = null; // x is GC-eligible
+y = null; // y is GC-eligible
+```
