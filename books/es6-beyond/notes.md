@@ -8,6 +8,7 @@
   * [Block Scoped Declarations](#block-scoped-declarations)
   * [Spread/Rest](#spreadrest)
   * [Default Parameter Values](#default-parameter-values)
+  * [Destructuring](#destructuring)
 
 <!-- tocstop -->
 
@@ -179,4 +180,145 @@ foo( 10 );            // "bar called"
 
 y = 6;
 foo( undefined, 10 ); // 9 10
+```
+
+### Destructuring
+
+```js
+function foo() {
+  return [1,2,3];
+}
+
+function bar() {
+  return {
+    x: 4,
+    y: 5,
+    z: 6
+  };
+}
+
+var [ a, b, c ] = foo();          // array destructuring
+var { x: x, y: y, z: z } = bar(); // object destructuring
+
+console.log( a, b, c ); // 1 2 3
+console.log( x, y, z ); // 4 5 6
+```
+
+```js
+// shortened object syntax
+var { x, y, z } = bar();
+
+console.log( x, y, z ); // 4 5 6
+```
+
+```js
+// assigning property to different variable name
+var { x: bam, y: baz, z: bap } = bar();
+
+console.log( bam, baz, bap ); // 4 5 6
+console.log( x, y, z );       // ReferenceError
+```
+
+```js
+// swap two variables
+var x = 10, y = 20;
+
+[ y, x ] = [ x, y ];
+
+console.log( x, y ); // 20 10
+```
+
+```js
+// nested destructuring
+var a1 = [ 1, [2, 3, 4], 5 ];
+var o1 = { x: { y: { z: 6 } } };
+
+var [ a, [ b, c, d ], e ] = a1;
+var { x: { y: { z: w } } } = o1;
+
+console.log( a, b, c, d, e ); // 1 2 3 4 5
+console.log( w );             // 6
+```
+
+```js
+// destructuring parameters
+function foo( [ x, y ] ) {
+  console.log( x, y );
+}
+
+foo( [ 1, 2 ] );  // 1 2
+foo( [ 1 ] );     // 1 undefined
+foo( [] );        // undefined undefined
+
+function bar( { x, y } ) {
+  console.log( x, y );
+}
+
+bar( { y: 1, x: 2 } ); // 2 1
+bar( { y: 42 } );      // undefined 42
+bar( {} );             // undefined undefined
+```
+
+```js
+// default value assignment
+function foo() {
+  return [1,2,3];
+}
+
+function bar() {
+  return {
+    x: 4,
+    y: 5,
+    z: 6
+  };
+}
+
+var [ a = 3, b = 6, c = 9, d = 12 ] = foo();
+var { x = 5, y = 10, z = 15, w = 20 } = bar();
+
+console.log( a, b, c, d ); // 1 2 3 12
+console.log( x, y, z, w ); // 4 5 6 20
+```
+
+```js
+var defaults = {
+  options: {
+    remove: true,
+    enable: false,
+    instance: {}
+  },
+  log: {
+    warn: true,
+    error: true
+  }
+};
+
+var config = {
+  options: {
+    remove: false,
+    instance: null
+  }
+};
+
+// merge defaults into config
+{
+  // destructure (with default value assignments)
+  let {
+    options: {
+      remove = defaults.options.remove,
+      enable = defaults.options.enable,
+      instance = defaults.options.instance
+    } = {},
+    log: {
+      warn = defaults.log.warn,
+      error = defaults.log.error
+    } = {}
+  } = config;
+
+  // restructure
+  config = {
+    options: { remove, enable, instance },
+    log: { warn, error }
+  };
+}
 ```
