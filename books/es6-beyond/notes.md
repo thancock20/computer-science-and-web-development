@@ -36,6 +36,9 @@
 * [API Additions](#api-additions)
   * [`Array`](#array)
   * [`Object`](#object)
+  * [`Math`](#math)
+  * [`Number`](#number)
+  * [`String`](#string)
 
 <!-- tocstop -->
 
@@ -1092,4 +1095,116 @@ var o2 = Object.assign(
 
 // delegates to o1.foo()
 o2.foo(); // foo
+```
+
+### `Math`
+
+Trigonometry:
+* `cosh()`-Hyperbolic cosine
+* `acosh()`-Hyperbolic arccosine
+* `sinh()`-Hyperbolic sine
+* `asinh()`-Hyperbolic arcsine
+* `tanh()`-Hyperbolic tangent
+* `atanh()`-Hyperbolic arctangent
+* `hypot()`-The squareroot of the sum of the squares (i.e., the generalized Pythagorean theorem)
+
+Arithmetic:
+* `cbrt()`-Cube root
+* `cls32()`-Count leading zeros in 32-bit binary representation
+* `expm1()`-The same as `exp(x) - 1`
+* `log2()`-Binary logarithm (log base 2)
+* `log10()`-Log base 10
+* `log1p()`-The same as `log(x + 1)`
+* `imul()`-32-bit integer multiplication of two numbers
+
+Meta:
+* `sign()`-Returns the sign of the number
+* `trunc()`-Returns only the integer part of a number
+* `fround()`-Rounds to nearest 32-bit (single precision) floating-point value
+
+### `Number`
+
+`Number.EPSILON` is the minimum value between any two numbers: `2^-52`
+
+```js
+// used as a tolerance for imprecision in floating-point arithmetic
+var x = 0.1, y = 0.2, z = 0.3;
+
+x + y; // 0.30000000000000004
+
+x + y == z; // false
+
+Math.abs(x + y - z) < Number.EPSILON; // true
+```
+
+`Number.MAX_SAFE_INTEGER` is the highest integer that can "safely" be represented unambiguously in a JS number value: `2^53 - 1`.
+
+`Number.MIN_SAFE_INTEGER` is the lowest integer that can "safely" be represented unambiguously in a JS number value: `-(2^53 - 1)`.
+
+`Number.isNaN()` only returns true if value is NaN, where the global isNaN() returns true for any value that is not a number.
+
+```js
+var a = NaN, b = "NaN", c = 42;
+
+isNaN(a); // true
+isNaN(b); // true -- oops!
+isNaN(c); // false
+
+Number.isNaN(a); // true
+Number.isNaN(b); // false -- fixed!
+Number.isNaN(c); // false
+```
+
+`Number.isFinite()`.
+
+```js
+var a = NaN, b = Infinity, c = 42, d = "42";
+
+Number.isFinite( a ); // false
+Number.isFinite( b ); // false
+Number.isFinite( c ); // true
+Number.isFinite( d ); // false
+
+// global isFinite() coerces the value
+isFinite( d ); // true
+```
+
+`Number.isInteger()`.
+
+```js
+Number.isInteger( 4 );        // true
+Number.isInteger( 4.2 );      // false
+Number.isInteger( NaN );      // false
+Number.isInteger( Infinity ); // false
+```
+
+### `String`
+
+`String.raw()` obtains the raw string value of a template literal without processing of escape sequences.
+
+```js
+var str = "bc";
+
+String.raw`\ta${str}d\xE9`; // "\tabcd\xE9", not "	abcdé"
+```
+
+`String#repeat()`.
+
+```js
+"foo".repeat( 3 ); // "foofoofoo"
+```
+
+String inspection functions:
+
+```js
+var palindrome = "step on no pets";
+
+palindrome.startsWith( "step on" ); // true
+palindrome.startsWith( "on", 5 ); // true
+
+palindrome.endsWith( "no pets" ); // true
+palindrome.endsWith( "no", 10 ); // true
+
+palindrome.includes( "on" ); // true
+palindrome.includes( "on", 6 ); // false
 ```
