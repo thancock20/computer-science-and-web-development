@@ -33,6 +33,8 @@
   * [WeakMaps](#weakmaps)
   * [Sets](#sets)
   * [WeakSets](#weaksets)
+* [API Additions](#api-additions)
+  * [`Array`](#array)
 
 <!-- tocstop -->
 
@@ -828,4 +830,154 @@ s.add( y );
 
 x = null; // x is GC-eligible
 y = null; // y is GC-eligible
+```
+
+## API Additions
+
+### `Array`
+
+`Array.of()` replaces `Array()` as the preferred function-form constructor for arrays.
+
+```js
+var a = Array( 3 );
+a.length;                     // 3
+a[0];                         // undefined
+
+var b = Array.of( 3 );
+b.length;                     // 1
+b[0];                         // 3
+
+var c = Array.of( 1, 2, 3 );
+c.length;                     // 3
+c;                            // [1,2,3]
+```
+
+`Array.from()` can make an array from an iterable or array-like object.
+
+```js
+// duplicate an array
+var arr = [1,2,3];
+
+// old way
+var arr2 = arr.slice();
+arr2; // [1,2,3]
+
+// ES6 way
+var arr3 = Array.from( arr );
+arr3; // [1,2,3]
+```
+
+```js
+// array-like object
+var arrLike = {
+  length: 3,
+  0: "foo",
+  1: "bar"
+};
+
+// old way
+var arr = Array.prototype.slice.call( arrLike );
+arr; // ["foo","bar"]
+
+// ES6 way
+var arr2 = Array.from( arrLike );
+arr2; // ["foo","bar"]
+```
+
+```js
+// make an array of undefined values
+// old way
+var a = Array.apply( null, { length: 4 } );
+
+// ES6 way
+var c = Array.from( { length: 4 } );
+```
+
+```js
+// 2nd argument is a mapping callback
+var arrLike = {
+  length: 4,
+  2: "foo"
+};
+
+Array.from( arrLike, function mapper(val,idx) {
+  if (typeof val == "string") {
+    return val.toUpperCase();
+  } else {
+    return idx;
+  }
+} );
+// [0,1,"FOO",3]
+```
+
+`Array#copyWithin()` copies a portion of an array to another location in the same array, overwriting whatever was there before.
+
+The arguments are *target* (the index to copy to), *start* (the inclusive index to start the copying from), and optionally *end* (the exclusive index to stop copying). If any of the arguments are negative, they're taken to be relative from the end of the array.
+
+```js
+[1,2,3,4,5].copyWithin( 3, 0 );      // [1,2,3,1,2]
+[1,2,3,4,5].copyWithin( 3, 0, 1 );   // [1,2,3,1,5]
+[1,2,3,4,5].copyWithin( 0, -2 );     // [4,5,3,4,5]
+[1,2,3,4,5].copyWithin( 0, -2, -1 ); // [4,2,3,4,5]
+[1,2,3,4,5].copyWithin( 2, 1 );      // [1,2,2,3,4]
+```
+
+`Array#fill()` fills an existing array entirely (or partially) with a specified value.
+
+```js
+var a = Array( 4 ).fill( undefined );
+a; // [undefined,undefined,undefined,undefined]
+
+// takes optional start and end parameters
+var b = [ null, null, null, null ].fill( 43, 1, 3 );
+b; // [null,42,42,null]
+```
+
+`Array#find()` works basically the same as `some()`, except that once the callback returns a `true`/truthy value, the actual array value is returned.
+
+```js
+var a = [1,2,3,4,5];
+
+a.some( function matcher(v) {
+  return v == "2";
+} ); // true
+
+a.some ( function matcher(v) {
+  return v == 7;
+} ); // false
+
+a.find( function matcher(v) {
+  return v == "2";
+} ); // 2
+
+a.find( function matcher(v) {
+  return v == 7;
+} ); // undefined
+```
+
+`array#findIndex()` is similar to `indexOf()`, but uses a callback for the matching logic.
+
+```js
+var a = [1,2,3,4,5];
+
+// indexOf() always uses === strict equality
+a.indexOf("2"); // -1
+
+a.findIndex( function matcher(v) {
+  return v == "2";
+} ); // 1
+```
+
+Don't use `findIndex(..) != -1` (the way it's always been done with `indexOf(..)`) to get a boolean from the search, because `some(..)` already yields the `true`/`false` you want. And don't do `a[ a.findIndex(..) ]` to get the matched value, because that's what `find(..)` accomplishes. Use `indexOf(..)` if you need the index of a strict match, or `findIndex(..)` if you need the index of a more customized match.
+
+Arrays also include the iterator methods: `entries()`, `values()`, and `keys()`.
+
+```js
+var a = [1,2,3];
+
+[...a.values()]; // [1,2,3]
+[...a.keys()]; // [0,1,2]
+[...a.entries()] // [ [0,1], [1,2], [2,3] ]
+
+[...a[Symbol.iterator]()]; // [1,2,3]
 ```
