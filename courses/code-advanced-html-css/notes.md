@@ -6,6 +6,7 @@
 * [Performance & Organization](#performance-organization)
   * [Strategy & Structure](#strategy-structure)
   * [Performance Driven Selectors](#performance-driven-selectors)
+  * [Reusable Code](#reusable-code)
 
 <!-- tocstop -->
 
@@ -50,4 +51,35 @@ button .callout {...}
 /* Bad */
 article.feat-post {...}
 .feat-post {...}
+```
+
+### Reusable Code
+
+```css
+/* Bad */
+.news {
+  background: #eee;
+  border-radius: 5px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .25);
+}
+.social {
+  background: #eee;
+  border-radius: 5px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .25);
+}
+
+/* Good */
+.news,
+.social {
+  background: #eee;
+  border-radius: 5px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .25);
+}
+
+/* Even Better */
+.modal {
+  background: #eee;
+  border-radius: 5px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .25);
+}
 ```
