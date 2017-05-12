@@ -7,6 +7,8 @@
   * [Strategy & Structure](#strategy-structure)
   * [Performance Driven Selectors](#performance-driven-selectors)
   * [Reusable Code](#reusable-code)
+  * [Minify & Compress Files](#minify-compress-files)
+  * [Reduce HTTP Requests](#reduce-http-requests)
 
 <!-- tocstop -->
 
@@ -83,3 +85,22 @@ article.feat-post {...}
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, .25);
 }
 ```
+
+### Minify & Compress Files
+
+* Use gzip for HTML, CSS, JavaScript, and so forth.
+  * Included in [HTML5 Boilerplate](http://html5boilerplate.com/).
+  * Can use the [Compression Webpack Plugin](https://github.com/webpack-contrib/compression-webpack-plugin)
+* Image Compression
+  * Mac: [ImageOptim](http://imageoptim.com/)
+  * Windows: [PNGGauntlet](http://pnggauntlet.com/)
+  * Linux: [Trimage](https://trimage.org/)
+* Measuring Compression
+  * Use the Chrome Dev-Tools Network tab.
+
+### Reduce HTTP Requests
+
+* Combine Like Files
+* Use Image Sprites
+* Use Image Data URIs
+* Cache Common Files
