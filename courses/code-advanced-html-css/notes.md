@@ -14,6 +14,9 @@
   * [Fixed Footer](#fixed-footer)
   * [z-index Property](#z-index-property)
 * [Complex Selectors](#complex-selectors)
+* [Responsive Web Design](#responsive-web-design)
+  * [Viewport Meta Tag](#viewport-meta-tag)
+  * [Flexible Layouts](#flexible-layouts)
 
 <!-- tocstop -->
 
@@ -214,3 +217,72 @@ When stacking elements, the highest `z-index` appears on top.
 | `div::before`                   | Generated Content              | Creates a pseudo-element inside the selected element at the beginning                                                                       |
 | `a::after`                      | Generated Content              | Creates a pseudo-element inside the selected element at the end                                                                             |
 | `::selection`                   | Fragment Pseudo-element        | Selects the part of a document which has been selected, or highlighted, by a users actions                                                  |
+
+## Responsive Web Design
+
+### Viewport Meta Tag
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1">
+```
+
+### Flexible Layouts
+
+Relative viewport lengths:
+* `vw`: 1% of the width of the viewport.
+* `vh`: 1% of the height of the viewport.
+* `vmin`: The smaller of `vw` or `vh`.
+* `vmax`: The larger of `vw` or `vh`.
+
+Formula to identify the proportions of a flexible layout using relative values:
+```
+target / context = result
+```
+
+HTML
+```html
+<div class="container">
+  <section>...</section>
+  <aside>...</aside>
+</div>
+```
+
+CSS - non-flexible
+```css
+.container {
+  width: 538px;
+}
+
+section,
+aside {
+  margin: 10px;
+}
+
+section {
+  float: left;
+  width: 340px;
+}
+
+aside {
+  float: right;
+  width: 158px;
+}
+```
+
+CSS - flexible
+```css
+section,
+aside {
+  margin: 1.858736059%; /* 10px / 538px = .018587361 */
+}
+
+section {
+  float: left;
+  width: 63.197026%; /* 340px / 538px = .63197026 */
+}
+
+aside {
+  float: right;
+  width: 29.3680297%; /* 158px / 538px = .293680297 */
+}
+```
