@@ -17,6 +17,8 @@
 * [Responsive Web Design](#responsive-web-design)
   * [Viewport Meta Tag](#viewport-meta-tag)
   * [Flexible Layouts](#flexible-layouts)
+  * [Media Queries](#media-queries)
+  * [Flexible Media](#flexible-media)
 
 <!-- tocstop -->
 
@@ -271,6 +273,10 @@ aside {
 
 CSS - flexible
 ```css
+.container {
+  width: 538px;
+}
+
 section,
 aside {
   margin: 1.858736059%; /* 10px / 538px = .018587361 */
@@ -284,5 +290,108 @@ section {
 aside {
   float: right;
   width: 29.3680297%; /* 158px / 538px = .293680297 */
+}
+```
+
+### Media Queries
+
+CSS - media queries (mobile first)
+```css
+section,
+aside {
+  margin: 1.858736059%
+}
+
+@media all and (min-width: 420px) {
+  .container {
+    max-width: 538px;
+  }
+  section {
+    float: left;
+    width: 63.197026%;
+  }
+
+  aside {
+    float: right;
+    width: 29.3680297%;
+  }
+}
+```
+
+* Media Types:
+  * `all`
+  * `screen` - default if not specified
+  * `print`
+  * `tv`
+  * `braille`
+* Logical Operators:
+  * `and` - no `or` but comma separated works that way
+  * `not`
+  * `only`
+* Media Features:
+  * Prefixes:
+    * `min` - greater than or equal to
+    * `max` - less than or equal to
+  * `height`
+  * `width`
+  * `device-height`
+  * `device-width`
+  * `aspect-ratio`
+  * `device-aspect-ratio`
+  * `pixel-ratio`
+  * `device-pixel-ratio`
+  * `resolution`
+  * `orientation` - must be `landscape` or `portrait`
+
+Examples:
+
+```css
+@media all and (max-width: 1024px) {}
+
+@media all and (min-width: 800px) and (max-width: 1024px) {}
+
+@media not screen and (color) {}
+
+@media only screen and (orientation: portrait) {}
+
+@media all and (min-device-aspect-ratio: 16/9) {}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (min-device-pixel-ratio: 1.3) {}
+```
+
+### Flexible Media
+
+Quick way to make media flexible:
+
+```css
+img, video, canvas {
+  max-width: 100%;
+}
+```
+
+Workaround for embedded media:
+
+HTML
+```html
+<figure>
+  <iframe src="https://www.youtube.com/embed/4Fqg43ozz7A"></iframe>
+</figure>
+```
+
+CSS
+```css
+figure {
+  height: 0;
+  padding-bottom: 56.25%; /* 16:9 - 9 / 16 * 100 */
+  position: relative;
+  width: 100%;
+}
+
+iframe {
+  height: 100%;
+  left: 0
+  position: absolute;
+  top: 0;
+  width: 100%;
 }
 ```
