@@ -19,6 +19,9 @@
   * [Flexible Layouts](#flexible-layouts)
   * [Media Queries](#media-queries)
   * [Flexible Media](#flexible-media)
+* [Transforms](#transforms)
+* [Transitions](#transitions)
+* [Animations](#animations)
 
 <!-- tocstop -->
 
@@ -395,3 +398,189 @@ iframe {
   width: 100%;
 }
 ```
+
+## Transforms
+
+```
+/* Keyword values */
+transform: none;
+
+/* Function values */
+transform: matrix(1.0, 2.0, 3.0, 4.0, 5.0, 6.0);
+transform: translate(12px, 50%);
+transform: translateX(2em);
+transform: translateY(3in);
+transform: scale(2, 0.5);
+transform: scaleX(2);
+transform: scaleY(0.5);
+transform: rotate(0.5turn);
+transform: skew(30deg, 20deg);
+transform: skewX(30deg);
+transform: skewY(1.07rad);
+transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+transform: translate3d(12px, 50%, 3em);
+transform: translateZ(2px);
+transform: scale3d(2.5, 1.2, 0.3);
+transform: scaleZ(0.3);
+transform: rotate3d(1, 2.0, 3.0, 10deg);
+transform: rotateX(10deg);
+transform: rotateY(10deg);
+transform: rotateZ(10deg);
+transform: perspective(17px);
+
+/* Multiple function values */
+transform: translateX(10px) rotate(10deg) translateY(5px);
+
+/* Global values */
+transform: inherit;
+transform: initial;
+transform: unset;
+```
+
+```
+/* One-value syntax */
+transform-origin: 2px;
+transform-origin: bottom;
+
+/* x-offset y-offset */
+transform-origin: 3cm 2px;
+
+/* y-offset x-offset-keyword */
+transform-origin: 2px left;
+
+/* x-offset-keyword y-offset */
+transform-origin: left 2px;
+
+/* x-offset-keyword y-offset-keyword */
+transform-origin: right top;
+
+/* y-offset-keyword x-offset-keyword */
+transform-origin: top right;
+
+/* x-offset y-offset z-offset */
+transform-origin: 2px 30% 10px;
+
+/* y-offset x-offset-keyword z-offset */
+transform-origin: 2px left 10px;
+
+/* x-offset-keyword y-offset z-offset */
+transform-origin: left 5px -3px;
+
+/* x-offset-keyword y-offset-keyword z-offset */
+transform-origin: right bottom 2cm;
+
+/* y-offset-keyword x-offset-keyword z-offset */
+transform-origin: bottom right 2cm;
+
+/* Global values */
+transform-origin: inherit;
+transform-origin: initial;
+transform-origin: unset;
+```
+
+```
+/* Keyword value */
+perspective: none;
+
+/* <length> values */
+perspective: 20px;
+perspective: 3.5em;
+
+/* Global values */
+perspective: inherit;
+perspective: initial;
+perspective: unset;
+```
+
+```
+/* One-value syntax */
+perspective-origin: x-position;
+
+/* Two-value syntax */
+perspective-origin: x-position y-position;
+
+/* When both x-position and y-position are keywords,
+   the following is also valid */
+perspective-origin: y-position x-position;
+
+/* Global values */
+perspective-origin: inherit;
+perspective-origin: initial;
+perspective-origin: unset;
+```
+
+```
+/* Keyword values */
+backface-visibility: visible;
+backface-visibility: hidden;
+
+/* Global values */
+backface-visibility: inherit;
+backface-visibility: initial;
+backface-visibility: unset;
+```
+
+Needs the demos, so check out the [page](http://learn.shayhowe.com/advanced-html-css/css-transforms/).
+
+Also see the [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Transforms).
+
+## Transitions
+
+```
+/* Apply to 1 property */
+/* property name | duration */
+transition: margin-left 4s;
+
+/* property name | duration | delay */
+transition: margin-left 4s 1s;
+
+/* property name | duration | timing function | delay */
+transition: margin-left 4s ease-in-out 1s;
+
+/* Apply to 2 properties */
+transition: margin-left 4s, color 1s;
+
+/* Apply to all changed properties */
+transition: all 0.5s ease-out;
+
+/* Global values */
+transition: inherit;
+transition: initial;
+transition: unset;
+```
+
+Needs the demos, so check out the [page](http://learn.shayhowe.com/advanced-html-css/transitions-animations/).
+
+Also see the [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Transitions).
+
+## Animations
+
+```
+@keyframes slidein {
+  from {
+    margin-left: 100%;
+    width: 300%;
+  }
+
+  to {
+    margin-left: 0%;
+    width: 100%;
+  }
+}
+```
+
+```
+/* @keyframes duration | timing-function | delay |
+iteration-count | direction | fill-mode | play-state | name */
+animation: 3s ease-in 1s 2 reverse both paused slidein;
+
+/* @keyframes duration | timing-function | delay | name */
+animation: 3s linear 1s slidein;
+
+/* @keyframes duration | name */
+animation: 3s slidein;
+```
+
+Needs the demos, so check out the [page](http://learn.shayhowe.com/advanced-html-css/transitions-animations/).
+
+Also see the [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations).
