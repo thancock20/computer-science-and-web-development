@@ -22,6 +22,8 @@
 * [Transforms](#transforms)
 * [Transitions](#transitions)
 * [Animations](#animations)
+* [Feature Support & Polyfills](#feature-support-polyfills)
+* [Cross Browser Testing](#cross-browser-testing)
 
 <!-- tocstop -->
 
@@ -555,7 +557,7 @@ Also see the [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/CS
 
 ## Animations
 
-```
+```css
 @keyframes slidein {
   from {
     margin-left: 100%;
@@ -584,3 +586,21 @@ animation: 3s slidein;
 Needs the demos, so check out the [page](http://learn.shayhowe.com/advanced-html-css/transitions-animations/).
 
 Also see the [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations).
+
+## Feature Support & Polyfills
+
+* Use [HTML5 Shiv](https://github.com/afarkas/html5shiv) to add HTML5 elements to IE8 and below.
+
+```html
+<!-- [if lt IE 9]>
+  <script src="html5shiv.js"></script>
+<![endif]-->
+```
+
+* Use [Modernizr](http://modernizr.com/) to write conditional CSS and JavaScript based on whether or not a browser supports a specific feature.
+
+## Cross Browser Testing
+
+Use Virtual Machines for Internet Explorer: [Automated Installer](http://learn.shayhowe.com/advanced-html-css/feature-support-polyfills/).
+
+To get dev tools in IE7 and below, use the [Firebug Lite](https://getfirebug.com/firebuglite#Stable) bookmarklet.
