@@ -24,6 +24,9 @@
 * [Animations](#animations)
 * [Feature Support & Polyfills](#feature-support-polyfills)
 * [Cross Browser Testing](#cross-browser-testing)
+* [Semantics & Accessibility](#semantics-accessibility)
+  * [Microdata](#microdata)
+  * [WAI-ARIA](#wai-aria)
 
 <!-- tocstop -->
 
@@ -604,3 +607,186 @@ Also see the [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/CS
 Use Virtual Machines for Internet Explorer: [Automated Installer](http://learn.shayhowe.com/advanced-html-css/feature-support-polyfills/).
 
 To get dev tools in IE7 and below, use the [Firebug Lite](https://getfirebug.com/firebuglite#Stable) bookmarklet.
+
+## Semantics & Accessibility
+
+```html
+<!-- Hiding content - good -->
+<div hidden>...</div>
+
+<!-- Hiding content - not good -->
+<div style="display: none;">...</div>
+
+<!-- Strong importance -->
+<strong>Caution:</strong> Falling rocks.
+
+<!-- Stylistically offset -->
+This recipe calls for <b>bacon</b> and <b>baconnaise</b>
+
+<!-- Stressed emphasis -->
+I <em>love</em> Chicago!
+
+<!-- Alternative voice or tone -->
+The name <i>Shay</i> means a gift.
+
+<!-- Added to the document -->
+<ins cite="http://learn.shayhowe.com" datetime="2012-07-01">
+  Updated: This website now contains an advanced guide.
+</ins>
+
+<!-- Unarticulated annotation -->
+<u>Urushihara Yuuji</u> won <u>Sasuke 27</u>.
+
+<!-- Deleted from the document -->
+I am an avid cyclist, <del cite="http://shayhowe.com" datetime="2012-07-01">skateboarder</del> and designer.
+
+<!-- No longer accurate or relevant -->
+<s>$24.99</s> $19.99
+
+<!-- Highlighted for reference purposes -->
+Search results for <mark>'chicago'</mark>.
+
+<!-- Abbreviations -->
+<abbr title="HyperText Markup Language">HTML</abbr>
+<abbr title="Cascading Style Sheets">CSS</abbr>
+
+<!-- Subscript -->
+H<sub>2</sub>O
+
+<!-- Superscript -->
+1<sup>st</sup> Place
+
+<!-- Meter -->
+<meter value="7" max="10">7 stars</meter>
+<meter value="47" min="0" max="105" low="5" high="65" optimum="45">The car is moving at a decent average mile per hour.</meter>
+
+<!-- Progress -->
+You are <progress value="50" max="100">50%</progress> complete.
+<progress value="50" min="0" max="100">Hold tight, you&#8217;re getting there.</progress>
+
+<!-- Time -->
+<time>2011-08-24</time>
+<time datetime="2011-08-24" pubdate>August 24th, 2011</time>
+<time datetime="15:00">3pm</time>
+<time datetime="2011-08-24T15:00">August 24th, 2011 at 3pm</time>
+
+<!-- Address -->
+<address>
+  <strong>Shaye Howe</strong><br>
+  <a href="http://learn.shayhowe.com">http://learn.shayhowe.com</a><br>
+  <a href="mailto:hello@awesome.com">hello@awesome.com</a><br>
+  600 W. Chicago Ave.<br>
+  Suite 620<br>
+  Chicago, IL 60654<br>
+  USA
+</address>
+
+<!-- Inline code samples -->
+Use the <code>article</code> element.
+
+<!-- Larger, block level code snippets -->
+<pre><code>body {
+  color: #666;
+  font: 14px/20px Arial, sans-serif;
+}</code></pre>
+
+<!-- Line break -->
+600 W. Chicago Ave.<br>
+Chicago, IL 60654<br>
+USA
+
+<!-- Word break -->
+http://shay<wbr>howe.com
+
+<!-- Side comments or small print -->
+<small>&copy; 2012 Shay Howe</small>
+```
+
+### Microdata
+
+```html
+<!-- Person microdata -->
+<section itemscope itemtype="http://schema.org/Person">
+  <strong itemprop="name">Shay Howe</strong>
+  <img src="shay.jpg" itemprop="image" alt="Shay Howe">
+  <div itemprop="jobTitle">Designer and Front-end Developer</div>
+  <a href="http://www.shayhowe.com" itemprop="url">shayhowe.com</a>
+  <div itemprop="telephone">(555) 123-4567</div>
+  <a href="mailto:shay@awesome.com" itemprop="email">shay@awesome.com</a>
+  <address itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+    <span itemprop="streetAddress">600 W. Chicago Ave.</span>
+    <span itemprop="addressLocality">Chicago</span>,
+    <abbr itemprop="addressRegion" title="Illinois">IL</abbr>
+    <span itemprop="postalCode">60654</span>
+  </address>
+</section>
+
+<!-- Event microdata -->
+<section itemscope itemtype="http://schema.org/Event">
+  <a itemprop="url" href="#">
+    <span itemprop="name">Styles Conference</span>
+  </a>
+  <time itemprop="startDate" datetime="2014-08-2409:00">Sunday, August 24, 2014 at 9:00 a.m.</time>
+  <div itemprop="location" itemscope itemtype="http://schema.org/Place">
+    <a itemprop="url" href="http://www.thechicagotheatre.com/">Chicago Theatre</a>
+    <address itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+      <div itemprop="streetAddress">175 N. State St.</div>
+      <span itemprop="addressLocality">Chicago</span>,
+      <abbr itemprop="addressRegion" title="Illinois">IL</abbr>
+      <span itemprop="postalCode">60601</span>
+    </address>
+  </div>
+</section>
+```
+
+### WAI-ARIA
+
+**Document Structure Roles** (define the organizational structure of content on a page)
+* `article`
+* `columnheader`
+* `definition`
+* `directory`
+* `document`
+* `group`
+* `heading`
+* `img`
+* `list`
+* `listitem`
+* `math`
+* `note`
+* `presentation`
+* `region`
+* `row`
+* `rowheader`
+* `separator`
+* `toolbar`
+
+**Landmark Roles** (define the regions of a page)
+* `application`
+* `banner`
+* `complementary`
+* `contentinfo`
+* `form`
+* `main`
+* `navigation`
+* `search`
+
+| Element   | Implied Role    | Acceptable Roles                                                                                                                      |
+|:----------|:----------------|:--------------------------------------------------------------------------------------------------------------------------------------|
+| `article` | `article`       | `application`, `article`, `document`, or `main`                                                                                       |
+| `aside`   | `complementary` | `complementary`, `note`, or `search`                                                                                                  |
+| `footer`  | ---             | `contentinfo` (Only once per page)                                                                                                    |
+| `header`  | ---             | `banner` (Only once per page)                                                                                                         |
+| `nav`     | `navigation`    | `navigation`                                                                                                                          |
+| `section` | `region`        | `alert`, `alertdialog`, `application`, `contentinfo`, `dialog`, `document`, `log`, `main`, `marquee`, `region`, `search`, or `status` |
+
+```html
+<header role="banner">
+  <nav role="navigation">...</nav>
+</header>
+<article role="article">
+  <section role="region">...</section>
+</article>
+<aside role="complementary">...</aside>
+<footer role="contentinfo">...</footer>
+```
