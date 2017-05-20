@@ -1,1 +1,1 @@
-# Notes related to what I learned while completing this
+# Notes for Setting up ES6
