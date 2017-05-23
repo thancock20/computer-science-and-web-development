@@ -15,6 +15,7 @@
     * [Left-Variadic Destructuring](#left-variadic-destructuring)
     * [Variadic Compose](#variadic-compose)
     * [Pipeline](#pipeline)
+* [Choice and Truthiness](#choice-and-truthiness)
 
 <!-- tocstop -->
 
@@ -295,3 +296,17 @@ const pipeline = (...fns) =>
 
 // pipeline(a, b)(value) === b(a(value));
 ```
+
+## Choice and Truthiness
+
+* Logical operators are based on truthiness and falsiness, not the strict values `true` and `false`.
+  * "falsy" values: `false`, `null`, `undefined`, `NaN`, `0`, and `''`.
+* `!` is a logical operator, it always returns `true` or `false`.
+* The ternary operator (`?:`), `||`, and `&&` are control flow operators, they do not always return `true` or `false`, and they have short-cut semantics.
+  * `&&` evaluates its left-hand expression.
+    * If its left-hand expression evaluates to something falsy, `&&` returns the value of its left-hand expression without evaluating its right-hand expression.
+    * If its left-hand expression evaluates to something truthy, `&&` evaluates and returns the value of the right-hand expression.
+  * `||` evaluates its left-hand expression.
+    * If its left-hand expression evaluates to something truthy, `||` returns the value of its left-hand expression without evaluating its right-hand expression.
+    * If its left-hand expression evaluates to something falsy, `||` evaluates and returns the value of the right-hand expression.
+* Function invocation uses eager evaluation, so if we need to roll our own control-flow semantics, we pass it functions, not expressions.
