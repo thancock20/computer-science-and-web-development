@@ -16,6 +16,14 @@
     * [Variadic Compose](#variadic-compose)
     * [Pipeline](#pipeline)
 * [Choice and Truthiness](#choice-and-truthiness)
+* [Composing Data](#composing-data)
+  * [Linear Recursion](#linear-recursion)
+  * [Tail-call Optimization](#tail-call-optimization)
+  * [Making Data Out of Functions](#making-data-out-of-functions)
+  * [Recipes With Data](#recipes-with-data)
+    * [mapWith](#mapwith)
+    * [Flip](#flip)
+    * [Object.assign](#objectassign)
 
 <!-- tocstop -->
 
@@ -310,3 +318,177 @@ const pipeline = (...fns) =>
     * If its left-hand expression evaluates to something truthy, `||` returns the value of its left-hand expression without evaluating its right-hand expression.
     * If its left-hand expression evaluates to something falsy, `||` evaluates and returns the value of the right-hand expression.
 * Function invocation uses eager evaluation, so if we need to roll our own control-flow semantics, we pass it functions, not expressions.
+
+## Composing Data
+
+### Linear Recursion
+
+1. Divide the problem into smaller problems.
+2. If a smaller problem is solvable, solve the small problem.
+3. If a smaller problem is not solvable, divide that problem.
+4. When all small problems have been solved, compose the solutions into one big solution.
+
+```js
+// example recursive function to flatten an array
+const flatten = ([first, ...rest]) => {
+  if (first === undefined) {
+    return [];
+  }
+  else if (!Array.isArray(first)) {
+    return [first, ...flatten(rest)];
+  }
+  else {
+    return [...flatten(first), ...flatten(rest)];
+  }
+}
+
+flatten(["foo",[3,4,[]]]); // ["foo",3,4]
+```
+
+### Tail-call Optimization
+
+Non-optimized factorial function
+```js
+const factorial = (n) =>
+  n == 1
+    ? n
+    : n * factorial(n - 1);
+
+factorial(1); // 1
+factorial(5); // 120
+```
+
+Optimized, and including a default argument
+```js
+const factorial = (n, work = 1) =>
+  n === 1
+    ? work
+    : factorial(n - 1, n * work);
+
+factorial(1); // 1
+factorial(5); // 120
+```
+
+### Making Data Out of Functions
+
+Linked list implemented entirely with functions
+```js
+const K = (x) => (y) => x;
+const I = (x) => (x);
+const V = (x) => (y) => (z) => z(x)(y);
+
+const pairFirst = K,
+      pairRest = K(I),
+      pair = V;
+
+const EMPTYLIST = (whenEmpty, unlessEmpty) => whenEmpty();
+
+const node = (x) => (y) => (whenEmpty, unlessEmpty) => unlessEmpty(pair(x)(y));
+
+const first = (list) => list(
+  () => "ERROR: Can't take the first of an empty list",
+  (aPair) => aPair(pairFirst)
+);
+
+const rest = (list) => list(
+  () => "ERROR: Can't take the rest of an empty list",
+  (aPair) => aPair(pairRest)
+);
+
+const length = (list) => list(
+  () => 0,
+  (aPair) => 1 + length(aPair(pairRest))
+);
+
+const print = (list) => list(
+  () => "",
+  (aPair) => `${aPair(pairFirst)} ${print(aPair(pairRest))}`
+);
+
+const reverse = (list, delayed = EMPTYLIST) => list(
+  () => delayed,
+  (aPair) => reverse(aPair(pairRest), node(aPair(pairFirst))(delayed))
+);
+
+const mapWith = (fn, list, delayed = EMPTYLIST) => list(
+  () => reverse(delayed),
+  (aPair) => mapWith(fn, aPair(pairRest), node(fn(aPair(pairFirst)))(delayed))
+);
+```
+
+Takeaways:
+1. Instead of directly  manipulating part of an entity, pass it a function and have it call the function with the part you want.
+2. And instead of testing some property of an entity and making a choice of your own with `?:` (or `if`), pass the entity the work you want done for each case and let it test itself.
+
+### Recipes With Data
+
+#### mapWith
+
+**mapWith** differs from `map` in two ways. It reverses the arguments, taking the function first and the list second. It also "curries" the function: Instead of taking  two arguments, it takes one argument and retuns a function that takes another argument.
+
+```js
+const mapWith = (fn) => (list) => list.map(fn);
+
+const squaresOf = mapWith(n => n * n);
+
+squaresOf([1,2,3,4,5]); // [1,4,9,16,25]
+```
+
+#### Flip
+
+**Flip** switches the arguments of a function. This can either be curried or uncurried.
+```js
+const flip = (fn) =>
+  function(first, second) {
+    if (arguments.length === 2) {
+      return fn(second, first);
+    }
+    else {
+      return function(second) {
+        return fn(second, first);
+      };
+    };
+  };
+
+const subtract = (x,y) => x-y;
+subtract(2,1); // 1
+
+const flippedSubtract = flip(subtract);
+flippedSubtract(1,2); // 1
+
+const subtractOne = flip(subtract)(1);
+subtractOne(2); // 1
+```
+
+#### Object.assign
+
+**Object.assign** is a standard function. It can be used to copy an object  by extending an empty object:
+
+```js
+Object.assign({}, {
+  apples: 12,
+  oranges: 12
+});
+// { apples: 12, oranges: 12 }
+```
+
+It can also extend one object with another:
+
+```js
+const inventory = {
+  apples: 12,
+  oranges: 12
+};
+
+const shipment = {
+  bananas: 54,
+  pears: 24
+};
+
+// note: this mutates inventory
+Object.assign(inventory, shipment);
+// { apples: 12,
+//   oranges: 12,
+//   bananas: 54,
+//   pears: 24 }
+```
