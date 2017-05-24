@@ -441,11 +441,11 @@ squaresOf([1,2,3,4,5]); // [1,4,9,16,25]
 const flip = (fn) =>
   function(first, second) {
     if (arguments.length === 2) {
-      return fn(second, first);
+      return fn.call(this, second, first);
     }
     else {
       return function(second) {
-        return fn(second, first);
+        return fn.call(this, second, first);
       };
     };
   };
