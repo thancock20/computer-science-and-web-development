@@ -24,6 +24,13 @@
     * [mapWith](#mapwith)
     * [Flip](#flip)
     * [Object.assign](#objectassign)
+* [Objects and State](#objects-and-state)
+  * [Encapsulating State with Closures](#encapsulating-state-with-closures)
+  * [Composition](#composition)
+  * [Recipes with Objects and State](#recipes-with-objects-and-state)
+    * [Memoize](#memoize)
+    * [getWith](#getwith)
+    * [pluckWith](#pluckwith)
 
 <!-- tocstop -->
 
@@ -491,4 +498,205 @@ Object.assign(inventory, shipment);
 //   oranges: 12,
 //   bananas: 54,
 //   pears: 24 }
+```
+
+## Objects and State
+
+### Encapsulating State with Closures
+
+Stack implementation that uses encapsulation:
+```js
+const Stack = () => {
+  // state variables hidden in closure
+  const array = [];
+  let index = -1;
+
+  return {
+    push(value) { return array[index += 1] = value },
+    pop() {
+      const value = array[index];
+
+      array[index] = undefined;
+      if (index >= 0) {
+        index -= 1;
+      }
+      return value
+    },
+    isEmpty() { return index < 0 }
+  };
+};
+
+const stack = Stack();
+stack.isEmpty();          // true
+stack.push('Hello');      // 'Hello';
+stack.push('JavaScript'); // 'JavaScript'
+stack.isEmpty();          // false
+stack.pop();              // 'JavaScript'
+stack.pop();              // 'Hello'
+stack.isEmpty();          // true
+```
+
+### Composition
+
+Here's an abstract "model" that supports undo and redo composed from a pair of stacks and an object:
+```js
+// helper function
+//
+// For production use, consider what to do about
+// deep copies and own keys
+const shallowCopy = (source) => {
+  const dest = {};
+
+  for (let key in source) {
+    dest[key] = source[key]
+  }
+  return dest
+};
+
+const Stack = () => {
+  const array = [];
+  let index = -1;
+
+  return {
+    push (value) {
+      array[index += 1] = value
+    },
+    pop () {
+      let value = array[index];
+      if (index >= 0) {
+        index -= 1
+      }
+      return value
+    },
+    isEmpty () {
+      return index < 0
+    }
+  }
+}
+
+const Model = function (initialAttributes) {
+  const redoStack = Stack();
+  let attributes = shallowCopy(initialAttributes || {});
+
+  const undoStack = Stack(),
+      obj = {
+        set: (attrsToSet) => {
+          undoStack.push(shallowCopy(attributes));
+          if (!redoStack.isEmpty()) {
+            redoStack.length = 0;
+          }
+          for (let key in (attrsToSet || {})) {
+            attributes[key] = attrsToSet[key]
+          }
+          return obj
+        },
+        undo: () => {
+          if (!undoStack.isEmpty()) {
+            redoStack.push(shallowCopy(attributes));
+            attributes = undoStack.pop()
+          }
+          return obj
+        },
+        redo: () => {
+          if (!redoStack.isEmpty()) {
+            undoStack.push(shallowCopy(attributes));
+            attributes = redoStack.pop()
+          }
+          return obj
+        },
+        get: (key) => attributes[key],
+        has: (key) => attributes.hasOwnProperty(key),
+        attributes: () => shallowCopy(attributes)
+      };
+    return obj
+  };
+
+const model = Model();
+model.set({"Doctor": "de Grasse"});
+model.get("Doctor");                // "de Grasse"
+model.set({"Doctor": "Who"});
+model.get("Doctor");                // "Who"
+model.undo();
+model.get("Doctor");                // "de Grasse"
+```
+
+### Recipes with Objects and State
+
+#### Memoize
+
+**Memoize** takes a function and returns a new function that "memoizes" its results so that it never has to recalculate the same value twice. It only works for functions that are "idempotent", meaning functions that always return the same result given the same argument(s).
+
+```js
+const memoized = (fn, keymaker = JSON.stringify) => {
+  const lookupTable = {};
+
+  return function (...args) {
+    const key = keymaker.apply(this, args);
+
+    return lookupTable[key] || (lookupTable[key] = fn.apply(this, args));
+  };
+};
+
+const fibonacci = (n) =>
+  n < 2
+    ? n
+    : fibonacci(n-2) + fibonacci(n-1);
+
+s = (new Date()).getTime();
+fibonacci(45);
+( (new Date()).getTime() - s ) / 1000; // 16.994
+
+const fastFibonacci = memoized(
+  (n) =>
+    n < 2
+      ? n
+      : fastFibonacci(n-2) + fastFibonacci(n-1)
+);
+
+s = (new Date()).getTime();
+fastFibonacci(45);
+( (new Date()).getTime() - s ) / 1000; // 0.001
+```
+
+#### getWith
+
+**getWith** takes the name of an attribute and returns a function that extracts the value of that attribute from an object.
+
+```js
+const getWith = (attr) => (object) => object[attr];
+
+const inventory = {
+  apples: 0,
+  oranges: 144,
+  eggs: 36
+};
+
+getWith('oranges')(inventory); // 144
+
+const inventories = [
+  { apples: 0, oranges: 144, eggs: 36 },
+  { apples: 240, oranges: 54, eggs: 12 },
+  { apples: 24, oranges: 12, eggs: 42 }
+];
+
+mapWith(getWith('oranges'))(inventories); // [ 144, 54, 12 ]
+```
+
+#### pluckWith
+
+**pluckWith** is the combination of mapWith and getWith from above.
+
+```js
+const pluckWith = (attr) => mapWith(getWith(attr));
+
+// or even better
+const pluckWith = compose(mapWith, getWith);
+
+const inventories = [
+  { apples: 0, oranges: 144, eggs: 36 },
+  { apples: 240, oranges: 54, eggs: 12 },
+  { apples: 24, oranges: 12, eggs: 42 }
+];
+
+pluckWith('eggs')(inventories); // [ 36, 23, 42 ]
 ```
