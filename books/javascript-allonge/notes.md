@@ -1016,9 +1016,21 @@ function * mapWith(fn, iterable) {
   }
 }
 
+function * mapAllWith(fn, iterable) {
+  for (const element of iterable) {
+    yield * fn(element);
+  }
+}
+
 function * filterWith (fn, iterable) {
   for (const element of iterable) {
     if (!!fn(element)) yield element;
+  }
+}
+
+function * compact(iterable) {
+  for (const element of iterable) {
+    if (element != null) yield element;
   }
 }
 
@@ -1037,6 +1049,71 @@ function * rest (iterable) {
 
   iterator.next();
   yield * iterator;
+}
+
+function * zip (...iterables) {
+  const iterators = iterables.map(i => i[Symbol.iterator]());
+
+  while (true) {
+    const pairs = iterators.map(j => j.next()),
+          dones = pairs.map(p => p.done),
+          values = pairs.map(p => p.value);
+
+    if (dones.indexOf(true) >= 0) break;
+    yield values;
+  }
+};
+
+function * zipWith (zipper, ...iterables) {
+  const iterators = iterables.map(i => i[Symbol.iterator]());
+
+  while (true) {
+    const pairs = iterators.map(j => j.next()),
+          dones = pairs.map(p => p.done),
+          values = pairs.map(p => p.value);
+
+    if (dones.indexOf(true) >= 0) break;
+    yield zipper(...values);
+  }
+};
+
+const reduceWith = (fn, seed, iterable) => {
+  let accumulator = seed;
+
+  for (const element of iterable) {
+    accumulator = fn(accumulator, element);
+  }
+  return accumulator;
+}
+
+function memoize(generator) {
+  const memos = {},
+        iterators = {};
+
+  return function * (...args) {
+    const key = JSON.stringify(args);
+    let i = 0;
+
+    if (memos[key] == null) {
+      memos[key] = [];
+      iterators[key] = generator(...args);
+    }
+
+    while (true) {
+      if (i < memos[key].length) {
+        yield memos[key][i++];
+      }
+      else {
+        const { done, value } = iterators[key].next();
+
+        if (done) {
+          return;
+        } else {
+          yield memos[key][i++] = value;
+        }
+      }
+    }
+  }
 }
 ```
 
