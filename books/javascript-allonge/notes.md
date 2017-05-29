@@ -31,6 +31,16 @@
     * [Memoize](#memoize)
     * [getWith](#getwith)
     * [pluckWith](#pluckwith)
+* [Collections](#collections)
+  * [Iteration and Iterables](#iteration-and-iterables)
+  * [Operations on Iterables](#operations-on-iterables)
+    * [`mapWith`, `filterWith`, and `untilWith`](#mapwith-filterwith-and-untilwith)
+    * [`first` and `rest`](#first-and-rest)
+    * [`from`](#from)
+  * [Generators](#generators)
+    * [Iterable Operations Rewritten as Generators](#iterable-operations-rewritten-as-generators)
+  * [Lazy Collections](#lazy-collections)
+  * [Eager Collections](#eager-collections)
 
 <!-- tocstop -->
 
@@ -700,3 +710,586 @@ const inventories = [
 
 pluckWith('eggs')(inventories); // [ 36, 23, 42 ]
 ```
+
+## Collections
+
+### Iteration and Iterables
+
+```js
+// Stack with an iterator function:
+const Stack1 = () =>
+  ({
+    array:[],
+    index: -1,
+    push (value) {
+      return this.array[this.index += 1] = value;
+    },
+    pop () {
+      const value = this.array[this.index];
+
+      this.array[this.index] = undefined;
+      if (this.index >= 0) {
+        this.index -= 1
+      }
+      return value
+    },
+    isEmpty () {
+      return this.index < 0
+    },
+    iterator () { // iterator function
+      let iterationIndex = this.index;
+
+      return () => {
+        if (iterationIndex > this.index) {
+          iterationIndex = this.index;
+        }
+        if (iterationIndex < 0) {
+          return {done: true};
+        }
+        else {
+          return {done: false, value: this.array[iterationIndex--]}
+        }
+      }
+    }
+  });
+
+const stack = Stack1();
+
+stack.push("Greetings");
+stack.push("to");
+stack.push("you!")
+
+const iter = stack.iterator();
+iter().value // "you!"
+iter().value // "to"
+
+// function that folds over any object,
+// provided that it implements an `.iterator` method:
+const collectionSum = (collection) => {
+  const iterator = collection.iterator();
+
+  let eachIteration,
+      sum = 0;
+
+  while ((eachIteration = iterator(), !eachIteration.done)) {
+    sum += eachIteration.value;
+  }
+  return sum
+}
+
+const stack = Stack1();
+
+stack.push(1);
+stack.push(2);
+stack.push(3);
+
+collectionSum(stack); // 6
+```
+
+```js
+// Stack with an iterator object:
+const Stack2 = () =>
+  ({
+    array: [],
+    index: -1,
+    push(value) {
+      return this.array[this.index += 1] = value;
+    },
+    pop() {
+      const value = this.array[this.index];
+
+      this.array[this.index] = undefined;
+      if  (this.index >= 0) {
+        this.index -= 1;
+      }
+      return value;
+    },
+    isEmpty() {
+      return this.index < 0;
+    },
+    [Symbol.iterator]() { // this function returns an object
+      let iterationIndex = this.index;
+
+      return { // the iterator object
+        next: () => {
+          if (iterationIndex > this.index) {
+            iterationIndex = this.index;
+          }
+          if (iterationIndex < 0) {
+            return {done: true};
+          }
+          else {
+            return {done: false, value: this.array[iterationIndex--]}
+          }
+        }
+      }
+    }
+  });
+
+const collectionSum = (collection) => {
+  const iterator = collection[Symbol.iterator]();
+
+  let eachIteration, sum = 0;
+
+  while ((eachIteration = iterator.next(), !eachIteration.done)) {
+    sum += eachIteration.value;
+  }
+  return sum;
+};
+
+const stack = Stack2();
+
+stack.push(2000);
+stack.push(10);
+stack.push(7);
+
+collectionSum(stack); // 2017
+
+// the [Symbol.iterator] method makes the stack object an iterable as well
+const iterableSum = (iterable) => {
+  let sum = 0;
+
+  // iterables work with for..of loops
+  for (const num of iterable) {
+    sum += num;
+  }
+  return sum;
+}
+
+iterableSum(stack); // 2017
+
+// and with the spread operator
+[...stack]; // [ 7, 10, 2000 ]
+```
+
+### Operations on Iterables
+
+#### `mapWith`, `filterWith`, and `untilWith`
+
+All return an iterable.
+```js
+const mapWith = (fn, collection) =>
+  ({
+    [Symbol.iterator]() {
+      const iterator = collection[Symbol.iterator]();
+
+      return {
+        next() {
+          const {done, value} = iterator.next();
+
+          return ({done, value: done ? undefined : fn(value)});
+        }
+      }
+    }
+  });
+
+const filterWith = (fn, iterable) =>
+  ({
+    [Symbol.iterator] () {
+      const iterator = iterable[Symbol.iterator]();
+
+      return {
+        next() {
+          do {
+            var {done, value} = iterator.next();
+          } while (!done && !fn(value));
+          return {done, value};
+        }
+      }
+    }
+  });
+
+const untilWith = (fn, iterable) =>
+  ({
+    [Symbol.iterator] () {
+      const iterator = iterable[Symbol.iterator]();
+
+      return{
+        next() {
+          let {done, value} = iterator.next();
+
+          done = done || fn(value);
+
+          return ({done, value: done ?  undefined : value});
+        }
+      }
+    }
+  });
+
+const Numbers = {
+  [Symbol.iterator] () {
+    let n = 0;
+
+    return {
+      next: () => ({done: false, value: n++})
+    }
+  }
+};
+
+const Squares = mapWith((x) => x * x, Numbers);
+const EndWithOne = filterWith((x) => x % 10 === 1, Squares);
+const UpTo1000 = untilWith((x) => (x > 1000), EndWithOne);
+
+[...UpTo1000]; // [ 1, 81, 121, 361, 441, 841, 961 ]
+```
+
+#### `first` and `rest`
+
+```js
+const first = (iterable) =>
+  iterable[Symbol.iterator]().next().value;
+
+const rest = (iterable) =>
+  ({
+    [Symbol.iterator]() {
+      const iterator = iterable[Symbol.iterator]();
+
+      iterator.next();
+      return iterator;
+    }
+  });
+
+  first(UpTo1000); // 1
+  [...rest(UpTo1000)]; // [ 81, 121, 361, 441, 841, 961 ]
+  ```
+
+  #### `from`
+
+  ```js
+  Stack2.from = function (iterable) {
+    const stack = this();
+
+    for (let element of iterable) {
+      stack.push(element);
+    }
+    return stack;
+  };
+
+  const stack = Stack2.from([1,2,3,4,5]);
+  [...stack]; // [ 5, 4, 3, 2, 1 ]
+  ```
+
+  ### Generators
+
+  ```js
+const Stack3 = () =>
+  ({
+    array: [],
+    index: -1,
+    push(value) {
+      return this.array[this.index += 1] = value;
+    },
+    pop() {
+      const value = this.array[this.index];
+
+      this.array[this.index] = undefined;
+      if  (this.index >= 0) {
+        this.index -= 1;
+      }
+      return value;
+    },
+    isEmpty() {
+      return this.index < 0;
+    },
+    *[Symbol.iterator]() { // Generator returns an iterable
+      for (let i = this.index; i >= 0; i--) {
+        yield this.array[i];
+      }
+    }
+  });
+
+const stack = Stack3();
+
+stack.push(1);
+stack.push(2);
+stack.push(3);
+
+[...stack]; // [ 3, 2, 1 ]
+```
+
+#### Iterable Operations Rewritten as Generators
+
+```js
+function * mapWith(fn, iterable) {
+  for (const element of iterable) {
+    yield fn(element);
+  }
+}
+
+function * filterWith (fn, iterable) {
+  for (const element of iterable) {
+    if (!!fn(element)) yield element;
+  }
+}
+
+function * untilWith (fn, iterable) {
+  for (const element of iterable) {
+    if (fn(element)) break;
+    yield element;
+  }
+}
+
+const  first = (iterable) =>
+  iterable[Symbol.iterator]().next().value;
+
+function * rest (iterable) {
+  const iterator = iterable[Symbol.iterator]();
+
+  iterator.next();
+  yield * iterator;
+}
+```
+
+### Lazy Collections
+
+```js
+const LazyCollection = {
+  map(fn) {
+    return Object.assign({
+      [Symbol.iterator]: () => {
+        const iterator = this[Symbol.iterator]();
+
+        return {
+          next: () => {
+            const {
+              done, value
+            } = iterator.next();
+
+            return ({
+              done, value: done ? undefined : fn(value)
+            });
+          }
+        }
+      }
+    }, LazyCollection);
+  },
+
+  reduce(fn, seed) {
+    const iterator = this[Symbol.iterator]();
+    let iterationResult,
+        accumulator = seed;
+
+    while ((iterationResult = iterator.next(), !iterationResult.done)) {
+      accumulator = fn(accumulator, iterationResult.value);
+    }
+    return accumulator;
+  },
+
+  filter(fn) {
+    return Object.assign({
+      [Symbol.iterator]: () => {
+        const iterator = this[Symbol.iterator]();
+
+        return {
+          next: () => {
+            do {
+              var {
+                done, value
+              } = iterator.next();
+            } while (!done && !fn(value));
+            return {
+              done, value
+            };
+          }
+        }
+      }
+    }, LazyCollection);
+  },
+
+  find(fn) {
+    for (let element of this) {
+      if (fn(element)) return element;
+    }
+  },
+
+  until(fn) {
+    return Object.assign({
+      [Symbol.iterator]: () => {
+        const iterator = this[Symbol.iterator]();
+
+        return {
+          next: () => {
+            let {
+              done, value
+            } = iterator.next();
+
+            done = done || fn(value);
+
+            return ({
+              done, value: done ? undefined : value
+            });
+          }
+        }
+      }
+    }, LazyCollection);
+  },
+
+  first() {
+    return this[Symbol.iterator]().next().value;
+  },
+
+  rest() {
+    return Object.assign({
+      [Symbol.iterator]: () => {
+        const iterator = this[Symbol.iterator]();
+
+        iterator.next();
+        return iterator;
+      }
+    }, LazyCollection);
+  },
+
+  take(numberToTake) {
+    return Object.assign({
+      [Symbol.iterator]: () => {
+        const iterator = this[Symbol.iterator]();
+        let remainingElements = numberToTake;
+
+        return {
+          next: () => {
+            let {
+              done, value
+            } = iterator.next();
+
+            done = done || remainingElements-- <= 0;
+
+            return ({
+              done, value: done ? undefined : value
+            });
+          }
+        }
+      }
+    }, LazyCollection);
+  }
+};
+```
+
+Example using stack:
+```js
+const Stack = () =>
+  Object.assign({
+    array: [],
+    index: -1,
+    push(value) {
+      return this.array[this.index += 1] = value;
+    },
+    pop() {
+      const value = this.array[this.index];
+
+      this.array[this.index] = undefined;
+      if  (this.index >= 0) {
+        this.index -= 1;
+      }
+      return value;
+    },
+    isEmpty() {
+      return this.index < 0;
+    },
+    *[Symbol.iterator]() { // this function returns an object
+      for (let i = this.index; i >= 0; i--) {
+        yield this.array[i];
+      }
+    }
+  }, LazyCollection);
+
+  Stack.from = function(iterable) {
+    const stack = this();
+
+    for (let element of iterable) {
+      stack.push(element);
+    }
+    return  stack;
+  };
+
+  Stack.from([1,2,3,4,5,6,7,8,9,10])
+    .map((x) => x * x)
+    .filter((x) => x % 2 == 0)
+    .first(); // 100
+  ```
+
+  ### Eager Collections
+
+  ```js
+  const EagerCollection = (gatherable) => ({
+    map(fn) {
+      const original = this;
+
+      return gatherable.from(
+        (function* () {
+          for (let element of original) {
+            yield fn(element);
+          }
+        })()
+      );
+    },
+
+    reduce(fn, seed) {
+      let accumulator = seed;
+
+      for (let element of this) {
+        accumulator = fn(accumulator, element);
+      }
+      return accumulator;
+    },
+
+    filter(fn) {
+      const original = this;
+
+      return gatherable.from(
+        (function* () {
+          for (let element of original) {
+            if (fn(element)) yield element;
+          }
+        })()
+      );
+    },
+
+    find(fn) {
+      for (let element of this) {
+        if (fn(element)) return element;
+      }
+    },
+
+    until(fn) {
+      const original = this;
+
+      return gatherable.from(
+        (function* () {
+          for (let element of original) {
+            if (fn(element)) break;
+            yield element;
+          }
+        })()
+      );
+    },
+
+    first() {
+      return this[Symbol.iterator]().next().value;
+    },
+
+    rest() {
+      const iteration = this[Symbol.iterator]();
+
+      iteration.next();
+      return gatherable.from(
+        (function* () {
+          yield * iteration;
+        })()
+      );
+    },
+
+    take(numberToTake) {
+      const original = this;
+      let numberRemaining = numberToTake;
+
+      return gatherable.from(
+        (function* () {
+          for (let element of original) {
+            if (numberRemaining-- <= 0) break;
+            yield element;
+          }
+        })()
+      );
+    }
+  });
+  ```
