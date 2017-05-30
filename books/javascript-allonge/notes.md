@@ -1269,104 +1269,111 @@ const Stack = () =>
     }
   }, LazyCollection);
 
-  Stack.from = function(iterable) {
-    const stack = this();
+Stack.from = function(iterable) {
+  const stack = this();
 
-    for (let element of iterable) {
-      stack.push(element);
+  for (let element of iterable) {
+    stack.push(element);
+  }
+  return  stack;
+};
+
+Stack.from([1,2,3,4,5,6,7,8,9,10])
+  .map((x) => x * x)
+  .filter((x) => x % 2 == 0)
+  .first(); // 100
+```
+
+### Eager Collections
+
+```js
+const EagerCollection = (gatherable) => ({
+  map(fn) {
+    const original = this;
+
+    return gatherable.from(
+      (function* () {
+        for (let element of original) {
+          yield fn(element);
+        }
+      })()
+    );
+  },
+
+  reduce(fn, seed) {
+    let accumulator = seed;
+
+    for (let element of this) {
+      accumulator = fn(accumulator, element);
     }
-    return  stack;
-  };
+    return accumulator;
+  },
 
-  Stack.from([1,2,3,4,5,6,7,8,9,10])
-    .map((x) => x * x)
-    .filter((x) => x % 2 == 0)
-    .first(); // 100
-  ```
+  filter(fn) {
+    const original = this;
 
-  ### Eager Collections
+    return gatherable.from(
+      (function* () {
+        for (let element of original) {
+          if (fn(element)) yield element;
+        }
+      })()
+    );
+  },
 
-  ```js
-  const EagerCollection = (gatherable) => ({
-    map(fn) {
-      const original = this;
-
-      return gatherable.from(
-        (function* () {
-          for (let element of original) {
-            yield fn(element);
-          }
-        })()
-      );
-    },
-
-    reduce(fn, seed) {
-      let accumulator = seed;
-
-      for (let element of this) {
-        accumulator = fn(accumulator, element);
-      }
-      return accumulator;
-    },
-
-    filter(fn) {
-      const original = this;
-
-      return gatherable.from(
-        (function* () {
-          for (let element of original) {
-            if (fn(element)) yield element;
-          }
-        })()
-      );
-    },
-
-    find(fn) {
-      for (let element of this) {
-        if (fn(element)) return element;
-      }
-    },
-
-    until(fn) {
-      const original = this;
-
-      return gatherable.from(
-        (function* () {
-          for (let element of original) {
-            if (fn(element)) break;
-            yield element;
-          }
-        })()
-      );
-    },
-
-    first() {
-      return this[Symbol.iterator]().next().value;
-    },
-
-    rest() {
-      const iteration = this[Symbol.iterator]();
-
-      iteration.next();
-      return gatherable.from(
-        (function* () {
-          yield * iteration;
-        })()
-      );
-    },
-
-    take(numberToTake) {
-      const original = this;
-      let numberRemaining = numberToTake;
-
-      return gatherable.from(
-        (function* () {
-          for (let element of original) {
-            if (numberRemaining-- <= 0) break;
-            yield element;
-          }
-        })()
-      );
+  find(fn) {
+    for (let element of this) {
+      if (fn(element)) return element;
     }
-  });
-  ```
+  },
+
+  until(fn) {
+    const original = this;
+
+    return gatherable.from(
+      (function* () {
+        for (let element of original) {
+          if (fn(element)) break;
+          yield element;
+        }
+      })()
+    );
+  },
+
+  first() {
+    return this[Symbol.iterator]().next().value;
+  },
+
+  rest() {
+    const iteration = this[Symbol.iterator]();
+
+    iteration.next();
+    return gatherable.from(
+      (function* () {
+        yield * iteration;
+      })()
+    );
+  },
+
+  take(numberToTake) {
+    const original = this;
+    let numberRemaining = numberToTake;
+
+    return gatherable.from(
+      (function* () {
+        for (let element of original) {
+          if (numberRemaining-- <= 0) break;
+          yield element;
+        }
+      })()
+    );
+  }
+});
+```
+
+
+
+
+
+
+
