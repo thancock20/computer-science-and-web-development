@@ -41,6 +41,8 @@
     * [Iterable Operations Rewritten as Generators](#iterable-operations-rewritten-as-generators)
   * [Lazy Collections](#lazy-collections)
   * [Eager Collections](#eager-collections)
+* [Metaobjects](#metaobjects)
+  * [Mixins](#mixins)
 
 <!-- tocstop -->
 
@@ -1371,9 +1373,226 @@ const EagerCollection = (gatherable) => ({
 });
 ```
 
+## Metaobjects
 
+### Mixins
 
+```js
+// Separate domain properties:
+const sam = {
+  firstName: 'Sam',
+  lastName: 'Lowry'
+};
 
+// from behavior:
+const Person = {
+  fullName() {
+    return this.firstName + " " + this.lastName;
+  },
 
+  rename(first, last) {
+    this.firstName = first;
+    this.lastName = last;
+    return this;
+  }
+};
 
+// Then use Object.assign to mix the behavior in:
+Object.assign(sam, Person);
 
+sam.rename; // [Function]
+
+// Methods are "copied" by reference:
+sam.fullName === Person.fullName; // true
+sam.rename === Person.rename; // true
+
+// Methods are run in the context of the "properties" object:
+sam.rename("Joe", "Blow");
+sam.firstName;  // 'Joe'
+sam.lastName;   // 'Blow'
+sam.fullName(); // 'Sam Peckinpah'
+```
+
+### Forwarding
+
+```js
+// Function to create forwarding:
+function forward(receiver, metaobject, ...methods) {
+  methods.forEach(function (methodName) {
+    receiver[methodName] = (...args) => metaobject[methodName](...args);
+  });
+
+  return receiver;
+};
+
+// Same property and method functions:
+let sam = {
+  firstName: 'Sam',
+  lastName: 'Lowry'
+};
+
+const Person = {
+  fullName() {
+    return this.firstName + " " + this.lastName;
+  },
+
+  rename(first, last) {
+    this.firstName = first;
+    this.lastName = last;
+    return this;
+  }
+};
+
+// Set up forwarding:
+sam = forward(sam, Person, 'fullName', 'rename');
+
+sam.rename; // [Function]
+
+// Methods are forwarded, and therefore not equal:
+sam.fullName === Person.fullName; // false
+sam.rename === Person.rename; // false
+
+// Methods are run in the context of their original metaobject:
+sam.rename('Joe', 'Blow');
+sam.firstName;  // 'Sam'
+sam.lastName;   // 'Lowry'
+sam.fullName(); // 'Joe Blow'
+```
+
+### Delegation
+
+```js
+// Function to create delegation:
+function delegate(receiver, metaobject, ...methods) {
+  methods.forEach(function (methodName) {
+    receiver[methodName] = (...args) => metaobject[methodName].apply(receiver, args);
+  });
+
+  return receiver;
+};
+
+// Same property and method functions:
+let sam = {
+  firstName: 'Sam',
+  lastName: 'Lowry'
+};
+
+const Person = {
+  fullName() {
+    return this.firstName + " " + this.lastName;
+  },
+
+  rename(first, last) {
+    this.firstName = first;
+    this.lastName = last;
+    return this;
+  }
+};
+
+// Set up delegation:
+sam = delegate(sam, Person, 'fullName', 'rename');
+
+sam.rename; // [Function]
+
+// Methods are delegated, and therefore not equal:
+sam.fullName === Person.fullName; // false
+sam.rename === Person.rename; // false
+
+// Methods are run in the context of the "properties" object:
+sam.rename('Joe', 'Blow');
+sam.firstName;  // 'Joe'
+sam.lastName;   // 'Blow'
+sam.fullName(); // 'Joe Blow'
+```
+
+Another version that delegates to one of the receiver's own properties:
+
+```js
+// Function to create delegation to own property:
+function delegateToOwn(receiver, propertyName, ...methods) {
+  methods.forEach(function (methodName) {
+    receiver[methodName] = function() {
+      const metaobject = receiver[propertyName];
+      return metaobject[methodName].apply(receiver,  arguments);
+    };
+  });
+
+  return receiver;
+};
+
+// Property and method functions:
+const Person = {
+  fullName() {
+    return this.firstName + " " + this.lastName;
+  },
+
+  rename(first, last) {
+    this.firstName = first;
+    this.lastName = last;
+    return this;
+  }
+};
+
+let sam = {
+  delegateFrom: Person, // Property holds reference to delegated object
+  firstName: 'Sam',
+  lastName: 'Lowry'
+};
+
+// Set up delegation:
+sam = delegateToOwn(sam, 'delegateFrom', 'fullName', 'rename');
+
+sam.rename; // [Function]
+
+// Methods are delegated, and therefore not equal:
+sam.fullName === Person.fullName; // false
+sam.rename === Person.rename; // false
+
+// Methods are run in the context of the "properties" object:
+sam.rename('Joe', 'Blow');
+sam.firstName;  // 'Joe'
+sam.lastName;   // 'Blow'
+sam.fullName(); // 'Joe Blow'
+
+// Delegated to metaobject can be changed:
+const Dog = {
+  fullName: () => 'Spot',
+  rename: Person.rename
+};
+sam.delegateFrom = Dog;
+
+sam.rename; // [Function]
+
+sam.rename('John', 'Doe');
+sam.firstName;  // 'John'
+sam.lastName;   // 'Doe'
+sam.fullName(); // 'Spot'
+```
+
+### Prototypes
+
+```js
+const Person = {
+  fullName: function() {
+    return this.firstName + " " + this.lastName;
+  },
+
+  rename: function(first, last) {
+    this.firstName = first;
+    this.lastName = last;
+    return this;
+  }
+};
+
+const sam = Object.create(Person);
+
+sam.rename; // [Function]
+
+sam.fullName === Person.fullName; // true
+sam.rename === Person.rename; // true
+
+sam.rename("Joe", "Blow");
+sam.firstName; // 'Joe'
+sam.lastName; // 'Blow'
+sam.fullName(); // 'Joe Blow'
+```
