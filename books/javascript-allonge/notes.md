@@ -43,6 +43,17 @@
   * [Eager Collections](#eager-collections)
 * [Metaobjects](#metaobjects)
   * [Mixins](#mixins)
+  * [Forwarding](#forwarding)
+  * [Delegation](#delegation)
+  * [Prototypes](#prototypes)
+* [Constructors and Classes](#constructors-and-classes)
+  * [Recipes with Constructors and Classes](#recipes-with-constructors-and-classes)
+    * [Bound](#bound)
+    * [Send](#send)
+    * [Invoke](#invoke)
+    * [Instance Eval](#instance-eval)
+    * [Fluent](#fluent)
+    * [FluentClass](#fluentclass)
 
 <!-- tocstop -->
 
@@ -1572,6 +1583,7 @@ sam.fullName(); // 'Spot'
 ### Prototypes
 
 ```js
+// Behavior object:
 const Person = {
   fullName: function() {
     return this.firstName + " " + this.lastName;
@@ -1584,15 +1596,252 @@ const Person = {
   }
 };
 
+// Set prototype using Object.create:
 const sam = Object.create(Person);
+sam.firstName = 'Sam';
+sam.lastName = 'Lowry';
 
 sam.rename; // [Function]
 
+// Methods are by reference:
 sam.fullName === Person.fullName; // true
 sam.rename === Person.rename; // true
 
+// Methods are run in context of the "properties" object:
 sam.rename("Joe", "Blow");
 sam.firstName; // 'Joe'
 sam.lastName; // 'Blow'
 sam.fullName(); // 'Joe Blow'
+```
+
+## Constructors and Classes
+
+* The `new` keyword turns any function into a *constructor* for creating *instances*.
+* All functions have a *prototype* element.
+* Instances behave as if the elemnt of their constructor's prototype are their element.
+* The `class` keyword acts as *syntactic sugar* for writing constructor functions.
+* Classes created with the `class` keyword are actually constructor functions with optionally chained prototypes.
+* Classes should be used in moderation, the syntax deliberately limits the flexiblity and class hierarchies can lead to overly coupled code.
+
+```js
+// Constructor function creates the properties object:
+const Person = function (first, last) {
+  Object.assign(this, {
+    firstName: first,
+    lastName: last
+  })
+};
+
+// Prototype of constructor is the behavior object:
+Object.assign(Person.prototype, {
+  fullName: function() {
+    return this.firstName + " " + this.lastName;
+  },
+
+  rename: function(first, last) {
+    this.firstName = first;
+    this.lastName = last;
+    return this;
+  }
+});
+
+// Use new keyword to create new instance of constructor:
+const sam = new Person('Sam', 'Lowry');
+
+sam.rename; // [Function]
+
+// Methods are delegated:
+sam.fullName === Person.prototype.fullName; // true
+sam.rename === Person.prototype.rename; // true
+
+// Methods are run in the context of the instance object:
+sam.rename("Joe", "Blow");
+sam.firstName; // 'Joe'
+sam.lastName; // 'Blow'
+sam.fullName(); // 'Joe Blow'
+```
+
+```js
+// Class syntax creates constructor function and prototype methods:
+class Person {
+  constructor (first, last) {
+    this.rename(first, last);
+  }
+
+  fullName () {
+    return this.firstName + " " + this.lastName;
+  }
+
+  rename (first, last) {
+    this.firstName = first;
+    this.lastName = last;
+    return this;
+  }
+};
+
+// Use new keyword to create new instance of class:
+const sam = new Person('Sam', 'Lowry');
+
+sam.rename; // [Function]
+
+// Methods are delegated:
+sam.fullName === Person.prototype.fullName; // true
+sam.rename === Person.prototype.rename; // true
+
+// Methods are run in the context of the instance object:
+sam.rename("Joe", "Blow");
+sam.firstName; // 'Joe'
+sam.lastName; // 'Blow'
+sam.fullName(); // 'Joe Blow'
+```
+
+### Recipes with Constructors and Classes
+
+#### Bound
+
+**Bound** gets a bound method from an object by name.
+```js
+const mapWith = (fn) => (list) => list.map(fn);
+
+const bound = (messageName, ...args) =>
+  (args === [])
+    ? instance => instance[messageName].bind(instance)
+    : instance => Function.prototype.bind.apply(
+                    instance[messageName], [instance].concat(args)
+                  );
+
+class InventoryRecord {
+  constructor (apples, oranges, eggs) {
+    this.record = {
+      apples,
+      oranges,
+      eggs
+    };
+  }
+  apples() {
+    return this.record.apples;
+  }
+  oranges() {
+    return this.record.oranges;
+  }
+  eggs() {
+    return this.record.eggs;
+  }
+}
+
+const inventories = [
+  new InventoryRecord( 0, 144, 36 ),
+  new InventoryRecord( 240, 54, 12 ),
+  new InventoryRecord( 24, 12, 42 )
+];
+
+mapWith(bound('eggs'))(inventories).map(boundmethod => boundmethod());  // [ 36, 12 42 ]
+```
+
+#### Send
+
+**Send** invokes a function that's a member of an object.
+```js
+const send = (methodName, ...args) =>
+  (instance) => instance[methodName].apply(instance, args);
+
+mapWith(send('apples'))(inventories); // [ 0, 240, 24 ]
+```
+
+#### Invoke
+
+**Invoke** applies a function to an instance. For use as a combinator.
+```js
+const invoke = (fn, ...args) =>
+  instance => fn.apply(instance, args);
+
+const data = [
+  { 0: 'zero',
+    1: 'one',
+    2: 'two',
+    length: 3 },
+  { 0: 'none',
+    length: 1 }
+];
+
+mapWith(invoke([].slice, 0))(data); // [ [ 'zero', 'one', 'two' ], [ 'none' ] ]
+```
+
+#### Instance Eval
+
+**Instance Eval** is `invoke` written "the other way around".
+```js
+const instanceEval = instance =>
+  (fn, ...args) => fn.apply(instance, args);
+```
+
+#### Fluent
+
+**Fluent** is a method decorator, that returns the object itself to allow chaining:
+```js
+const fluent = (methodBody) =>
+  function(...args) {
+    methodBody.apply(this, args);
+    return this;
+  }
+
+const Cake = function() {};
+
+Object.assign(Cake.prototype, {
+  setFlavor: fluent(function(flavor) {
+    this.flavor = flavor;
+  }),
+  setLayers: fluent(function(layers) {
+    this.layers = layers;
+  }),
+  bake: fluent(function() {
+    console.log(`Baking the ${this.layers} layer ${this.flavor} flavored cake!`);
+  })
+});
+
+const cake = new Cake()
+  .setFlavor('chocolate')
+  .setLayers(3)
+  .bake(); // 'Baking the 3 layer chocolate flavored cake!'
+
+cake; // Cake { flavor: 'chocolate', layers: 3 }
+```
+
+#### FluentClass
+
+**FluentClass** applies the fluent decorator on class methods.
+```js
+const fluent = (methodBody) =>
+  function(...args) {
+    methodBody.apply(this, args);
+    return this;
+  }
+
+const fluentClass = (clazz, ...methodNames) => { // clazz, because class is a reserved word
+  for (let methodName of methodNames) {
+    clazz.prototype[methodName] = fluent(clazz.prototype[methodName]);
+  }
+  return clazz;
+}
+
+class Cake {
+  setFlavor(flavor) {
+    this.flavor = flavor;
+  }
+  setLayers(layers) {
+    this.layers = layers;
+  }
+  bake() {
+    console.log(`Baking the ${this.layers} layer ${this.flavor} flavored cake!`);
+  }
+}
+
+fluentClass(Cake, 'setFlavor', 'setLayers', 'bake');
+
+const cake = new Cake()
+  .setFlavor('chocolate')
+  .setLayers(3)
+  .bake(); // 'Baking the 3 layer chocolate flavored cake!'
+
+cake; // Cake { flavor: 'chocolate', layers: 3 }
 ```
