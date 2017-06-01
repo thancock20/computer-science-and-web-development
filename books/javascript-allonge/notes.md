@@ -4,7 +4,7 @@
 <!-- toc orderedList:0 depthFrom:2 depthTo:6 -->
 
 * [Basic Functions](#basic-functions)
-  * [Definitions](#definitions)
+  * [Higher-order Functions](#higher-order-functions)
   * [Recipes with Basic Functions](#recipes-with-basic-functions)
     * [Partial Application](#partial-application)
     * [Unary](#unary)
@@ -54,6 +54,10 @@
     * [Instance Eval](#instance-eval)
     * [Fluent](#fluent)
     * [FluentClass](#fluentclass)
+* [Higher-order Functions and Methods, Classes, and Objects](#higher-order-functions-and-methods-classes-and-objects)
+  * [Higher-order Functions and Methods](#higher-order-functions-and-methods)
+  * [Higher-order Functions and Classes](#higher-order-functions-and-classes)
+  * [Higher-order Functions and Objects](#higher-order-functions-and-objects)
 
 <!-- tocstop -->
 
@@ -75,7 +79,7 @@
 * Scopes are nested and free variable references closed over.
 * Variables can shadow variables in an enclosing scope.
 
-### Definitions
+### Higher-order Functions
 
 **Higher-order function:** A function that either takes functions as arguments, or returns a function, or both.
 
@@ -1844,4 +1848,106 @@ const cake = new Cake()
   .bake(); // 'Baking the 3 layer chocolate flavored cake!'
 
 cake; // Cake { flavor: 'chocolate', layers: 3 }
+```
+
+## Higher-order Functions and Methods, Classes, and Objects
+
+### Higher-order Functions and Methods
+
+In order to make sure higher order functions work with methods of objects we have to use the `function` keyword so that `this` is bound, and then invoke our decorated function using `.call` so that we can pass `this` along.
+
+```js
+const compose = (a, b) =>
+  function(x) {
+    return a.call(this, b.call(this, x));
+  }
+
+const not = (fn) =>
+  function(x) {
+    !fn.call(this, x);
+  }
+```
+
+### Higher-order Functions and Classes
+
+**FactoryFactory** is an adaptor that turns a function called by `new` into a function that can be composed or decorated.
+
+```js
+const FactoryFactory = (clazz) =>
+  (...args) =>
+    new clazz(...args);
+
+class Circle {
+  constructor(radius) {
+    this.radius = radius;
+  }
+
+  diameter() {
+    return Math.PI * 2 * this.radius;
+  }
+
+  scaleBy(factor) {
+    return new Circle(factor * this.radius);
+  }
+}
+
+const CircleFactory = FactoryFactory(Circle);
+
+CircleFactory(5).diameter(); // 31.41592653589793
+
+[1,2,3,4,5].map(FactoryFactory(Circle));
+// [ Circle { radius: 1 },
+// Circle { radius: 2 },
+// Circle { radius: 3 },
+// Circle { radius: 4 },
+// Circle { radius: 5 } ]
+```
+
+### Higher-order Functions and Objects
+
+**Dictionary** is a function that turns collections (objects and arrays) into functions that can be composed or decorated.
+
+```js
+const Dictionary = (data) => (key) => data[key];
+
+const personToDrink = {
+  Bob: 'Ristretto',
+  Carol: 'Cappuccino',
+  Ted: 'Allongé',
+  Alice: 'Cappuccino'
+};
+
+['Bob', 'Ted', 'Carol', 'Alice'].map(Dictionary(personToDrink));
+// [ 'Ristretto', 'Allongé', 'Cappuccino', 'Cappuccino' ]
+```
+
+**IterableDictionary** turns a collection into a function that is also iterable if its underlying data object is iterable.
+
+```js
+const IterableDictionary = (data) => {
+  const proxy = (key) => data[key];
+  proxy[Symbol.iterator] = function* (...args) {
+    yield * data[Symbol.iterator](...args);
+  }
+  return proxy;
+};
+
+const people = IterableDictionary(['Bob', 'Ted', 'Carol', 'Alice']);
+const drinks = IterableDictionary(personToDrink);
+
+for (let name of people) {
+  console.log(`${name} prefers to drink ${drinks(name)}`);
+}
+// Bob prefers to drink Ristretto
+// Ted prefers to drink Allongé
+// Carol prefers to drink Cappuccino
+// Alice prefers to drink Cappuccino
+
+for (let [name, drink] of Object.entries(personToDrink)) {
+  console.log(`${name} prefers to drink ${drinks(name)}`);
+}
+// Bob prefers to drink Ristretto
+// Carol prefers to drink Cappuccino
+// Ted prefers to drink Allongé
+// Alice prefers to drink Cappuccino
 ```
