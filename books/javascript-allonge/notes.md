@@ -60,6 +60,8 @@
   * [Higher-order Functions and Objects](#higher-order-functions-and-objects)
 * [Composing Class Behavior](#composing-class-behavior)
   * [Functional Mixins](#functional-mixins)
+  * [Emulating Multiple Inheritance](#emulating-multiple-inheritance)
+  * [Preventing Property Conflicts with Symbols](#preventing-property-conflicts-with-symbols)
 
 <!-- tocstop -->
 
@@ -2041,4 +2043,112 @@ for (let property in urgent) console.log(property);
 
 urgent instanceof Todo; // true
 urgent instanceof Colored; // true
+```
+
+### Emulating Multiple Inheritance
+
+**SubclassFactory** emulates multiple inheritance by mixing behavior from a "subclass" in the extended class.
+
+```js
+function FunctionalMixin(behavior, sharedBehavior = {}) {
+  const instanceKeys = Reflect.ownKeys(behavior);
+  const sharedKeys = Reflect.ownKeys(sharedBehavior);
+  const typeTag = Symbol("isA");
+
+  function mixin(target) {
+    for (let property of instanceKeys)
+      if (!target[property])
+        Object.defineProperty(target, property, {
+          value: behavior[property],
+          writable: true
+        })
+    target[typeTag] = true;
+    return target;
+  }
+
+  for (let property of sharedKeys)
+    Object.defineProperty(mixin, property, {
+      value: sharedBehavior[property],
+      enumerable: sharedBehavior.propertyIsEnumerable(property)
+    });
+  Object.defineProperty(mixin, Symbol.hasInstance, { value: (instance) => !!instance[typeTag] });
+  return mixin;
+}
+
+const SubClassFactory = (behavior) => {
+  let mixBehaviorInto = FunctionalMixin(behavior);
+
+  return (superclazz) => mixBehaviorInto(class extends superclazz {});
+}
+
+class Todo {
+  constructor(name) {
+    this.name = name || 'Untitled';
+    this.done = false;
+  }
+
+  do() {
+    this.done = true;
+    return this;
+  }
+
+  undo() {
+    this.done = false;
+    return this;
+  }
+
+  toHTML() {
+    return this.name; // highly insecure
+  }
+}
+
+const ColoredAsWellAs = SubClassFactory({
+  setColorRGB({r, g, b}) {
+    this.colorCode = {r, g, b};
+    return this;
+  },
+
+  getColorRGB() {
+    return this.colorCode;
+  }
+});
+
+let yellow = {r: 'FF', g: 'FF', b: '00'},
+    red    = {r: 'FF', g: '00', b: '00'},
+    green  = {r: '00', g: 'FF', b: '00'},
+    grey   = {r: '80', g: '80', b: '80'};
+
+let oneDayInMilliseconds = 1000 * 60 * 60 * 24;
+
+class TimeSensitiveTodo extends ColoredAsWellAs(Todo) {
+  constructor(name, deadline) {
+    super(name);
+    this.deadline = deadline;
+  }
+
+  getColorRGB() {
+    let slack = this.deadline - Date.now();
+
+    if (this.done) {
+      return grey;
+    }
+    else if (slack <= 0) {
+      return red;
+    }
+    else if (slack <= oneDayInMilliseconds) {
+      return yellow;
+    }
+    else return green;
+  }
+
+  toHTML() {
+    let rgb = this.getColorRGB();
+
+    return `<span style="color: #${rgb.r}${rgb.g}${rgb.b};">${super.toHTML()}</span>;`
+  }
+}
+
+let task = new TimeSensitiveTodo('Finish Javascript Allonge', Date.now() + oneDayInMilliseconds);
+
+task.toHTML(); // '<span style="color: #FFFF00;">Finish Javascript Allonge</span>;'
 ```
