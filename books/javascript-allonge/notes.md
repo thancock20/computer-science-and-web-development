@@ -58,6 +58,8 @@
   * [Higher-order Functions and Methods](#higher-order-functions-and-methods)
   * [Higher-order Functions and Classes](#higher-order-functions-and-classes)
   * [Higher-order Functions and Objects](#higher-order-functions-and-objects)
+* [Composing Class Behavior](#composing-class-behavior)
+  * [Functional Mixins](#functional-mixins)
 
 <!-- tocstop -->
 
@@ -1950,4 +1952,93 @@ for (let [name, drink] of Object.entries(personToDrink)) {
 // Carol prefers to drink Cappuccino
 // Ted prefers to drink Allongé
 // Alice prefers to drink Cappuccino
+```
+
+## Composing Class Behavior
+
+### Functional Mixins
+
+The charm of the object mixin pattern is its simplicity: It really just needs an object literal and `Object.assign`.
+
+However, behavior defined with the mixin pattern is *slightly* different than behavior defined with the `class` keyword. Two examples of these differences are  enumerability and mixin properties (such as constants and mixin methods like `[Symbol.hasInstance]`).
+
+Functional mixins provide an opportunity to implement such functionality, at the cost of some complexity in the `FunctionalMixin` function that creates functional mixins.
+
+As a general rule, it's best to have things behave as similarly as possible in domain code, and this sometimes does involve some extra complexity in the infrastructure code. But that is more of a guideline than a hard-and-fast rule, and for this reason there is a place for both the object mixin pattern *and* functional mixins in JavaScript.
+
+```js
+function FunctionalMixin(behavior, sharedBehavior = {}) {
+  const instanceKeys = Reflect.ownKeys(behavior);
+  const sharedKeys = Reflect.ownKeys(sharedBehavior);
+  const typeTag = Symbol("isA");
+
+  function mixin(target) {
+    for (let property of instanceKeys)
+      if (!target[property])
+        Object.defineProperty(target, property, {
+          value: behavior[property],
+          writable: true
+        })
+    target[typeTag] = true;
+    return target;
+  }
+
+  for (let property of sharedKeys)
+    Object.defineProperty(mixin, property, {
+      value: sharedBehavior[property],
+      enumerable: sharedBehavior.propertyIsEnumerable(property)
+    });
+  Object.defineProperty(mixin, Symbol.hasInstance, { value: (instance) => !!instance[typeTag] });
+  return mixin;
+}
+
+class Todo {
+  constructor(name) {
+    this.name = name || 'Untitled';
+    this.done = false;
+  }
+
+  do() {
+    this.done = true;
+    return this;
+  }
+
+  undo() {
+    this.done = false;
+    return this;
+  }
+}
+
+const Colored = FunctionalMixin({
+  setColorRGB({r, g, b}) {
+    this.colorCode = {r, g, b};
+    return this;
+  },
+
+  getColorRGB() {
+    return this.colorCode;
+  }
+},
+{
+  RED: { r: 255, g: 0, b: 0 },
+  GREEN: { r: 0, g: 255, b: 0 },
+  BLUE: { r: 0, g: 0, b: 255 }
+});
+
+Colored(Todo.prototype);
+
+new Todo('test').setColorRGB({r: 1, g: 2, b: 3});
+
+const urgent = new Todo("finish blog post");
+urgent.setColorRGB(Colored.RED);
+urgent.getColorRGB(); // { r: 255, g: 0, b: 0 }
+
+// Mixin methods are not enumerable, just like prototype methods:
+for (let property in urgent) console.log(property);
+// name
+// done
+// colorCode
+
+urgent instanceof Todo; // true
+urgent instanceof Colored; // true
 ```
