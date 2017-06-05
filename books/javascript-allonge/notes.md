@@ -62,6 +62,8 @@
   * [Functional Mixins](#functional-mixins)
   * [Emulating Multiple Inheritance](#emulating-multiple-inheritance)
   * [Preventing Property Conflicts with Symbols](#preventing-property-conflicts-with-symbols)
+    * [Decoupling Mixins with Symbols](#decoupling-mixins-with-symbols)
+    * [Using Symbols to Reduce Coupled Properties](#using-symbols-to-reduce-coupled-properties)
 
 <!-- tocstop -->
 
@@ -2151,4 +2153,109 @@ class TimeSensitiveTodo extends ColoredAsWellAs(Todo) {
 let task = new TimeSensitiveTodo('Finish Javascript Allonge', Date.now() + oneDayInMilliseconds);
 
 task.toHTML(); // '<span style="color: #FFFF00;">Finish Javascript Allonge</span>;'
+```
+
+### Preventing Property Conflicts with Symbols
+
+#### Decoupling Mixins with Symbols
+
+```js
+// IsBibliophile and IsAuthor both have a 'books' property
+// but there is no conflict because they are symbols:
+class Person {
+  constructor (first, last) {
+    this.rename(first, last);
+  }
+  fullName () {
+    return this.firstName + " " + this.lastName;
+  }
+  rename (first, last) {
+    this.firstName = first;
+    this.lastName = last;
+    return this;
+  }
+};
+
+const IsBibliophile = (function() {
+  const books = Symbol();
+
+  return {
+    addToCollection(name) {
+      this.collection().push(name);
+      return this;
+    },
+    collection() {
+      return this[books] ||  (this[books] = []);
+    }
+  };
+})();
+
+const IsAuthor = (function() {
+  const books = Symbol();
+
+  return {
+    addBook(name) {
+      this.books().push(name);
+      return this;
+    },
+    books() {
+      return this[books] || (this[books] = []);
+    }
+  };
+})();
+
+class BookLovingAuthor extends Person { };
+
+Object.assign(BookLovingAuthor.prototype, IsBibliophile, IsAuthor);
+
+const isaac = new BookLovingAuthor('Isaac', 'Asimov')
+  .addBook('I Robot')
+  .addToCollection('The Mysterious Affair at Styles');
+
+isaac.collection(); // [ 'The Mysterious Affair at Styles' ]
+isaac.books();      // [ 'I Robot' ]
+```
+
+#### Using Symbols to Reduce Coupled Properties
+
+```js
+class Person {
+  constructor (first, last) {
+    this.rename(first, last);
+  }
+  fullName () {
+    return this.firstName + " " + this.lastName;
+  }
+  rename (first, last) {
+    this.firstName = first;
+    this.lastName = last;
+    return this;
+  }
+};
+
+const Bibliophile = (function() {
+  // using a symbol in a closure creates a "private" property
+  // that discourages direct access to it:
+  const books = Symbol("books");
+
+  return class Bibliophile extends Person {
+    constructor (first, last) {
+      super(first, last);
+      this[books] = [];
+    }
+    addToCollection (name) {
+      this[books].push(name);
+      return this;
+    }
+    hasInCollection (name) {
+      return this[books].indexOf(name) >= 0;
+    }
+  }
+})();
+
+const bezos = new Bibliophile('Jeff', 'Bezos')
+  .addToCollection("The Everything Store: Jeff Bezos and the Age of Amazon");
+
+bezos.hasInCollection("Matthew and the Wellington Boots"); // false
+bezos.hasInCollection("The Everything Store: Jeff Bezos and the Age of Amazon"); // true
 ```
