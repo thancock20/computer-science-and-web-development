@@ -1,5 +1,7 @@
 # Project completed in association with this item
-## Description:
-## Use Cases:
+
+Kittens site.
+
 ## Technologies used:
-## Skills I demonstrated via this project
+
+Sass
