@@ -1,29 +1,22 @@
 .kittens {
+  @extend %clearfix;
   list-style-type: none;
   padding: 0;
 
   li {
-    border-radius: 20px;
+    border-radius: $border-radius;
     float: left;
     margin-bottom: 2em;
     text-align: center;
-    width: 300px;
+    width: $kitten-width;
 
-    &:hover {
-      -webkit-transform: scale(1.1);
-      -moz-transform: scale(1.1);
-      -o-transform: scale(1.1);
-      -ms-transform: scale(1.1);
-      transform: scale(1.1);
-    }
-
-    img {
-      border: 10px solid #fff;
-      border-radius: 20px;
-    }
-
-    label {
-      font-weight: bold;
-    }
+    &:hover { @include scale($scale-amount); }
   }
+
+  img {
+    border: $border-width solid $white;
+    border-radius: $border-radius;
+  }
+
+  label { font-weight: bold; }
 }

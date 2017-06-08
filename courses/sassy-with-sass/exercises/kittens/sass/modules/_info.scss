@@ -1,12 +1,7 @@
 .info {
-  background: #fff;
-  padding: 2em 0 3em;
-
-  section {
-    float: left;
-    padding-right: 4em;
-    width: 40%;
-  }
+  float: left;
+  padding-right: 4em;
+  width: $info-width;
 
   ul {
     list-style-type: none;
@@ -14,40 +9,35 @@
   }
 
   li {
-    border-bottom: 1px dotted #EEE4DA;
+    border-bottom: 1px dotted $tan;
     margin-bottom: 1em;
     padding-bottom: 1em;
     padding-right: 1em;
+  }
 
-    a {
-      font-size: 1.25em;
-      text-decoration: none;
-    }
+  a {
+    font-size: 1.25em;
+    text-decoration: none;
   }
 
   .btn {
-    color: #AEA4AD;
+    color: $purple;
     font-size: 1em;
     font-weight: bold;
     text-decoration: none;
 
-    &:hover {
-      color: #506F8E;
-    }
+    &:hover { color: $blue; }
+  }
+}
+
+.location {
+  padding-right: 0;
+  width: $location-width;
+
+  dt {
+    color: $blue;
+    font-weight: bold;
   }
 
-
-  .location {
-    padding-right: 0;
-    width: 20%;
-
-    dt {
-      color: #506F8E;
-      font-weight: bold;
-    }
-
-    dd {
-      margin: 0;
-    }
-  }
+  dd { margin: 0; }
 }

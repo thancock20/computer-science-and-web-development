@@ -5,30 +5,25 @@
 }
 
 body {
-  background: #EEE4DA;
-  font-family: 'Didact Gothic', sans-serif;
+  background: $tan;
+  font-family: $base-font-family;
   margin: 0;
 }
 
 a {
-  color: #506F8E;
-}
-
-a:hover {
-  color: #AEA4AD;
-}
-
-.clearfix:after {
-  content: "";
-  display: table;
-  clear: both;
+  color: $blue;
+  &:hover { color: $purple; }
 }
 
 .wrapper {
+  @extend %clearfix;
   margin: 0 auto;
-  width: 1200px;
+  width: $page-width;
 }
 
-.search {
-  float: right;
+.subcontent {
+  background: $white;
+  padding: 2em 0 3em;
 }
+
+.search { float: right; }

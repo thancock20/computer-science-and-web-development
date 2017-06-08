@@ -1,34 +1,27 @@
 .footer {
-  background: #506F8E;
-  border-top: 10px solid #EEE4DA;
-
-  .copy {
-    color: #D9D0CB;
-    float: right;
-    margin: 1em 0;
-  }
+  background: $blue;
+  border-top: $border-width solid $tan;
 
   nav {
     float: left;
 
-    ul {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    li {
-      display: inline-block;
-    }
-
     a {
-      color: #AEA4AD;
-      display: block;
+      color: $purple;
       padding: 1em;
 
-      &:hover {
-        color: #D9D0CB;
-      }
+      &:hover { color: $beige; }
     }
   }
+
+  ul {
+    @extend .list--inline;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.copy {
+  color: $beige;
+  float: right;
+  margin: 1em 0;
 }
