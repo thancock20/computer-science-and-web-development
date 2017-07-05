@@ -36,14 +36,18 @@
                      (rectangle 20 10 "solid" "black"))))   ;main body
 
 (define TANK-HEIGHT/2 (/ (image-height TANK) 2))
+(define TANK-Y-POSITION (- HEIGHT TANK-HEIGHT/2))
 
 (define MISSILE (ellipse 5 15 "solid" "red"))
+
+(define MISSILE-HEIGHT/2 (/ (image-height MISSILE) 2))
+(define MISSILE-STARTING-Y (- (- TANK-Y-POSITION TANK-HEIGHT/2) MISSILE-HEIGHT/2))
 
 
 
 ;; Data Definitions:
 
-(define-struct game (invaders missiles t))
+(define-struct game (invaders missiles tank))
 ;; Game is (make-game  (listof Invader) (listof Missile) Tank)
 ;; interp. the current state of a space invaders game
 ;;         with the current invaders, missiles and tank position
@@ -123,8 +127,31 @@
 
 ;; Game -> Game
 ;; produce the next game state
+
+;(define (advance-game s) s) ; stub
+
+(define (advance-game s)
+  (make-game (advance-invaders (game-invaders s))
+             (advance-missiles (game-missiles s))
+             (advance-tank (game-tank s))))
+
+
+;; ListOfInvader -> ListOfInvader
+;; produce the next invaders state
+;;!!!
+(define (advance-invaders loinvader) loinvader) ; stub
+
+
+;; ListOfMissile -> ListOfMissile
+;; produce the next missiles state
 ;; !!!
-(define (advance-game s) s) ; stub
+(define (advance-missiles lom) lom) ; stub
+
+
+;; Tank -> Tank
+;; produce the next tank state
+;; !!!
+(define (advance-tank t) t) ; stub
 
 
 ;; Game -> Image
@@ -163,5 +190,16 @@
 ;;  - on " " fire a missile
 ;;  - on "left" change tank direction to -1
 ;;  - on "right" change tank direction to 1
-;; !!!
-(define (handle-keys s ke) s) ; stub
+(check-expect (handle-keys G1 " ") (make-game empty (list (make-missile 50 MISSILE-STARTING-Y)) T1))
+(check-expect (handle-keys G1 "left") (make-game empty empty (make-tank 50 -1)))
+(check-expect (handle-keys G1 "right") (make-game empty empty (make-tank 50 1)))
+(check-expect (handle-keys G1 "a") G1)
+
+;(define (handle-keys s ke) s) ; stub
+
+(define (handle-keys s ke)
+  (cond
+    [(key=? ke " ") (make-game (game-invaders s) (cons (make-missile (tank-x (game-tank s)) MISSILE-STARTING-Y) (game-missiles s)) (game-tank s))]
+    [(key=? ke "left") (make-game (game-invaders s) (game-missiles s) (make-tank (tank-x (game-tank s)) -1))]
+    [(key=? ke "right") (make-game (game-invaders s) (game-missiles s) (make-tank (tank-x (game-tank s)) 1))]
+    [else s]))
