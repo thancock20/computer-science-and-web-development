@@ -131,27 +131,231 @@
 ;(define (advance-game s) s) ; stub
 
 (define (advance-game s)
-  (make-game (advance-invaders (game-invaders s))
+  (advance-all (remove-collisions s)))
+
+
+;; Game -> Game
+;; advance all parts of game
+
+;(define (advance-all s) s) ; stub
+
+(define (advance-all s)
+  (make-game (add-invader (advance-invaders (game-invaders s)))
              (advance-missiles (game-missiles s))
              (advance-tank (game-tank s))))
 
 
+;; Game -> Game
+;; remove invaders and missiles that collide
+(check-expect (remove-collisions G1) G1)
+(check-expect (remove-collisions G2) G2)
+(check-expect (remove-collisions G3) (make-game (list I2) (list M1) T1))
+
+;(define (remove-collisions s) s) ; stub
+
+(define (remove-collisions s)
+  (make-game (remove-overlaps-invaders (game-invaders s) (game-missiles s))
+             (remove-overlaps-missiles (game-missiles s) (game-invaders s))
+             (game-tank s)))
+
+
+;; ListOfInvader ListOfMissile -> ListOfInvader
+;; produce list loinvader without overlaps with lom
+(check-expect (remove-overlaps-invaders empty empty) empty)
+(check-expect (remove-overlaps-invaders empty (list M1)) empty)
+(check-expect (remove-overlaps-invaders (list I1 I2) (list M1)) (list I1 I2))
+(check-expect (remove-overlaps-invaders (list I1 I2) (list M1 M2)) (list I2))
+
+;(define (remove-overlaps-invaders loinvader lom) loinvader) ; stub
+
+(define (remove-overlaps-invaders loinvader lom)
+  (cond
+    [(empty? loinvader) empty]
+    [(empty? lom) loinvader]
+    [(overlaps-invader? (first loinvader) lom) (remove-overlaps-invaders (rest loinvader) lom)]
+    [else (cons (first loinvader) (remove-overlaps-invaders (rest loinvader) lom))]))
+
+
+;; ListOfMissile ListOfInvader -> ListOfMissile
+;; produce list loinvader without overlaps with lom
+(check-expect (remove-overlaps-missiles (list M1) empty) (list M1))
+(check-expect (remove-overlaps-missiles (list M1 M2) (list I2)) (list M1 M2))
+(check-expect (remove-overlaps-missiles (list M1 M2) (list I1 I2)) (list M1))
+
+;(define (remove-overlaps-missiles lom loinvader) loinvader) ; stub
+
+(define (remove-overlaps-missiles lom loinvader)
+  (cond
+    [(empty? lom) empty]
+    [(empty? loinvader) lom]
+    [(overlaps-missile? (first lom) loinvader) (remove-overlaps-missiles (rest lom) loinvader)]
+    [else (cons (first lom) (remove-overlaps-missiles (rest lom) loinvader))]))
+
+
+;; Invader ListOfMissile -> Boolean
+;; produce true if item overlaps with list
+(check-expect (overlaps-invader? I1 (list M1)) false)
+(check-expect (overlaps-invader? I1 (list M1 M2)) true)
+
+;(define (overlaps-invader? i lom) true) ; stub
+
+(define (overlaps-invader? i lom)
+  (cond
+    [(empty? lom) false]
+    [(close-enough? i (first lom)) true]
+    [else
+     (overlaps-invader? i (rest lom))]))
+
+
+;; Missile ListOfInvader -> Boolean
+;; produce true if item overlaps with list
+(check-expect (overlaps-missile? M2 (list I2)) false)
+(check-expect (overlaps-missile? M2 (list I1 I2)) true)
+
+;(define (overlaps-missile? m loinvader) true) ; stub
+
+(define (overlaps-missile? m loinvader)
+  (cond
+    [(empty? loinvader) false]
+    [(close-enough? (first loinvader) m) true]
+    [else
+     (overlaps-missile? m (rest loinvader))]))
+
+
+;; Invader Missile -> Boolean
+;; produce true if items' x and y are within HIT-RANGE
+(check-expect (close-enough? I1 M1) false)
+(check-expect (close-enough? I1 M2) true)
+
+;(define (close-enough? i m) true) ; stub
+
+(define (close-enough? i m)
+  (and (<= (abs (- (invader-x i) (missile-x m))) HIT-RANGE)
+       (<= (abs (- (invader-y i) (missile-y m))) HIT-RANGE)))
+
+
+;; ListOfInvader -> ListOfInvader
+;; randomly add an invader to loinvader
+(check-random (add-invader empty)
+              (if (< (random INVADE-RATE) 3)
+                  (cons (make-invader (random WIDTH) 0 1) empty)
+                  empty))
+
+;(define (add-invader loinvader) loinvader) ; stub
+
+(define (add-invader loinvader)
+  (if (< (random INVADE-RATE) 3)
+      (cons (make-invader (random WIDTH) 0 1) loinvader)
+      loinvader))
+
+
 ;; ListOfInvader -> ListOfInvader
 ;; produce the next invaders state
-;;!!!
-(define (advance-invaders loinvader) loinvader) ; stub
+(check-expect (advance-invaders empty) empty)
+(check-expect (advance-invaders (list I1)) (cons (make-invader (+ 150 (* INVADER-X-SPEED 1)) (+ 100 INVADER-Y-SPEED) 1) empty))
+(check-expect (advance-invaders (list (make-invader WIDTH 100 1))) (cons (make-invader WIDTH 100 -1) empty))
+(check-expect (advance-invaders (list (make-invader 0 100 -1))) (cons (make-invader 0 100 1) empty))
+(check-expect (advance-invaders (list I1 I2))
+              (cons (make-invader (+ 150 (* INVADER-X-SPEED 1)) (+ 100 INVADER-Y-SPEED) 1)
+                    (cons (make-invader (+ 150 (* INVADER-Y-SPEED -1)) (+ HEIGHT INVADER-Y-SPEED) -1) empty)))
+
+;(define (advance-invaders loinvader) loinvader) ; stub
+
+(define (advance-invaders loinvader)
+  (cond
+    [(empty? loinvader) empty]
+    [else
+     (cons (advance-invader (first loinvader))
+           (advance-invaders (rest loinvader)))]))
+
+
+;; Invader -> Invader
+;; produce the next invader state
+(check-expect (advance-invader I1) (make-invader (+ 150 (* INVADER-X-SPEED 1)) (+ 100 INVADER-Y-SPEED) 1))
+(check-expect (advance-invader I2) (make-invader (+ 150 (* INVADER-X-SPEED -1)) (+ HEIGHT INVADER-Y-SPEED) -1))
+(check-expect (advance-invader (make-invader WIDTH 100 1)) (make-invader WIDTH 100 -1))
+(check-expect (advance-invader (make-invader 0 100 -1)) (make-invader 0 100 1))
+
+;(define (advance-invader i) i) ; stub
+
+(define (advance-invader i)
+  (if (edge? i)
+      (make-invader (invader-x i) (invader-y i) (* (invader-dx i) -1))
+      (make-invader (+ (invader-x i) (* INVADER-X-SPEED (invader-dx i))) 
+                    (+ (invader-y i) INVADER-Y-SPEED) 
+                    (invader-dx i))))
+
+
+;; Invader -> Boolean
+;; produce true if i is on the edge and needs to be turned
+(check-expect (edge? I1) false)
+(check-expect (edge? I2) false)
+(check-expect (edge? (make-invader WIDTH 100 1)) true)
+(check-expect (edge? (make-invader 0 100 -1)) true)
+(check-expect (edge? (make-invader (+ WIDTH 1) 100 1)) true)
+(check-expect (edge? (make-invader -1 100 -1)) true)
+(check-expect (edge? (make-invader WIDTH 100 -1)) false)
+(check-expect (edge? (make-invader 0 100 1)) false)
+
+;(define (edge? i) true) ; stub
+
+(define (edge? i)
+  (or (and (>= (invader-x i) WIDTH) (= (invader-dx i) 1))
+      (and (<= (invader-x i) 0) (= (invader-dx i) -1))))
 
 
 ;; ListOfMissile -> ListOfMissile
 ;; produce the next missiles state
-;; !!!
-(define (advance-missiles lom) lom) ; stub
+(check-expect (advance-missiles empty) empty)
+(check-expect (advance-missiles (list M1)) 
+              (cons (make-missile 150 (- 300 MISSILE-SPEED)) empty))
+(check-expect (advance-missiles (list M1 M2)) 
+              (cons (make-missile 150 (- 300 MISSILE-SPEED)) 
+                    (cons (make-missile (invader-x I1) (- (+ (invader-y I1) 10) MISSILE-SPEED)) empty)))
+
+
+;(define (advance-missiles lom) lom) ; stub
+
+(define (advance-missiles lom)
+  (cond
+    [(empty? lom) empty]
+    [(off-screen? (first lom)) (advance-missiles (rest lom))]
+    [else
+     (cons (advance-missile (first lom)) 
+           (advance-missiles (rest lom)))]))
+
+
+;; Missile -> Boolean
+;; produce true if the missile is off-screen (it's y<0)
+(check-expect (off-screen? M1) false)
+(check-expect (off-screen? (make-missile 150 -1)) true)
+
+;(define (off-screen? m) true) ; stub
+
+(define (off-screen? m)
+  (< (missile-y m) 0))
+
+
+;; Missile -> Missile
+;; produce the next missile state
+(check-expect (advance-missile M1) (make-missile 150 (- 300 MISSILE-SPEED)))
+
+;(define (advance-missile m) m) ; stub
+
+(define (advance-missile m)
+  (make-missile (missile-x m)
+                (- (missile-y m) MISSILE-SPEED)))
 
 
 ;; Tank -> Tank
 ;; produce the next tank state
-;; !!!
-(define (advance-tank t) t) ; stub
+(check-expect (advance-tank T1) (make-tank (+ 50 (* TANK-SPEED 1)) 1))
+(check-expect (advance-tank T2) (make-tank (+ 50 (* TANK-SPEED -1)) -1))
+
+;(define (advance-tank t) t) ; stub
+
+(define (advance-tank t)
+  (make-tank (+ (tank-x t) (* TANK-SPEED (tank-dir t))) (tank-dir t)))
 
 
 ;; Game -> Image
