@@ -1,1 +1,1 @@
-# Notes related to what I learned while completing this
+# Notes from DOM Enlightenment
