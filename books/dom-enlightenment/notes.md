@@ -7,6 +7,8 @@
 
 * [Node Overview](#node-overview)
 	* [Sub-node objects inherit from the `Node` object:](#sub-node-objects-inherit-from-the-node-object)
+	* [Properties and methods for working nodes](#properties-and-methods-for-working-nodes)
+	* [Identifying the type and name of a node](#identifying-the-type-and-name-of-a-node)
 
 <!-- /code_chunk_output -->
 
@@ -97,3 +99,75 @@ console.log(props.sort());
 	* `children`
 * HTML element Methods:
 	* `insertAdjacentHTML()`
+
+### Identifying the type and name of a node
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<a href="#">Hi</a>
+
+<script>
+
+// This is DOCUMENT_TYPE_NODE or nodeType 10 because Node.DOCUMENT_TYPE_NODE === 10
+console.log(
+	document.doctype.nodeName, // logs 'html' also try document.doctype to get <!DOCTYPE html>
+	document.doctype.nodeType // logs 10 which maps to DOCUMENT_TYPE_NODE
+);
+
+// This is DOCUMENT_NODE or nodeType 9 because Node.DOCUMENT_NODE === 9
+console.log(
+	document.nodeName, // logs '#document'
+	document.nodeType // logs 9 which maps to DOCUMENT_NODE
+);
+
+// This is DOCUMENT_FRAGMENT_NODE or nodeType 11 because Node.DOCUMENT_FRAGMENT_NODE === 11
+console.log(
+	document.createDocumentFragment().nodeName, // logs '#document-fragment'
+	document.createDocumentFragment().nodeType // logs 11 which maps to DOCUMENT_FRAGMENT_NODE
+);
+
+// This is ELEMENT_NODE or nodeType 1 because Node.ELEMENT_NODE === 1
+console.log(
+	document.querySelector('a').nodeName, // logs 'A'
+	document.querySelector('a').nodeType // logs 1 which maps to ELEMENT_NODE
+);
+
+// This is ATTRIBUTE_NODE or nodeType 2 because Node.ATTRIBUTE_NODE === 2
+console.log(
+	document.querySelector('a').attributes['href'].nodeName, // logs 'href'
+	document.querySelector('a').attributes['href'].nodeType // logs 2 which maps to ATTRIBUTE_NODE
+);
+
+// This is TEXT_NODE or nodeType 3 because Node.TEXT_NODE === 3
+console.log(
+	document.querySelector('a').firstChild.nodeName, // logs '#text'
+	document.querySelector('a').firstChild.nodeType // logs 3 which maps to TEXT_NODE
+);
+
+</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<a href="#">Hi</a>
+
+<script>
+
+//is <a> a ELEMENT_NODE?
+console.log(document.querySelector('a').nodeType === 1); //logs true, <a> is an Element node
+
+//or use Node.ELEMENT_NODE which is a property containg the numerice value of 1
+console.log(document.querySelector('a').nodeType === Node.ELEMENT_NODE); //logs true, <a> is an Element node
+
+</script>
+</body>
+</html>
+```
