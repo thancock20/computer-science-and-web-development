@@ -16,6 +16,9 @@
 	* [Adding node objects to the DOM using `appendChild()` & `insertBefore()`](#adding-node-objects-to-the-dom-using-appendchild-insertbefore)
 	* [Removing and replacing nodes using `removeChild()` and `replaceChild()`](#removing-and-replacing-nodes-using-removechild-and-replacechild)
 	* [Cloning nodes using `cloneNode()`](#cloning-nodes-using-clonenode)
+	* [Grokking node collections (i.e. `Nodelist` & `HTMLcollection`)](#grokking-node-collections-ie-nodelist-htmlcollection)
+	* [Getting a list/collection of all immediate child nodes](#getting-a-listcollection-of-all-immediate-child-nodes)
+	* [Traversing nodes in the DOM](#traversing-nodes-in-the-dom)
 
 <!-- /code_chunk_output -->
 
@@ -463,6 +466,116 @@ var cloneUL = document.querySelector('ul').cloneNode(true);
 
 console.log(cloneUL.constructor); //logs HTMLUListElement()
 console.log(cloneUL.innerHTML); //logs <li>Hi</li><li>there</li>
+
+</script>
+</body>
+</html>
+```
+
+### Grokking node collections (i.e. `Nodelist` & `HTMLcollection`)
+
+When selecting groups of nodes from a tree or accessing pre-defined nodes, the nodes are either placed in a `NodeList` (e.g. `document.querySelectorAll('*')`) or `HTMLCollection` (e.g. `document.scripts`). These array like (i.e. not a real `Array`) object collections have the following characteristics:
+
+* A collection can either be live or static. Meaning that the nodes contained in the collection are either literally part of the live document or a snapshot of the live document.
+* By default, nodes are sorted inside of the collection by tree order. Meaning the order matches the linear path from the tree trunk to branches.
+* The collections have a `length` property that reflects the number of elements to the list.
+
+### Getting a list/collection of all immediate child nodes
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<ul>
+  <li>Hi</li>
+  <li>there</li>
+</ul>
+
+<script>
+
+var ulElementChildNodes = document.querySelector('ul').childNodes;
+
+console.log(ulElementChildNodes); //logs an array like list of all nodes inside of the ul
+
+// Call forEach as if its a method of NodeLists so we can loop over the
+// NodeList. Done because NodeLists are array like, but do not directly inherit
+// from Array
+Array.prototype.forEach.call(ulElementChildNodes,function(item){
+   console.log(item); //logs each item in the array
+});
+
+</script>
+</body>
+</html>
+```
+
+### Traversing nodes in the DOM
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body><ul><!-- comment -->
+<li id="A"></li>
+<li id="B"></li>
+<!-- comment -->
+</ul>
+
+<script>
+// traversing  all nodes:
+
+//cache selection of the ul
+var ul = document.querySelector('ul');
+
+//What is the parentNode of the ul?
+console.log(ul.parentNode.nodeName); //logs body
+
+//What is the first child of the ul?
+console.log(ul.firstChild.nodeName); //logs comment
+
+//What is the last child of the ul?
+console.log(ul.lastChild.nodeName); //logs text not comment, because there is a line break
+
+//What is the nextSibling of the first li?
+console.log(ul.querySelector('#A').nextSibling.nodeName); //logs text
+
+//What is the previousSibling of the last li?
+console.log(ul.querySelector('#B').previousSibling.nodeName); //logs text
+
+</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body><ul><!-- comment -->
+<li id="A"></li>
+<li id="B"></li>
+<!-- comment -->
+</ul>
+
+<script>
+// traversing only elements:
+
+//cache selection of the ul
+var ul = document.querySelector('ul');
+
+//What is the first child of the ul?
+console.log(ul.firstElementChild.nodeName); //logs li
+
+//What is the last child of the ul?
+console.log(ul.lastElementChild.nodeName); //logs li
+
+//What is the nextSibling of the first li?
+console.log(ul.querySelector('#A').nextElementSibling.nodeName); //logs li
+
+//What is the previousSibling of the last li?
+console.log(ul.querySelector('#B').previousElementSibling.nodeName); //logs li
+
+//What are the element only child nodes of the ul?
+console.log(ul.children); //HTMLCollection, all child nodes including text nodes
 
 </script>
 </body>
