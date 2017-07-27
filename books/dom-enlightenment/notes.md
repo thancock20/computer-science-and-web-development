@@ -9,6 +9,13 @@
 	* [Sub-node objects inherit from the `Node` object:](#sub-node-objects-inherit-from-the-node-object)
 	* [Properties and methods for working nodes](#properties-and-methods-for-working-nodes)
 	* [Identifying the type and name of a node](#identifying-the-type-and-name-of-a-node)
+	* [Getting a nodes value](#getting-a-nodes-value)
+	* [Creating element and text nodes using JavaScript methods](#creating-element-and-text-nodes-using-javascript-methods)
+	* [Creating and adding element and text nodes to the DOM using JavaScript strings](#creating-and-adding-element-and-text-nodes-to-the-dom-using-javascript-strings)
+	* [Extracting parts of the DOM tree as JavaScript strings](#extracting-parts-of-the-dom-tree-as-javascript-strings)
+	* [Adding node objects to the DOM using `appendChild()` & `insertBefore()`](#adding-node-objects-to-the-dom-using-appendchild-insertbefore)
+	* [Removing and replacing nodes using `removeChild()` and `replaceChild()`](#removing-and-replacing-nodes-using-removechild-and-replacechild)
+	* [Cloning nodes using `cloneNode()`](#cloning-nodes-using-clonenode)
 
 <!-- /code_chunk_output -->
 
@@ -166,6 +173,296 @@ console.log(document.querySelector('a').nodeType === 1); //logs true, <a> is an 
 
 //or use Node.ELEMENT_NODE which is a property containg the numerice value of 1
 console.log(document.querySelector('a').nodeType === Node.ELEMENT_NODE); //logs true, <a> is an Element node
+
+</script>
+</body>
+</html>
+```
+
+### Getting a nodes value
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<a href="#">Hi</a>
+
+<script>
+
+//logs null for DOCUMENT_TYPE_NODE, DOCUMENT_NODE, DOCUMENT_FRAGMENT_NODE, ELEMENT_NODE below
+console.log(document.doctype.nodeValue);
+console.log(document.nodeValue);
+console.log(document.createDocumentFragment().nodeValue);
+console.log(document.querySelector('a').nodeVale);
+
+//logs string of text
+console.log(document.querySelector('a').firstChild.nodeValue); //logs 'Hi'
+
+</script>
+</body>
+</html>
+```
+
+### Creating element and text nodes using JavaScript methods
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<script>
+
+var elementNode = document.createElement('div');
+console.log(elementNode, elementNode.nodeType); //log <div> 1, and 1 indicates an element node
+
+var textNode = document.createTextNode('Hi');
+console.log(textNode, textNode.nodeType); //logs Text {} 3, and 3 indicates a text node
+
+</script>
+</body>
+</html>
+```
+
+### Creating and adding element and text nodes to the DOM using JavaScript strings
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div id="A"></div>
+<span id="B"></span>
+<div id="C"></div>
+<div id="D"></div>
+<div id="E"></div>
+
+<script>
+
+//create a strong element and text node and add it to the DOM
+document.getElementById('A').innerHTML = '<strong>Hi</strong>';
+
+//create a div element and text node to replace <span id="B"></div> (notice span#B is replaced)
+document.getElementById('B').outerHTML = '<div id="B" class="new">Whats Shaking</div>'
+
+//create a text node and update the div#C with the text node
+document.getElementById('C').textContent = 'dude';
+
+
+//NON standard extensions below i.e. innerText & outerText
+
+//create a text node and update the div#D with the text node
+document.getElementById('D').innerText = 'Keep it';
+
+//create a text node and replace the div#E with the text node (notice div#E is gone)
+document.getElementById('E').outerText = 'real!';
+
+console.log(document.body.innerHTML);
+/* logs
+<div id="A"><strong>Hi</strong></div>
+<div id="B" class="new">Whats Shaking</div>
+<span id="C">dude</span>
+<div id="D">Keep it</div>
+real!
+*/
+
+</script>
+</body>
+</html>
+```
+
+### Extracting parts of the DOM tree as JavaScript strings
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div id="A"><i>Hi</i></div>
+<div id="B">Dude<strong> !</strong></div>
+
+<script>
+
+console.log(document.getElementById('A').innerHTML); //logs '<i>Hi</i>'
+
+console.log(document.getElementById('A').outerHTML); //logs <div id="A">Hi</div>
+
+//notice that all text is returned even if its in child element nodes (i.e. <strong> !</strong>)
+console.log(document.getElementById('B').textContent); //logs 'Dude !'
+
+//NON standard extensions below i.e. innerText & outerText
+
+console.log(document.getElementById('B').innerText); //logs 'Dude !'
+
+console.log(document.getElementById('B').outerText); //logs 'Dude !'​​
+
+</script>
+</body>
+</html>
+```
+
+### Adding node objects to the DOM using `appendChild()` & `insertBefore()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<p>Hi</p>
+
+<script>
+
+//create a blink element node and text node
+var elementNode = document.createElement('strong');
+var textNode = document.createTextNode(' Dude');
+
+//append these nodes to the DOM
+document.querySelector('p').appendChild(elementNode);
+document.querySelector('strong').appendChild(textNode);
+
+//log's <p>Hi<strong> Dude</strong></p>
+console.log(document.body.innerHTML);
+
+</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<ul>
+    <li>2</li>
+    <li>3</li>
+</ul>
+
+<script>
+
+//create a text node and li element node and append the text to the li
+var text1 = document.createTextNode('1');
+var li = document.createElement('li');
+li.appendChild(text1);
+
+//select the ul in the document
+var ul = document.querySelector('ul');
+
+/*
+add the li element we created above to the DOM, notice I call on <ul> and pass reference to <li>2</li> using ul.firstChild
+*/
+ul.insertBefore(li,ul.firstChild);
+
+console.log(document.body.innerHTML);
+/*logs
+<ul>
+<li>1</li>
+<li>2</li>
+<li>3</li>
+</ul>
+*/
+
+</script>
+</body>
+</html>
+```
+
+### Removing and replacing nodes using `removeChild()` and `replaceChild()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div id="A">Hi</div>
+<div id="B">Dude</div>
+
+<script>
+
+//remove element node
+var divA = document.getElementById('A');
+divA.parentNode.removeChild(divA);
+
+//remove text node
+var divB = document.getElementById('B').firstChild;
+divB.parentNode.removeChild(divB);
+
+//log the new DOM updates, which should only show the remaining empty div#B
+console.log(document.body.innerHTML);
+
+</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div id="A">Hi</div>
+<div id="B">Dude</div>
+
+<script>
+
+//replace element node
+var divA = document.getElementById('A');
+var newSpan = document.createElement('span');
+newSpan.textContent = 'Howdy';
+divA.parentNode.replaceChild(newSpan,divA);
+
+//replace text node
+var divB = document.getElementById('B').firstChild;
+var newText = document.createTextNode('buddy');
+divB.parentNode.replaceChild(newText, divB);
+
+//log the new DOM updates,
+console.log(document.body.innerHTML);
+
+</script>
+</body>
+</html>
+```
+
+### Cloning nodes using `cloneNode()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<ul>
+  <li>Hi</li>
+  <li>there</li>
+</ul>
+
+<script>
+
+var cloneUL = document.querySelector('ul').cloneNode();
+
+console.log(cloneUL.constructor); //logs HTMLUListElement()
+console.log(cloneUL.innerHTML); //logs (an empty string) as only the ul was cloned
+
+</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<ul>
+  <li>Hi</li>
+  <li>there</li>
+</ul>
+
+<script>
+
+var cloneUL = document.querySelector('ul').cloneNode(true);
+
+console.log(cloneUL.constructor); //logs HTMLUListElement()
+console.log(cloneUL.innerHTML); //logs <li>Hi</li><li>there</li>
 
 </script>
 </body>
