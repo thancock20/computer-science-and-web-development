@@ -19,6 +19,8 @@
 	* [Grokking node collections (i.e. `Nodelist` & `HTMLcollection`)](#grokking-node-collections-ie-nodelist-htmlcollection)
 	* [Getting a list/collection of all immediate child nodes](#getting-a-listcollection-of-all-immediate-child-nodes)
 	* [Traversing nodes in the DOM](#traversing-nodes-in-the-dom)
+	* [Verify a node position in the DOM tree with `contains()` & `compareDocumentPosition()`](#verify-a-node-position-in-the-dom-tree-with-contains-comparedocumentposition)
+	* [How to determine if two nodes are identical](#how-to-determine-if-two-nodes-are-identical)
 
 <!-- /code_chunk_output -->
 
@@ -576,6 +578,73 @@ console.log(ul.querySelector('#B').previousElementSibling.nodeName); //logs li
 
 //What are the element only child nodes of the ul?
 console.log(ul.children); //HTMLCollection, all child nodes including text nodes
+
+</script>
+</body>
+</html>
+```
+
+### Verify a node position in the DOM tree with `contains()` & `compareDocumentPosition()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<script>
+
+// is <body> inside <html lang="en"> ?
+var inside = document.querySelector('html').contains(document.querySelector('body'));
+
+console.log(inside); //logs true
+
+</script>
+</body>
+</html>
+```
+
+| **number code returned from** `compareDocumentPosition()`: | **number code info:**          |
+|:-----------------------------------------------------------|:-------------------------------|
+| 0                                                          | Elements are identical.        |
+| 1                                                          | DOCUMENT_POSITION_DISCONNECTED |
+| 2                                                          | DOCUMENT_POSITION_PRECEDING    |
+| 4                                                          | DOCUMENT_POSITION_FOLLOWING    |
+| 8                                                          | DOCUMENT_POSITION_CONTAINS     |
+| 16 (10 in hexadecimal)                                     | DOCUMENT_POSITION_CONTAINED_BY |
+
+### How to determine if two nodes are identical
+
+Two nodes are equal if, and only if, the following conditions are satisfied:
+* The two nodes are of the same type.
+* The following string attributes are equal:
+	* `nodeName`
+	* `localName`
+	* `namespaceURI`
+	* `prefix`
+	* `nodeValue`
+* The `attributes NamedNodeMaps` are equal.
+* The `childNodes NodeLists` are equal.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<input type="text">
+<input type="text">
+
+<textarea>foo</textarea>
+<textarea>bar</textarea>
+
+<script>
+
+//logs true, because they are exactly idential
+var input = document.querySelectorAll('input');
+console.log(input[0].isEqualNode(input[1]));
+
+//logs false, because the child text node is not the same
+var textarea = document.querySelectorAll('textarea');
+console.log(textarea[0].isEqualNode(textarea[1]));
 
 </script>
 </body>
