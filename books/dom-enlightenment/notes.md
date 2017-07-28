@@ -21,6 +21,17 @@
 	* [Traversing nodes in the DOM](#traversing-nodes-in-the-dom)
 	* [Verify a node position in the DOM tree with `contains()` & `compareDocumentPosition()`](#verify-a-node-position-in-the-dom-tree-with-contains-comparedocumentposition)
 	* [How to determine if two nodes are identical](#how-to-determine-if-two-nodes-are-identical)
+* [Document Nodes](#document-nodes)
+	* [`document` node overview](#document-node-overview)
+	* [`HTMLDocument` properties and methods](#htmldocument-properties-and-methods)
+	* [Getting general HTML document information](#getting-general-html-document-information)
+	* [`document` child nodes](#document-child-nodes)
+	* [`document` provides shortcuts to `<!DOCTYPE>`, `<html lang="en">`, `<head>`, and `<body>`](#document-provides-shortcuts-to-doctype-html-langen-head-and-body)
+	* [Detecting DOM specifications/features using `document.implementation.hasFeature()`](#detecting-dom-specificationsfeatures-using-documentimplementationhasfeature)
+	* [Get a reference to the focus/active node in the `document`](#get-a-reference-to-the-focusactive-node-in-the-document)
+	* [Determining if the `document` has focus](#determining-if-the-document-has-focus)
+	* [`document.defaultview` is a shortcut to the head/global object](#documentdefaultview-is-a-shortcut-to-the-headglobal-object)
+	* [Getting a reference to the `Document` from an `element` using `ownerDocument`](#getting-a-reference-to-the-document-from-an-element-using-ownerdocument)
 
 <!-- /code_chunk_output -->
 
@@ -645,6 +656,224 @@ console.log(input[0].isEqualNode(input[1]));
 //logs false, because the child text node is not the same
 var textarea = document.querySelectorAll('textarea');
 console.log(textarea[0].isEqualNode(textarea[1]));
+
+</script>
+</body>
+</html>
+```
+
+## Document Nodes
+
+### `document` node overview
+
+The `HTMLDocument` constructor (which inherits from `document`) when instantiated represents a `DOCUMENT_NODE` (i.e. `window.document`) in the DOM.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<script>
+
+console.log(window.document.constructor); //logs function HTMLDocument() { [native code] }
+console.log(window.document.nodeType); //logs 9, which is a numeric key mapping to DOCUMENT_NODE
+
+</script>
+</body>
+</html>
+```
+
+### `HTMLDocument` properties and methods
+
+* `doctype`
+* `documentElement`
+* `implementation.*`
+* `activeElement`
+* `body`
+* `head`
+* `title`
+* `lastModified`
+* `referrer`
+* `URL`
+* `defaultview`
+* `compatMode`
+* `ownerDocument`
+* `hasFocus()`
+
+### Getting general HTML document information
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<script>
+
+var d = document;
+console.log('title = ' +d.title);
+console.log('url = ' +d.URL);
+console.log('referrer = ' +d.referrer);
+console.log('lastModified = ' +d.lastModified);
+
+//logs either BackCompat (Quirks Mode) or CSS1Compat (Strict Mode)
+console.log('compatibility mode = ' +d.compatMode);
+
+</script>
+</body>
+</html>
+```
+
+### `document` child nodes
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<script>
+
+//This is the doctype/DTD
+console.log(document.childNodes[0].nodeType); //logs 10, which is a numeric key mapping to DOCUMENT_TYPE_NODE
+
+//This is the <html> element
+console.log(document.childNodes[1].nodeType); //logs 1, which is a numeric key mapping to ELEMENT_TYPE_NODE
+
+</script>
+</body>
+</html>
+```
+
+### `document` provides shortcuts to `<!DOCTYPE>`, `<html lang="en">`, `<head>`, and `<body>`
+
+* `document.doctype` refers to `<!DOCTYPE>`
+* `document.documentElement` refers to `<html lang="en">`
+* `document.head` refers to `<head>`
+* `document.body` refers to `<body>`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<script>
+
+console.log(document.doctype); // logs DocumentType {nodeType=10, ownerDocument=document, ...}
+
+console.log(document.documentElement); // logs <html lang="en">
+
+console.log(document.head); // logs <head>
+
+console.log(document.body); // logs <body>
+
+</script>
+
+</body>
+</html>
+```
+
+### Detecting DOM specifications/features using `document.implementation.hasFeature()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<script>
+
+console.log(document.implementation.hasFeature('Core','2.0'));
+console.log(document.implementation.hasFeature('Core','3.0'));
+
+</script>
+</body>
+</html>
+```
+
+The following table defines the features and versions you can pass the `hasFeature()` method
+
+| **Feature**                                                             | **Supported Versions** |
+|:------------------------------------------------------------------------|:-----------------------|
+| Core                                                                    | 1.0, 2.0, 3.0          |
+| XML                                                                     | 1.0, 2.0, 3.0          |
+| HTML                                                                    | 1.0, 2.0               |
+| Views                                                                   | 2.0                    |
+| StyleSheets                                                             | 2.0                    |
+| CSS                                                                     | 2.0                    |
+| CSS2                                                                    | 2.0                    |
+| Events                                                                  | 2.0, 3.0               |
+| UIEvents                                                                | 2.0, 3.0               |
+| MouseEvents                                                             | 2.0, 3.0               |
+| MutationEvents                                                          | 2.0, 3.0               |
+| HTMLEvents                                                              | 2.0                    |
+| Range                                                                   | 2.0                    |
+| Traversal                                                               | 2.0                    |
+| LS (Loading and saving between files and DOM trees sychronously)        | 3.0                    |
+| LS-asnc (Loading and saving between files and DOM trees asynchronously) | 3.0                    |
+| Validation                                                              | 3.0                    |
+
+### Get a reference to the focus/active node in the `document`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<textarea></textarea>
+
+<script>
+
+//set focus to <textarea>
+document.querySelector('textarea').focus();
+
+​//get reference to element that is focused/active in the document
+console.log(document.activeElement); //logs <textarea>
+
+</script>
+</body>
+</html>
+```
+
+### Determining if the `document` has focus
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<script>
+
+//If you keep focus on the window/tab that has the document loaded its true. If not it's false.
+setTimeout(function(){console.log(document.hasFocus())},5000);
+
+</script>
+</body>
+</html>
+```
+
+### `document.defaultview` is a shortcut to the head/global object
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<script>
+
+console.log(document.defaultView) //reference, head JS object. Would be window object in a browser.
+
+</script>
+</body>
+</html>
+```
+
+### Getting a reference to the `Document` from an `element` using `ownerDocument`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<iframe src="http://someFileServedFromServerOnSameDomain.html"></iframe>
+
+<script>
+
+//get the window.document that the <body> is contained within
+console.log(document.body.ownerElement);
+
+//get the window.document the <body> inside of the iframe is contained within
+console.log(window.frames[0].document.body.ownerElement);
 
 </script>
 </body>
