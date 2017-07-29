@@ -32,6 +32,11 @@
 	* [Determining if the `document` has focus](#determining-if-the-document-has-focus)
 	* [`document.defaultview` is a shortcut to the head/global object](#documentdefaultview-is-a-shortcut-to-the-headglobal-object)
 	* [Getting a reference to the `Document` from an `element` using `ownerDocument`](#getting-a-reference-to-the-document-from-an-element-using-ownerdocument)
+* [Element Nodes](#element-nodes)
+	* [`HTML*Element` object overview](#htmlelement-object-overview)
+	* [`HTML*Element` object properties and methods](#htmlelement-object-properties-and-methods)
+	* [Creating Elements](#creating-elements)
+	* [Get the tag name of an element](#get-the-tag-name-of-an-element)
 
 <!-- /code_chunk_output -->
 
@@ -874,6 +879,84 @@ console.log(document.body.ownerElement);
 
 //get the window.document the <body> inside of the iframe is contained within
 console.log(window.frames[0].document.body.ownerElement);
+
+</script>
+</body>
+</html>
+```
+
+## Element Nodes
+
+### `HTML*Element` object overview
+
+Elements in an html document all have a unique nature and as such they all have a unique JavaScript constructor that instantiates the element as a  node object in a DOM tree.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<a></a>
+
+<script>
+
+// grab <a> element node from DOM and ask for the name of the constructor that constructed it
+console.log(document.querySelector('a').constructor);
+//logs function HTMLAnchorElement() { [native code] }
+
+</script>
+</body>
+</html>
+```
+
+There's a [complete list](https://html.spec.whatwg.org/multipage/indices.html#index) at the whatwg page.
+
+### `HTML*Element` object properties and methods
+
+* `createElement()`
+* `tagName`
+* `children`
+* `getAttribute()`
+* `setAttribute()`
+* `hasAttribute()`
+* `removeAttribute()`
+* `classList()`
+* `dataset`
+* `attributes`
+
+### Creating Elements
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<script>
+
+var elementNode = document.createElement('textarea'); //HTMLTextAreaElement() constructs <textarea>
+document.body.appendChild(elementNode);
+
+console.log(document.querySelector('textarea')); //verify it's now in the DOM
+
+</script>
+</body>
+</html>
+```
+
+### Get the tag name of an element
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<a href="#">Hi</a>
+
+<script>
+
+console.log(document.querySelector('a').tagName); //logs A
+
+//the nodeName property returns the same value
+console.log(document.querySelector('a').nodeName); //logs A
 
 </script>
 </body>
