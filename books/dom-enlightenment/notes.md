@@ -37,6 +37,14 @@
 	* [`HTML*Element` object properties and methods](#htmlelement-object-properties-and-methods)
 	* [Creating Elements](#creating-elements)
 	* [Get the tag name of an element](#get-the-tag-name-of-an-element)
+	* [Getting a list/collection of element attributes and values](#getting-a-listcollection-of-element-attributes-and-values)
+	* [Getting, Setting, & Removing an element's attribute value](#getting-setting-removing-an-elements-attribute-value)
+	* [Verifying an element has a specific attribute](#verifying-an-element-has-a-specific-attribute)
+	* [Getting a list of class attribute values](#getting-a-list-of-class-attribute-values)
+	* [Adding & removing sub-values to a class attribute](#adding-removing-sub-values-to-a-class-attribute)
+	* [Toggling a class attribute value](#toggling-a-class-attribute-value)
+	* [Determining if a class attribute value contains a specific value](#determining-if-a-class-attribute-value-contains-a-specific-value)
+	* [Getting & Setting data-* attributes](#getting-setting-data-attributes)
 
 <!-- /code_chunk_output -->
 
@@ -957,6 +965,229 @@ console.log(document.querySelector('a').tagName); //logs A
 
 //the nodeName property returns the same value
 console.log(document.querySelector('a').nodeName); //logs A
+
+</script>
+</body>
+</html>
+```
+
+### Getting a list/collection of element attributes and values
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<a href='#' title="title" data-foo="dataFoo" class="yes" style="margin:0;" foo="boo"></a>
+
+<script>
+
+var atts = document.querySelector('a').attributes;
+
+for(var i=0; i< atts.length; i++){
+	console.log(atts[i].nodeName +'='+ atts[i].nodeValue);
+}
+
+</script>
+</body>
+</html>
+```
+
+### Getting, Setting, & Removing an element's attribute value
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<a href='#' title="title" data-foo="dataFoo" style="margin:0;" class="yes" foo="boo" hidden="hidden">#link</a>
+
+<script>
+
+var atts = document.querySelector('a');
+
+//remove attributes
+atts.removeAttribute('href');
+atts.removeAttribute('title');
+atts.removeAttribute('style');
+atts.removeAttribute('data-foo');
+atts.removeAttribute('class');
+atts.removeAttribute('foo'); //custom attribute
+atts.removeAttribute('hidden'); //boolean attribute
+
+//set (really re-set) attributes
+atts.setAttribute('href','#');
+atts.setAttribute('title','title');
+atts.setAttribute('style','margin:0;');
+atts.setAttribute('data-foo','dataFoo');
+atts.setAttribute('class','yes');
+atts.setAttribute('foo','boo');
+atts.setAttribute('hidden','hidden'); //boolean attribute requires sending the attribute as the value too
+
+//get attributes
+console.log(atts.getAttribute('href'));
+console.log(atts.getAttribute('title'));
+console.log(atts.getAttribute('style'));
+console.log(atts.getAttribute('data-foo'));
+console.log(atts.getAttribute('class'));
+console.log(atts.getAttribute('foo'));
+console.log(atts.getAttribute('hidden'));
+
+</script>
+</body>
+</html>
+```
+
+### Verifying an element has a specific attribute
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<a href='#' title="title" data-foo="dataFoo" style="margin:0;" class="yes" goo></a>
+
+<script>
+
+var atts = document.querySelector('a');
+
+console.log(
+	atts.hasAttribute('href'),
+	atts.hasAttribute('title'),
+	atts.hasAttribute('style'),
+	atts.hasAttribute('data-foo'),
+	atts.hasAttribute('class'),
+	atts.hasAttribute('goo') //Notice this is true regardless if a value is defined
+)
+
+</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<input type="checkbox" checked></input>
+
+<script>
+
+var atts = document.querySelector('input');
+
+console.log(atts.hasAttribute('checked')); //logs true
+
+</script>
+</body>
+</html>
+```
+
+### Getting a list of class attribute values
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div class="big brown bear"></div>
+
+<script>
+
+var elm = document.querySelector('div');
+
+console.log(elm.classList); //big brown bear {0="big", 1="brown", 2="bear", length=3, ...}
+console.log(elm.className); //logs 'big brown bear'
+
+</script>
+</body>
+</html>
+```
+
+### Adding & removing sub-values to a class attribute
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<div class="dog"></div>​
+
+<script>
+
+var elm = document.querySelector('div');
+
+elm.classList.add('cat');
+elm.classList.remove('dog');
+console.log(elm.className); //'cat'
+
+</script>
+</body>
+</html>
+```
+
+### Toggling a class attribute value
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<div class="visible"></div>​
+
+<script>
+
+var elm = document.querySelector('div');
+
+elm.classList.toggle('visible');
+elm.classList.toggle('grow');
+console.log(elm.className); //'grow'
+
+</script>
+</body>
+</html>
+```
+
+### Determining if a class attribute value contains a specific value
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<div class="big brown bear"></div>​
+
+<script>
+
+var elm = document.querySelector('div');
+
+console.log(elm.classList.contains('brown')); //logs true
+
+</script>
+</body>
+</html>
+```
+
+### Getting & Setting data-* attributes
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div data-foo-foo="foo" data-bar-bar="bar"></div>​
+
+<script>
+
+var elm = document.querySelector('div');
+
+//get
+console.log(elm.dataset.fooFoo); //logs 'foo'
+console.log(elm.dataset.barBar); //logs 'bar'
+
+//set
+elm.dataset.gooGoo = 'goo';
+console.log(elm.dataset); //logs DOMStringMap {fooFoo="foo", barBar="bar", gooGoo="goo"}
+
+//what the element looks like in the DOM
+console.log(elm); //logs <div data-foo-foo="foo" data-bar-bar="bar" data-goo-goo="goo">
 
 </script>
 </body>
