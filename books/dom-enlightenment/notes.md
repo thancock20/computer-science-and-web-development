@@ -62,6 +62,12 @@
 	* [Getting the size of the element being scrolled using `scrollHeight` and `scrollWidth`](#getting-the-size-of-the-element-being-scrolled-using-scrollheight-and-scrollwidth)
 	* [Getting & Setting pixels scrolled from the top and left using `scrollTop` and `scrollLeft`](#getting-setting-pixels-scrolled-from-the-top-and-left-using-scrolltop-and-scrollleft)
 	* [Scrolling an element into view using `scrollIntoView()`](#scrolling-an-element-into-view-using-scrollintoview)
+* [Element Node Inline Styles](#element-node-inline-styles)
+	* [Style Attribute (aka element inline CSS properties) Overview](#style-attribute-aka-element-inline-css-properties-overview)
+	* [Getting, setting, & removing individual inline CSS properties](#getting-setting-removing-individual-inline-css-properties)
+	* [Getting, setting, & removing all inline CSS properties](#getting-setting-removing-all-inline-css-properties)
+	* [Getting an elements computed styles (i.e. actual styles including any from the cascade) using `getComputedStyle()`](#getting-an-elements-computed-styles-ie-actual-styles-including-any-from-the-cascade-using-getcomputedstyle)
+	* [Apply & remove CSS properties on an element using `class` & `id` attributes](#apply-remove-css-properties-on-an-element-using-class-id-attributes)
 
 <!-- /code_chunk_output -->
 
@@ -1624,6 +1630,223 @@ p{background-color:red;}
 
 //select <p>5</p> and scroll that element into view, I pass children '4' because its a zero index array-like structure
 document.querySelector('content').children[4].scrollIntoView(true);
+
+</script>
+</body>
+</html>
+```
+
+## Element Node Inline Styles
+
+### Style Attribute (aka element inline CSS properties) Overview
+
+Every HTML element has a style attribute that can be used to inline CSS properties specific to the element.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div style="background-color:red;border:1px solid black;height:100px;width:100px;"></div>
+
+<script>
+
+var divStyle = document.querySelector('div').style;
+
+//logs CSSStyleDeclaration {0="background-color", ...}
+console.log(divStyle);
+
+ </script>
+</body>
+</html>
+```
+
+### Getting, setting, & removing individual inline CSS properties
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div></div>
+
+<script>
+
+var divStyle = document.querySelector('div').style;
+
+//set
+divStyle.backgroundColor = 'red';
+divStyle.border = '1px solid black';
+divStyle.width = '100px';
+divStyle.height = '100px';
+
+//get
+console.log(divStyle.backgroundColor);
+console.log(divStyle.border);
+console.log(divStyle.width);
+console.log(divStyle.height);
+
+/*remove
+divStyle.backgroundColor = '';
+divStyle.border = '';
+divStyle.width = '';
+divStyle.height = '';
+*/
+
+</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+</style>
+</head>
+
+<body>
+
+<div style="background-color:green;border:1px solid purple;"></div>
+
+<script>
+
+var divStyle = document.querySelector('div').style;
+
+//set
+divStyle.setProperty('background-color','red');
+divStyle.setProperty('border','1px solid black');
+divStyle.setProperty('width','100px');
+divStyle.setProperty('height','100px');
+
+//get
+console.log(divStyle.getPropertyValue('background-color'));
+console.log(divStyle.getPropertyValue('border'));
+console.log(divStyle.getPropertyValue('width'));
+console.log(divStyle.getPropertyValue('height'));
+
+/*remove
+divStyle.removeProperty('background-color');
+divStyle.removeProperty('border');
+divStyle.removeProperty('width');
+divStyle.removeProperty('height');
+*/
+
+</script>
+</body>
+</html>
+```
+
+### Getting, setting, & removing all inline CSS properties
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div></div>
+
+<script>
+
+var div = document.querySelector('div');
+var divStyle = div.style;
+
+//set using cssText
+divStyle.cssText = 'background-color:red;border:1px solid black;height:100px;width:100px;';
+//get using cssText
+console.log(divStyle.cssText);
+//remove
+divStyle.cssText = '';
+
+//exactly that same outcome using setAttribute() and getAttribute()
+
+//set using setAttribute
+div.setAttribute('style','background-color:red;border:1px solid black;height:100px;width:100px;');
+//get using getAttribute
+console.log(div.getAttribute('style'));
+//remove
+div.removeAttribute('style');
+
+</script>
+</body>
+</html>
+```
+
+### Getting an elements computed styles (i.e. actual styles including any from the cascade) using `getComputedStyle()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+​div{
+    background-color:red;
+    border:1px solid black;
+    height:100px;
+    width:100px;
+}
+</style>
+</head>
+
+<body>
+
+<div style="background-color:green;border:1px solid purple;"></div>
+
+<script>
+
+var div = document.querySelector('div');
+
+//logs rgb(0, 128, 0) or green, this is an inline element style
+console.log(window.getComputedStyle(div).backgroundColor);
+
+//logs 1px solid rgb(128, 0, 128) or 1px solid purple, this is an inline element style
+console.log(window.getComputedStyle(div).border);
+
+//logs 100px, note this is not an inline element style
+console.log(window.getComputedStyle(div).height);
+
+//logs 100px, note this is not an inline element style
+console.log(window.getComputedStyle(div).width);
+
+</script>
+</body>
+</html>
+```
+
+### Apply & remove CSS properties on an element using `class` & `id` attributes
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+.foo{
+  background-color:red;
+  padding:10px;
+}
+#bar{
+  border:10px solid #000;
+  margin:10px;
+}
+</style>
+</head>
+<body>
+
+<div></div>
+
+<script>
+
+var div = document.querySelector('div');
+
+//set
+div.setAttribute('id','bar');
+div.classList.add('foo');
+
+/*remove
+div.removeAttribute('id');
+div.classList.remove('foo');
+*/
 
 </script>
 </body>
