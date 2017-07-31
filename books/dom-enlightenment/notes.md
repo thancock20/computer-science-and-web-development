@@ -79,6 +79,12 @@
 	* [Remove markup and return all child `Text` nodes using `textContent`](#remove-markup-and-return-all-child-text-nodes-using-textcontent)
 	* [Combine sibling `Text` nodes into one text node using `normalize()`](#combine-sibling-text-nodes-into-one-text-node-using-normalize)
 	* [Splitting a text node using `splitText()`](#splitting-a-text-node-using-splittext)
+* [DocumentFragment Nodes](#documentfragment-nodes)
+	* [`DocumentFragment` object overview](#documentfragment-object-overview)
+	* [Creating `DocumentFragment`'s using `createDocumentFragment()`](#creating-documentfragments-using-createdocumentfragment)
+	* [Adding a `DocumentFragment` to the live DOM](#adding-a-documentfragment-to-the-live-dom)
+	* [Using `innerHTML` on a `documentFragment`](#using-innerhtml-on-a-documentfragment)
+	* [Leaving a fragment's containing nodes in memory by cloning](#leaving-a-fragments-containing-nodes-in-memory-by-cloning)
 
 <!-- /code_chunk_output -->
 
@@ -2167,6 +2173,141 @@ console.log(document.querySelector('p').firstChild.splitText(4).data); //logs Yo
 
 //What remains in the DOM...
 console.log(document.querySelector('p').firstChild.textContent); //logs Hey
+
+</script>
+</body>
+</html>
+```
+
+## DocumentFragment Nodes
+
+### `DocumentFragment` object overview
+
+The creation and use of a `DocumentFragment` node provides a light weight document DOM that is external to the live DOM tree. Think of `DocumentFragment` as an empty document template that acts just like the live DOM tree, but only lives in memory, and its child nodes can easily be manipulated in memory and then appended to the live DOM.
+
+### Creating `DocumentFragment`'s using `createDocumentFragment()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<script>
+
+var docFrag = document.createDocumentFragment();
+
+["blue", "green", "red", "blue", "pink"].forEach(function(e) {
+    var li = document.createElement("li");
+    li.textContent = e;
+    docFrag.appendChild(li);
+});
+
+console.log(docFrag.textContent); //logs bluegreenredbluepink
+
+</script>
+</body>
+</html>
+```
+
+Differences between using a `DocumentFragment` and creating an element in memory:
+* A document fragment may contain any kind of node (except `<body>` or `<html>`) where as an element may not
+* The document fragment itself is not added to the DOM when you append a fragment. The contents of the node are. As opposed to appending an element node in which the element itself is part of the appending.
+* When a document fragment is appended to the DOM it transfers from the document fragment to the place it's appended. It's no longer in memory in the place you created it. This is not true for element nodes that are temporarily used to contain nodes briefly and then are moved to the live DOM.
+
+### Adding a `DocumentFragment` to the live DOM
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<ul></ul>
+
+<script>
+
+var ulElm = document.queryselector('ul');
+var docFrag = document.createDocumentFragment();
+
+["blue", "green", "red", "blue", "pink"].forEach(function(e) {
+    var li = document.createElement("li");
+    li.textContent = e;
+    docFrag.appendChild(li);
+});
+
+ulElm.appendChild(docFrag);
+
+//logs <ul><li>blue</li><li>green</li><li>red</li><li>blue</li><li>pink</li></ul>
+console.log(document.body.innerHTML);
+
+</script>
+</body>
+</html>
+```
+
+### Using `innerHTML` on a `documentFragment`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<script>
+
+//create a <div> and document fragment
+var divElm = document.createElement('div');
+var docFrag = document.createDocumentFragment();
+
+//append div to document fragment
+docFrag.appendChild(divElm);
+
+//create a DOM structure from a string
+docFrag.querySelector('div').innerHTML = '<ul><li>foo</li><li>bar</li></ul>';
+
+//the string becomes a DOM structure I can call methods on like querySelectorAll()
+//Just don't forget the DOM structure is wrapped in a <div>
+console.log(docFrag.querySelectorAll('li').length); //logs 2
+
+//append, starting with the first child node contained inside of the <div>
+document.querySelector('div').appendChild(docFrag.querySelector('div').firstChild);
+
+//logs <ul><li>foo</li><li>bar</li></ul>
+console.log(document.querySelector('div').innerHTML);
+
+</script>
+</body>
+</html>
+```
+
+### Leaving a fragment's containing nodes in memory by cloning
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<ul></ul>
+
+<script>
+
+//create ul element and document fragment
+var ulElm = document.querySelector('ul');
+var docFrag = document.createDocumentFragment();
+
+//append li's to document fragment
+["blue", "green", "red", "blue", "pink"].forEach(function(e) {
+    var li = document.createElement("li");
+    li.textContent = e;
+    docFrag.appendChild(li);
+});
+
+//append cloned document fragment to ul in live DOM
+ulElm.appendChild(docFrag.cloneNode(true));
+
+//logs <li>blue</li><li>green</li><li>red</li><li>blue</li><li>pink</li>
+console.log(document.querySelector('ul').innerHTML);
+
+//logs [li,li,li,li,li]
+console.log(docFrag.childNodes);
 
 </script>
 </body>
