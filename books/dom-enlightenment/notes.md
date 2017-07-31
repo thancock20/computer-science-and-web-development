@@ -52,6 +52,16 @@
 	* [Contextual element selecting](#contextual-element-selecting)
 	* [Pre-configured selections/lists of element nodes](#pre-configured-selectionslists-of-element-nodes)
 	* [Verify an element will be selected using `matches()`](#verify-an-element-will-be-selected-using-matches)
+* [Element Node Geometry & Scrolling Geometry](#element-node-geometry-scrolling-geometry)
+	* [Element node size, offsets, and scrolling overview](#element-node-size-offsets-and-scrolling-overview)
+	* [Getting an elements `offsetTop` and `offsetLeft` values releative to the `offsetParent`](#getting-an-elements-offsettop-and-offsetleft-values-releative-to-the-offsetparent)
+	* [Getting an elements top, right, bottom, and left border edge offset relative to the viewport using `getBoundingClientRect()`](#getting-an-elements-top-right-bottom-and-left-border-edge-offset-relative-to-the-viewport-using-getboundingclientrect)
+	* [Getting an elements size (border + padding + content) in the viewport](#getting-an-elements-size-border-padding-content-in-the-viewport)
+	* [Getting an elements size (padding + content) in the viewport excluding borders](#getting-an-elements-size-padding-content-in-the-viewport-excluding-borders)
+	* [Getting topmost element in viewport at specific point using `elementFromPoint()`](#getting-topmost-element-in-viewport-at-specific-point-using-elementfrompoint)
+	* [Getting the size of the element being scrolled using `scrollHeight` and `scrollWidth`](#getting-the-size-of-the-element-being-scrolled-using-scrollheight-and-scrollwidth)
+	* [Getting & Setting pixels scrolled from the top and left using `scrollTop` and `scrollLeft`](#getting-setting-pixels-scrolled-from-the-top-and-left-using-scrolltop-and-scrollleft)
+	* [Scrolling an element into view using `scrollIntoView()`](#scrolling-an-element-into-view-using-scrollintoview)
 
 <!-- /code_chunk_output -->
 
@@ -1361,6 +1371,259 @@ console.log(divElm.getElementsByClassName('liClass'));
 <script>
 
 console.log(document.querySelector('li').matches('li:first-child')); // logs true
+
+</script>
+</body>
+</html>
+```
+
+## Element Node Geometry & Scrolling Geometry
+
+### Element node size, offsets, and scrolling overview
+
+DOM nodes are parsed and painted into visual shapes when viewing html documents in a web browser. Nodes, mostly element nodes, have a corresponding visual representation made viewable/visual by browsers. To inspect and in some cases manipulate the visual representation and geometry of nodes programatically a set of API's exists and are specified in the CSSOM View Module. A subset of methods and properties found in this specification provide an API to determine the geometry (i.e. size & position using offset) of element nodes as well as hooks for manipulating scrollable nodes and getting values of scrolled nodes.
+
+### Getting an elements `offsetTop` and `offsetLeft` values releative to the `offsetParent`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+body{margin:0;}
+#blue{height:100px;width:100px;background-color:blue;border:10px solid gray; padding:25px;margin:25px;}
+#red{height:50px;width:50px;background-color:red;border:10px solid gray;}
+</style>
+</head>
+<body>
+
+<div id="blue"><div id="red"></div></div>
+
+<script>
+
+var div = document.querySelector('#red');
+
+console.log(div.offsetLeft); //logs 60
+console.log(div.offsetTop); //logs 60
+console.log(div.offsetParent); //logs <body>
+
+</script>
+</body>
+</html>
+```
+
+### Getting an elements top, right, bottom, and left border edge offset relative to the viewport using `getBoundingClientRect()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+body{margin:0;}
+div{height:50px;width:50px;background-color:red;border:10px solid gray;margin:100px;}
+</style>
+</head>
+<body>
+
+<div></div>
+
+<script>
+
+var divEdges = document.querySelector('div').getBoundingClientRect();
+
+console.log(divEdges.top, divEdges.right, divEdges.bottom, divEdges.left); //logs '100 170 170 100'
+
+</script>
+</body>
+</html>
+```
+
+### Getting an elements size (border + padding + content) in the viewport
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+div{height:25px;width:25px;background-color:red;border:25px solid gray;padding:25px;}
+</style>
+</head>
+<body>
+
+<div></div>
+
+<script>
+
+var div = document.querySelector('div').getBoundingClientRect();
+
+console.log(div.height, div.width); //logs '125 125'
+//because 25px border + 25px padding + 25 content + 25 padding + 25 border = 125
+
+</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+div{height:25px;width:25px;background-color:red;border:25px solid gray;padding:25px;}
+</style>
+</head>
+<body>
+
+<div></div>
+
+<script>
+
+var div = document.querySelector('div');
+
+console.log(div.offsetHeight, div.offsetWidth); //logs '125 125'
+//because 25px border + 25px padding + 25 content + 25 padding + 25 border = 125
+
+</script>
+</body>
+</html>
+```
+
+### Getting an elements size (padding + content) in the viewport excluding borders
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+div{height:25px;width:25px;background-color:red;border:25px solid gray;padding:25px;}
+</style>
+</head>
+<body>
+
+<div></div>
+
+<script>
+
+var div = document.querySelector('div');
+
+console.log(div.clientHeight, div.clientWidth); //logs '75 75' because 25px padding + 25 content + 25 padding = 75
+
+</script>
+</body>
+</html>
+```
+
+### Getting topmost element in viewport at specific point using `elementFromPoint()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+div{height:50px;width:50px;background-color:red;position:absolute;top:50px;left:50px;}
+</style>
+</head>
+<body>
+
+<div id="bottom"></div><div id="top"></div>
+
+<script>
+
+console.log(document.elementFromPoint(50,50)); //logs <div id="top">
+
+</script>
+</body>
+</html>
+```
+
+### Getting the size of the element being scrolled using `scrollHeight` and `scrollWidth`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+*{margin:0;padding:0;}
+div{height:100px;width:100px; overflow:auto;}
+p{height:1000px;width:1000px;background-color:red;}
+</style>
+</head>
+<body>
+
+<div><p></p></div>
+
+<script>
+
+var div = document.querySelector('div');
+
+console.log(div.scrollHeight, div.scrollWidth); //logs '1000 1000'
+
+</script>
+</body>
+</html>
+```
+
+### Getting & Setting pixels scrolled from the top and left using `scrollTop` and `scrollLeft`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+div{height:100px;width:100px;overflow:auto;}
+p{height:1000px;width:1000px;background-color:red;}
+</style>
+</head>
+<body>
+
+<div><p></p></div>
+
+<script>
+
+var div = document.querySelector('div');
+
+div.scrollTop = 750;
+div.scrollLeft = 750;
+
+console.log(div.scrollTop,div.scrollLeft); //logs '750 750'
+
+</script>
+</body>
+</html>
+```
+
+### Scrolling an element into view using `scrollIntoView()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+div{height:30px;width:30px; overflow:auto;}
+p{background-color:red;}
+</style>
+</head>
+<body>
+
+<div>
+<content>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+</content>
+</div>
+
+<script>
+
+//select <p>5</p> and scroll that element into view, I pass children '4' because its a zero index array-like structure
+document.querySelector('content').children[4].scrollIntoView(true);
 
 </script>
 </body>
