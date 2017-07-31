@@ -45,6 +45,13 @@
 	* [Toggling a class attribute value](#toggling-a-class-attribute-value)
 	* [Determining if a class attribute value contains a specific value](#determining-if-a-class-attribute-value-contains-a-specific-value)
 	* [Getting & Setting data-* attributes](#getting-setting-data-attributes)
+* [Element Node Selecting](#element-node-selecting)
+	* [Selecting a specific element node](#selecting-a-specific-element-node)
+	* [Selecting/creating a list (aka `NodeList`) of element nodes](#selectingcreating-a-list-aka-nodelist-of-element-nodes)
+	* [Selecting all immediate child element nodes](#selecting-all-immediate-child-element-nodes)
+	* [Contextual element selecting](#contextual-element-selecting)
+	* [Pre-configured selections/lists of element nodes](#pre-configured-selectionslists-of-element-nodes)
+	* [Verify an element will be selected using `matches()`](#verify-an-element-will-be-selected-using-matches)
 
 <!-- /code_chunk_output -->
 
@@ -1188,6 +1195,172 @@ console.log(elm.dataset); //logs DOMStringMap {fooFoo="foo", barBar="bar", gooGo
 
 //what the element looks like in the DOM
 console.log(elm); //logs <div data-foo-foo="foo" data-bar-bar="bar" data-goo-goo="goo">
+
+</script>
+</body>
+</html>
+```
+
+## Element Node Selecting
+
+### Selecting a specific element node
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<ul>
+<li>Hello</li>
+<li>big</li>
+<li>bad</li>
+<li id="last">world</li>
+</ul>
+
+<script>
+
+console.log(document.querySelector('li').textContent); //logs Hello
+console.log(document.getElementById('last').textContent); //logs world
+
+</script>
+</body>
+</html>
+```
+
+### Selecting/creating a list (aka `NodeList`) of element nodes
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<ul>
+<li class="liClass">Hello</li>
+<li class="liClass">big</li>
+<li class="liClass">bad</li>
+<li class="liClass">world</li>
+</ul>
+
+<script>
+
+//all of the methods below create/select the same list of <li> elements from the DOM
+console.log(document.querySelectorAll('li'));            // static
+console.log(document.getElementsByTagName('li'));        // live
+console.log(document.getElementsByClassName('liClass')); // live
+
+</script>
+</body>
+</html>
+```
+
+### Selecting all immediate child element nodes
+
+```html <!DOCTYPE html>
+<html lang="en">
+<body>
+
+<ul>
+<li><strong>Hi</strong></li>
+<li>there</li>
+</ul>
+
+<script>
+
+var ulElement = document.querySelector('ul').children; // live
+
+//logs a list/array of all immediate child element nodes
+console.log(ulElement); //logs [<li>, <li>]
+
+</script>
+</body>
+</html>
+```
+
+### Contextual element selecting
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div>
+<ul>
+<li class="liClass">Hello</li>
+<li class="liClass">big</li>
+<li class="liClass">bad</li>
+<li class="liClass">world</li>
+</ul>
+</div>
+
+<ul>
+<li class="liClass">Hello</li>
+</ul>
+
+<script>
+
+//select a div as the context to run the selecting methods only on the contents of the div
+var div = document.querySelector('div');
+
+console.log(div.querySelector('ul'));
+console.log(div.querySelectorAll('li'));
+console.log(div.getElementsByTagName('li'));
+console.log(div.getElementsByClassName('liClass'));
+
+</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<script>
+
+//create DOM structure
+var divElm = document.createElement('div');
+var ulElm = document.createElement('ul');
+var liElm = document.createElement('li');
+liElm.setAttribute('class','liClass');
+ulElm.appendChild(liElm);
+divElm.appendChild(ulElm);
+
+//use selecting methods on DOM structure
+console.log(divElm.querySelector('ul'));
+console.log(divElm.querySelectorAll('li'));
+console.log(divElm.getElementsByTagName('li'));
+console.log(divElm.getElementsByClassName('liClass'));
+
+</script>
+</body>
+</html>
+```
+
+### Pre-configured selections/lists of element nodes
+
+* `document.all` - all elements in HTML document
+* `document.forms` - all `<form>` elements in HTML document
+* `document.images` - all `<img>` elements in HTML document
+* `document.links` - all `<a>` elements in HTML document
+* `document.scripts` - all `<script>` elements in HTML document
+* `document.styleSheets` - all `<link>` or `<style>` objects in HTML document
+
+### Verify an element will be selected using `matches()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<ul>
+<li>Hello</li>
+<li>world</li>
+</ul>
+
+<script>
+
+console.log(document.querySelector('li').matches('li:first-child')); // logs true
 
 </script>
 </body>
