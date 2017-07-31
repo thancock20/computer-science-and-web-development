@@ -85,6 +85,18 @@
 	* [Adding a `DocumentFragment` to the live DOM](#adding-a-documentfragment-to-the-live-dom)
 	* [Using `innerHTML` on a `documentFragment`](#using-innerhtml-on-a-documentfragment)
 	* [Leaving a fragment's containing nodes in memory by cloning](#leaving-a-fragments-containing-nodes-in-memory-by-cloning)
+* [CSS Style Sheets & CSS rules](#css-style-sheets-css-rules)
+	* [CSS Style sheet overview](#css-style-sheet-overview)
+	* [Accessing all style sheets (i.e. `CSSStylesheet` objects) in the DOM](#accessing-all-style-sheets-ie-cssstylesheet-objects-in-the-dom)
+	* [`CSSStyleSheet` properties and methods](#cssstylesheet-properties-and-methods)
+	* [`CSSStyleRule` overview](#cssstylerule-overview)
+	* [`CSSStyleRule` properties and methods](#cssstylerule-properties-and-methods)
+	* [Getting a list of CSS Rules in a style sheet using `CSSRules`](#getting-a-list-of-css-rules-in-a-style-sheet-using-cssrules)
+	* [Inserting & deleting CSS rules in a style sheet using `.insertRule()` and `.deleteRule()`](#inserting-deleting-css-rules-in-a-style-sheet-using-insertrule-and-deleterule)
+	* [Editing the value of a `CSSStyleRule` using the `.style` property](#editing-the-value-of-a-cssstylerule-using-the-style-property)
+	* [Creating a new inline CSS style sheet](#creating-a-new-inline-css-style-sheet)
+	* [Programatically adding external style sheets to an HTML document](#programatically-adding-external-style-sheets-to-an-html-document)
+	* [Disabling/Enabling style sheets using `disabled` property](#disablingenabling-style-sheets-using-disabled-property)
 
 <!-- /code_chunk_output -->
 
@@ -2308,6 +2320,359 @@ console.log(document.querySelector('ul').innerHTML);
 
 //logs [li,li,li,li,li]
 console.log(docFrag.childNodes);
+
+</script>
+</body>
+</html>
+```
+
+## CSS Style Sheets & CSS rules
+
+### CSS Style sheet overview
+
+A style sheet is added to an HTML document by either using the `HTMLLinkElement` node (i.e `<link href="stylesheet.css" rel="stylesheet" type="text/css">`) to include an external style sheet or the `HTMLStyleElement` node (i.e. `<style></style>`) to define a style sheet inline.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<link id="linkElement" href="http://yui.yahooapis.com/3.3.0/build/cssreset/reset-min.css" rel="stylesheet" type="text/css">
+
+<style id="styleElement">
+body{background-color:#fff;}
+</style>
+
+</head>
+<body>
+
+<script>
+
+//logs function HTMLLinkElement() { [native code] }
+console.log(document.querySelector('#linkElement').constructor);
+
+//logs function HTMLStyleElement() { [native code] }
+console.log(document.querySelector('#styleElement').constructor);
+
+</script>
+</body>
+</html>
+```
+
+Once a style sheet is added to an HTML document it's represented by the `CSSStylesheet` object. Each CSS rule inside of a style sheet is represented by a `CSSStyleRule` object.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<style id="styleElement">
+body{background-color:#fff;}
+</style>
+
+</head>
+<body>
+
+<script>
+
+//logs function CSSStyleSheet() { [native code] } because this object is the stylesheet itself
+console.log(document.querySelector('#styleElement').sheet.constructor);
+
+//logs function CSSStyleRule() { [native code] } because this object is the rule inside of the style sheet
+console.log(document.querySelector('#styleElement').sheet.cssRules[0].constructor);
+
+</script>
+</body>
+</html>
+```
+
+### Accessing all style sheets (i.e. `CSSStylesheet` objects) in the DOM
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<link href="http://yui.yahooapis.com/3.3.0/build/cssreset/reset-min.css" rel="stylesheet" type="text/css">
+
+<style>
+body{background-color:red;}
+</style>
+
+</head>
+<body>
+
+<script>
+
+console.log(document.styleSheets.length); //logs 2
+console.log(document.styleSheets[0]); // the <link>
+console.log(document.styleSheets[1]); // the <style>
+
+</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<link id="linkElement" href="http://yui.yahooapis.com/3.3.0/build/cssreset/reset-min.css" rel="stylesheet" type="text/css">
+
+<style id="styleElement">
+body{background-color:#fff;}
+</style>
+
+</head>
+<body>
+
+<script>
+
+//get CSSStylesheeet object for <link>
+console.log(document.querySelector('#linkElement').sheet); //same as document.styleSheets[0]
+
+//get CSSSstylesheet object for <style>
+console.log(document.querySelector('#styleElement').sheet); //same as document.styleSheets[1]
+
+</script>
+</body>
+</html>
+```
+
+### `CSSStyleSheet` properties and methods
+
+(ro = read only)
+* `disabled`
+* `href` (ro)
+* `media` (ro)
+* `ownerNode` (ro)
+* `parentStylesheet` (ro)
+* `title` (ro)
+* `type` (ro)
+* `cssRules`
+* `ownerRule`
+* `deleteRule`
+* `insertRule`
+
+### `CSSStyleRule` overview
+
+A `CSSStyleRule` object represents each CSS rule contained in a style sheet. Basically, a `CSSStyleRule` is the interface to the CSS properties and values attached to a selector.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<style id="styleElement">
+body{background-color:#fff;margin:20px;} /*this is a css rule*/
+p{line-height:1.4em; color:blue;} /*this is a css rule*/
+</style>
+
+</head>
+<body>
+
+<script>
+
+var sSheet = document.querySelector('#styleElement');
+
+console.log(sSheet.cssRules[0].cssText); //logs "body { background-color: red; margin: 20px; }"
+console.log(sSheet.cssRules[1].cssText); //logs "p { line-height: 1.4em; color: blue; }"
+
+</script>
+</body>
+</html>
+```
+
+### `CSSStyleRule` properties and methods
+
+* `cssText`
+* `parentRule`
+* `parentStyleSheet`
+* `selectorText`
+* `style`
+* `type`
+
+### Getting a list of CSS Rules in a style sheet using `CSSRules`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<style id="styleElement">
+body{background-color:#fff;margin:20px;}
+p{line-height:1.4em; color:blue;}
+</style>
+
+</head>
+<body>
+
+<script>
+
+var sSheet = document.querySelector('#styleElement').sheet;
+
+//array like list containing all of the CSSrule objects repreesenting each CSS rule in the style sheet
+console.log(sSheet.cssRules);
+
+console.log(sSheet.cssRules.length); //logs 2
+
+//rules are index in a CSSRules list starting at a 0 index
+console.log(sSheet.cssRules[0]); //logs first rule
+console.log(sSheet.cssRules[1]); //logs second rule
+
+</script>
+</body>
+</html>
+```
+
+### Inserting & deleting CSS rules in a style sheet using `.insertRule()` and `.deleteRule()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<style id="styleElement">
+p{line-height:1.4em; color:blue;} /*index 0*/
+p{font-size:50px;} /*index 1*/
+</style>
+
+</head>
+<body>
+
+<p>Hi</p>
+
+<script>
+
+//add a new CSS rule at index 1 in the inline style sheet
+document.querySelector('#styleElement').sheet.insertRule('p{color:red}',1);
+
+//verify it was added
+console.log(document.querySelector('#styleElement').sheet.cssRules[1].cssText);
+
+//Delete what we just added
+document.querySelector('#styleElement').sheet.deleteRule(1);
+
+//verify it was removed
+console.log(document.querySelector('#styleElement').sheet.cssRules[1].cssText);
+
+</script>
+</body>
+</html>
+```
+
+### Editing the value of a `CSSStyleRule` using the `.style` property
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<style id="styleElement">
+p{color:blue;}
+strong{color:green;}
+</style>
+
+</head>
+<body>
+
+<p>Hey <strong>Dude!</strong></p>
+
+<script>
+
+var styleSheet = document.querySelector('#styleElement').sheet;
+
+//Set css rules in stylesheet
+styleSheet.cssRules[0].style.color = 'red';
+styleSheet.cssRules[1].style.color = 'purple';
+
+//Get css rules
+console.log(styleSheet.cssRules[0].style.color); //logs 'red'
+console.log(styleSheet.cssRules[1].style.color); //logs 'purple'
+
+</script>
+</body>
+</html>
+```
+
+### Creating a new inline CSS style sheet
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head></head>
+<body>
+
+<p>Hey <strong>Dude!</strong></p>
+
+<script>
+
+var styleElm = document.createElement('style');
+styleElm.innerHTML = 'body{color:red}';
+
+//notice markup in the document changed to red from our new inline stylesheet
+document.querySelector('head').appendChild(styleElm);
+
+</script>
+</body>
+</html>
+```
+
+### Programatically adding external style sheets to an HTML document
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head></head>
+<body>
+
+<script>
+
+//create & add attributes to <link>
+var linkElm = document.createElement('link');
+linkElm.setAttribute('rel', 'stylesheet');
+linkElm.setAttribute('type', 'text/css');
+linkElm.setAttribute('id', 'linkElement');
+linkElm.setAttribute('href', 'http://yui.yahooapis.com/3.3.0/build/cssreset/reset-min.css');
+
+//Append to the DOM
+document.head.appendChild(linkElm);
+
+//confrim its addition to the DOM
+// logs <link id="linkElement" rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.3.0/build/cssreset/reset-min.css">
+console.log(document.querySelector('#linkElement'));
+
+</script>
+</body>
+</html>
+```
+
+### Disabling/Enabling style sheets using `disabled` property
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<link id="linkElement" href="http://yui.yahooapis.com/3.3.0/build/cssreset/reset-min.css" rel="stylesheet" type="text/css">
+
+<style id="styleElement">
+body{color:red;}
+</style>
+
+</head>
+<body>
+
+<script>
+
+//Get current boolean disabled value
+console.log(document.querySelector('#linkElement').disabled); //log 'false'
+console.log(document.querySelector('#styleElement').disabled); //log 'false'
+
+//Set disabled value, which of course disables all styles for this document
+document.document.querySelector('#linkElement').disabled = true;
+document.document.querySelector('#styleElement').disabled = true;
 
 </script>
 </body>
