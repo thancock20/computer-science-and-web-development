@@ -68,6 +68,17 @@
 	* [Getting, setting, & removing all inline CSS properties](#getting-setting-removing-all-inline-css-properties)
 	* [Getting an elements computed styles (i.e. actual styles including any from the cascade) using `getComputedStyle()`](#getting-an-elements-computed-styles-ie-actual-styles-including-any-from-the-cascade-using-getcomputedstyle)
 	* [Apply & remove CSS properties on an element using `class` & `id` attributes](#apply-remove-css-properties-on-an-element-using-class-id-attributes)
+* [Text Nodes](#text-nodes)
+	* [`Text` object overview](#text-object-overview)
+	* [`Text` object & properties](#text-object-properties)
+	* [White space creates `Text` nodes](#white-space-creates-text-nodes)
+	* [Creating & Injecting `Text` Nodes](#creating-injecting-text-nodes)
+	* [Getting a `Text` node value with `.data` or `nodeValue`](#getting-a-text-node-value-with-data-or-nodevalue)
+	* [Manipulating `Text` nodes with `appendData()`, `deleteData()`, `insertData()`, `replaceData()`, `subStringData()`](#manipulating-text-nodes-with-appenddata-deletedata-insertdata-replacedata-substringdata)
+	* [When multiple sibling `Text` nodes occur](#when-multiple-sibling-text-nodes-occur)
+	* [Remove markup and return all child `Text` nodes using `textContent`](#remove-markup-and-return-all-child-text-nodes-using-textcontent)
+	* [Combine sibling `Text` nodes into one text node using `normalize()`](#combine-sibling-text-nodes-into-one-text-node-using-normalize)
+	* [Splitting a text node using `splitText()`](#splitting-a-text-node-using-splittext)
 
 <!-- /code_chunk_output -->
 
@@ -1847,6 +1858,315 @@ div.classList.add('foo');
 div.removeAttribute('id');
 div.classList.remove('foo');
 */
+
+</script>
+</body>
+</html>
+```
+
+## Text Nodes
+
+### `Text` object overview
+
+
+Text in an HTML document is represented by instances of the `Text()` constructor function, which produces text nodes. When an HTML document is parsed the text mixed in among the elements of an HTML page are converted to text nodes.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<p>hi</p>
+
+<script>
+
+//select 'hi' text node
+var textHi = document.querySelector('p').firstChild
+
+console.log(textHi.constructor); //logs Text()
+
+//logs Text {textContent="hi", length=2, wholeText="hi", ...}
+console.log(textHi);
+
+</script>
+</body>
+</html>
+```
+
+### `Text` object & properties
+
+* `textContent`
+* `splitText()`
+* `appendData()`
+* `deleteData()`
+* `insertData()`
+* `replaceData()`
+* `subStringData()`
+* `nomalize()`
+* `data`
+
+### White space creates `Text` nodes
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<p id="p1"></p>
+<p id="p2"> </p>
+
+<script>
+
+console.log(document.querySelector('#p1').firstChild) //logs null
+console.log(document.querySelector('#p2').firstChild.nodeName) //logs #text
+
+</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<p id="p1"></p>
+<!-- yes there is a carriage return text node before this comment, even this comment is a node -->
+<p id="p2"></p>
+
+<script>
+
+console.log(document.querySelector('#p1').nextSibling) //logs Text
+
+</script>
+</body>
+</html>
+```
+
+### Creating & Injecting `Text` Nodes
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div></div>
+
+<script>
+
+var textNode = document.createTextNode('Hi');
+document.querySelector('div').appendChild(textNode);
+
+console.log(document.querySelector('div').innerText); // logs Hi
+
+</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<div></div>
+
+<body>
+
+<script>
+
+var elementNode = document.createElement('p');
+var textNode = document.createTextNode('Hi');
+elementNode.appendChild(textNode);
+document.querySelector('div').appendChild(elementNode);
+
+console.log(document.querySelector('div').innerHTML); //logs <div>Hi</div>
+
+</script>
+</body>
+</html>
+```
+
+### Getting a `Text` node value with `.data` or `nodeValue`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<p>Hi, <strong>cody</strong></p><body>
+
+<script>
+
+console.log(document.querySelector('p').firstChild.data); //logs 'Hi,'
+console.log(document.querySelector('p').firstChild.nodeValue); //logs 'Hi,'
+
+</script>
+</body>
+</html>
+```
+
+### Manipulating `Text` nodes with `appendData()`, `deleteData()`, `insertData()`, `replaceData()`, `subStringData()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<p>Go big Blue Blue<body>
+
+<script>
+
+var pElementText = document.querySelector('p').firstChild;
+
+//add !
+pElementText.appendData('!');
+console.log(pElementText.data);
+
+//remove first 'Blue'
+pElementText.deleteData(7,5);
+console.log(pElementText.data);
+
+//insert it back 'Blue'
+pElementText.insertData(7,'Blue ');
+console.log(pElementText.data);
+
+//replace first 'Blue' with 'Bunny'
+pElementText.replaceData(7,5,'Bunny ');
+console.log(pElementText.data);
+
+//extract substring 'Blue Bunny'
+console.log(pElementText.substringData(7,10));
+
+</script>
+</body>
+</html>
+```
+
+### When multiple sibling `Text` nodes occur
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<p>Hi, <strong>cody</strong> welcome!</p>
+
+<script>
+
+var pElement = document.querySelector('p');
+
+console.log(pElement.childNodes.length); //logs 3
+
+console.log(pElement.firstChild.data); // is text node or 'Hi, '
+console.log(pElement.firstChild.nextSibling); // is Element node or <strong>
+console.log(pElement.lastChild.data); ​// is text node or ' welcome!'
+
+</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<script>
+
+var pElementNode = document.createElement('p');
+var textNodeHi = document.createTextNode('Hi ');
+var textNodeCody = document.createTextNode('Cody');
+
+pElementNode.appendChild(textNodeHi);
+pElementNode.appendChild(textNodeCody);
+
+document.querySelector('div').appendChild(pElementNode);
+
+console.log(document.querySelector('div p').childNodes.length); //logs 2​​​​​​​​​​​​​​​​​​
+
+</script>
+</body>
+</html>
+```
+
+### Remove markup and return all child `Text` nodes using `textContent`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<h1> Dude</h2>
+<p>you <strong>rock!</strong></p>
+<script>
+
+console.log(document.body.textContent); //logs 'Dude you rock!' with some added white space
+
+</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<div>
+<h1> Dude</h2>
+<p>you <strong>rock!</strong></p>
+</div>
+<script>
+
+document.querySelector('div').textContent = 'You don\'t rock!'
+console.log(document.querySelector('div').textContent); //logs 'You don't rock!'
+
+</script>
+</body>
+</html>
+```
+
+### Combine sibling `Text` nodes into one text node using `normalize()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<div></div>
+<script>
+
+var pElementNode = document.createElement('p');
+var textNodeHi = document.createTextNode('Hi');
+var textNodeCody = document.createTextNode('Cody');
+
+pElementNode.appendChild(textNodeHi);
+pElementNode.appendChild(textNodeCody);
+
+document.querySelector('div').appendChild(pElementNode);
+
+console.log(document.querySelector('p').childNodes.length); //logs 2
+
+document.querySelector('div').normalize(); //combine our sibling text nodes
+
+console.log(document.querySelector('p').childNodes.length); //logs 1
+
+</script>
+</body>
+</html>
+```
+
+### Splitting a text node using `splitText()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<p>Hey Yo!</p>
+
+<script>
+
+//returns a new text node, taken from the DOM
+console.log(document.querySelector('p').firstChild.splitText(4).data); //logs Yo!
+
+//What remains in the DOM...
+console.log(document.querySelector('p').firstChild.textContent); //logs Hey
 
 </script>
 </body>
