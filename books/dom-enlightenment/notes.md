@@ -106,6 +106,9 @@
 	* [Using the `onload` call back for asynchronous `<script>`'s so we know when it's loaded](#using-the-onload-call-back-for-asynchronous-scripts-so-we-know-when-its-loaded)
 	* [Be mindful of `<script>`'s placement in HTML for DOM manipulation](#be-mindful-of-scripts-placement-in-html-for-dom-manipulation)
 	* [Getting a list of `<script>`s in the DOM](#getting-a-list-of-scripts-in-the-dom)
+* [DOM Events](#dom-events)
+	* [DOM events overview](#dom-events-overview)
+	* [DOM event types](#dom-event-types)
 
 <!-- /code_chunk_output -->
 
@@ -2882,3 +2885,45 @@ Array.prototype.slice.call(document.scripts).forEach(function(elm){
 </body>
 </html>
 ```
+
+## DOM Events
+
+### DOM events overview
+
+An event, in terms of the DOM, is either a pre-defined or custom moment in time that occurs in relationship with an element in the DOM, the `document` object, or the `window` object. Setting up events can be accomplished using inline attribute event handlers, property event handlers, or the `addEventListener()` method (the preferred way).
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- inline attribure event handler pattern -->
+<body onclick="console.log('fire/trigger attribure event handler')">
+
+<div>click me</div>
+
+<script>
+var elementDiv = document.querySelector('div');
+
+// property event handler pattern
+elementDiv.onclick = function(){console.log('fire/trigger property event handler')};
+
+//addEventListener method pattern
+elementDiv.addEventListener('click',function(){console.log('fire/trigger addEventListener')}, false);
+</script>
+</body>
+</html>
+```
+
+### DOM event types
+
+**User interface events**
+
+| **Event Type** | **Event Interface** | **Description**                                                                                                                                                                                    | **Event Targets**                                                         | **Bubbles** | **Cancelable** |
+|:---------------|:--------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------|:------------|:---------------|
+| `load`         | `Event`, `UIEvent`  | fires when an asset (HTML page, image, CSS, frameset, `<object>`, or JS file) is loaded.                                                                                                           | `Element`, `Document`, `window`, `XMLHttpRequest`, `XMLHttpRequestUpload` | No          | No             |
+| `unload`       | `UIEvent`           | fires when user agent removes the resource (document, element, defaultView) or any depending resources (images, CSS file, etc.)                                                                    | `windown`, `<body>`, `<frameset>`                                         | No          | No             |
+| `abort`        | `Event`, `UIEvent`  | fires when a resource (object/image) is stopped from loading before completely loaded                                                                                                              | `Element`, `XMLHttpRequest`, `XMLHttpRequestUpload`                       | Yes         | No             |
+| `error`        | `Event`, `UIEvent`  | fires when a resource failed to load, or has been loaded but cannot be interpreted according to its  semantics, such as an invalid image, a script execution error, or non-well-formed XML         | `Element`, `XMLHttpRequest`, `XMLHttpRequestUpload`                       | Yes         | No             |
+| `resize`       | `UIEvent`           | fires  when a document view has been resized. This event type is despatched after all effects for that occurrence of resizing of that particular event target have been executed by the user agent | `window`, `<body>`, `<frameset>`                                          | Yes         | No             |
+| `scroll`       | `UIEvent`           | fires when a user scrolls a document or an element                                                                                                                                                 | `Element`, `Document`, `window`                                           | Yes         | No             |
+| `contextmenu`  | `MouseEvent`        | fires by right clicking an element                                                                                                                                                                 | `Element`                                                                 | Yes         | Yes            |
