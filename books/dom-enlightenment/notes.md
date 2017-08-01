@@ -97,6 +97,15 @@
 	* [Creating a new inline CSS style sheet](#creating-a-new-inline-css-style-sheet)
 	* [Programatically adding external style sheets to an HTML document](#programatically-adding-external-style-sheets-to-an-html-document)
 	* [Disabling/Enabling style sheets using `disabled` property](#disablingenabling-style-sheets-using-disabled-property)
+* [JavaScript in the DOM](#javascript-in-the-dom)
+	* [Inserting & executing JavaScript overview](#inserting-executing-javascript-overview)
+	* [JavaScript is parsed synchronously by default](#javascript-is-parsed-synchronously-by-default)
+	* [Defering the downloading & execution of external JavaScript using `defer`](#defering-the-downloading-execution-of-external-javascript-using-defer)
+	* [Asynchronously downloading & executing external JavaScript files using `async`](#asynchronously-downloading-executing-external-javascript-files-using-async)
+	* [Forcing asynchronous downloading & parsing of external JavaScript using dynamic `<script>`](#forcing-asynchronous-downloading-parsing-of-external-javascript-using-dynamic-script)
+	* [Using the `onload` call back for asynchronous `<script>`'s so we know when it's loaded](#using-the-onload-call-back-for-asynchronous-scripts-so-we-know-when-its-loaded)
+	* [Be mindful of `<script>`'s placement in HTML for DOM manipulation](#be-mindful-of-scripts-placement-in-html-for-dom-manipulation)
+	* [Getting a list of `<script>`s in the DOM](#getting-a-list-of-scripts-in-the-dom)
 
 <!-- /code_chunk_output -->
 
@@ -2675,6 +2684,201 @@ document.document.querySelector('#linkElement').disabled = true;
 document.document.querySelector('#styleElement').disabled = true;
 
 </script>
+</body>
+</html>
+```
+
+## JavaScript in the DOM
+
+### Inserting & executing JavaScript overview
+
+JavaScript can be inserted into an HTML document by including external JavaScript files or writing page level inline JavaScript. Both methods of inserting JavaScript into an HTML document require the use of a `<script>` element node. The `<script>` element can contain JavaScript code or can be used to link to external JavaScript files using the `src` attribute.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<!-- external, cross domain JavaScript include -->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
+
+<!-- page inline JavaScript -->
+<script>
+console.log('hi');
+</script>
+
+</body>
+</html>
+```
+
+### JavaScript is parsed synchronously by default
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<!-- stop document parsing, block document parsing, load js, exectue js, then resume document parsing... -->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
+
+<!-- stop document parsing, block document parsing, exectue js, then resume document parsing... -->
+<script>console.log('hi');</script>
+
+
+</body>
+</html>
+```
+
+### Defering the downloading & execution of external JavaScript using `defer`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<!-- defer, don't block just ignore this until the <html> element node is parsed -->
+<script defer src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
+
+<!-- defer, don't block just ignore this until the <html> element node is parsed -->
+<script defer src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
+<!-- defer, don't block just ignore this until the <html> element node is parsed -->
+<script defer src="http://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+
+<script>
+//We know that jQuery is not available because this occurs before the closing <html> element
+console.log(window['jQuery'] === undefined); //logs true
+
+//Only after everything is loaded can we safely conclude that jQuery was loaded and parsed
+document.body.onload = function(){console.log(jQuery().jquery)}; //logs function
+</script>
+
+</body>
+</html>
+```
+
+### Asynchronously downloading & executing external JavaScript files using `async`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<!-- Don't block, just start downloading and then parse the file when it's done downloading -->
+<script async src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
+
+<!-- Don't block, just start downloading and then parse the file when it's done downloading -->
+<script async src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
+<!-- Don't block, just start downloading and then parse the file when it's done downloading -->
+<script async src="http://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+
+
+<script>
+// we have no idea if jQuery has been loaded yet likley not yet...
+console.log(window['jQuery'] === undefined);//logs true
+
+//Only after everything is loaded can we safley conclude that jQuery was loaded and parsed
+document.body.onload = function(){console.log(jQuery().jquery)};
+</script>
+
+</body>
+</html>
+```
+
+### Forcing asynchronous downloading & parsing of external JavaScript using dynamic `<script>`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<!-- Don't block, just start downloading and then parse the file when it's done downloading -->
+<script>
+var underscoreScript = document.createElement("script");
+underscoreScript.src = "http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js";
+document.body.appendChild(underscoreScript);
+</script>
+
+<!-- Don't block, just start downloading and then parse the file when it's done downloading -->
+<script>
+var jqueryScript = document.createElement("script");
+jqueryScript.src = "http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js";
+document.body.appendChild(jqueryScript);
+</script>
+
+<!-- Don't block, just start downloading and then parse the file when it's done downloading -->
+<script>
+var mouseWheelScript = document.createElement("script");
+mouseWheelScript.src = "http://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js";
+document.body.appendChild(mouseWheelScript);
+</script>
+
+<script>
+//Only after everything is loaded can we safley conclude that jQuery was loaded and parsed
+document.body.onload = function(){console.log(jQuery().jquery)};
+</script>
+
+</body>
+</html>
+```
+
+### Using the `onload` call back for asynchronous `<script>`'s so we know when it's loaded
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<!-- Don't block, just start downloading and then parse the file when it's done downloading -->
+<script>
+var underscoreScript = document.createElement("script");
+underscoreScript.src = "http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js";
+underscoreScript.onload = function(){console.log('underscsore is loaded and exectuted');};
+document.body.appendChild(underscoreScript);
+</script>
+
+<!-- Don't block, just start downloading and then parse the file when it's done downloading -->
+<script async src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" onload="console.log('jQuery is loaded and exectuted');"></script>
+
+</body>
+</html>
+```
+
+### Be mindful of `<script>`'s placement in HTML for DOM manipulation
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- stop parsing, block parsing, exectue js then resume... -->
+<script>
+//we can't script the body element yet, its null, not even been parsed by the browser, its not in the DOM yet
+console.log(document.body.innerHTML); //logs Uncaught TypeError: Cannot read property 'innerHTML' of null
+</script>
+</head>
+<body>
+<strong>Hi</strong>
+</body>
+</html>
+```
+
+### Getting a list of `<script>`s in the DOM
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+
+<script>​
+Array.prototype.slice.call(document.scripts).forEach(function(elm){
+	console.log(elm);
+});//will log each script element in the document
+</script>
+
 </body>
 </html>
 ```
