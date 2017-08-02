@@ -109,6 +109,17 @@
 * [DOM Events](#dom-events)
 	* [DOM events overview](#dom-events-overview)
 	* [DOM event types](#dom-event-types)
+	* [The event flow](#the-event-flow)
+	* [Removing event listeners](#removing-event-listeners)
+	* [Getting event properties from the event object](#getting-event-properties-from-the-event-object)
+	* [The value of `this` when using `addEventListener()`](#the-value-of-this-when-using-addeventlistener)
+	* [Referencing the `target` of an event an not the node or object the event is invoked on](#referencing-the-target-of-an-event-an-not-the-node-or-object-the-event-is-invoked-on)
+	* [Cancelling default browser events using `preventDefault()`](#cancelling-default-browser-events-using-preventdefault)
+	* [Stopping the event flow using `stopPropagation()`](#stopping-the-event-flow-using-stoppropagation)
+	* [Stopping the event flow as well as other like events on the same target using `stopImmediatePropagation()`](#stopping-the-event-flow-as-well-as-other-like-events-on-the-same-target-using-stopimmediatepropagation)
+	* [Custom events](#custom-events)
+	* [Simulating/Triggering mouse events](#simulatingtriggering-mouse-events)
+	* [Event delegation](#event-delegation)
 
 <!-- /code_chunk_output -->
 
@@ -2916,14 +2927,415 @@ elementDiv.addEventListener('click',function(){console.log('fire/trigger addEven
 
 ### DOM event types
 
-**User interface events**
+A list of DOM events can be found at the [MDN site](https://developer.mozilla.org/en-US/docs/Web/Events).
 
-| **Event Type** | **Event Interface** | **Description**                                                                                                                                                                                    | **Event Targets**                                                         | **Bubbles** | **Cancelable** |
-|:---------------|:--------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------|:------------|:---------------|
-| `load`         | `Event`, `UIEvent`  | fires when an asset (HTML page, image, CSS, frameset, `<object>`, or JS file) is loaded.                                                                                                           | `Element`, `Document`, `window`, `XMLHttpRequest`, `XMLHttpRequestUpload` | No          | No             |
-| `unload`       | `UIEvent`           | fires when user agent removes the resource (document, element, defaultView) or any depending resources (images, CSS file, etc.)                                                                    | `windown`, `<body>`, `<frameset>`                                         | No          | No             |
-| `abort`        | `Event`, `UIEvent`  | fires when a resource (object/image) is stopped from loading before completely loaded                                                                                                              | `Element`, `XMLHttpRequest`, `XMLHttpRequestUpload`                       | Yes         | No             |
-| `error`        | `Event`, `UIEvent`  | fires when a resource failed to load, or has been loaded but cannot be interpreted according to its  semantics, such as an invalid image, a script execution error, or non-well-formed XML         | `Element`, `XMLHttpRequest`, `XMLHttpRequestUpload`                       | Yes         | No             |
-| `resize`       | `UIEvent`           | fires  when a document view has been resized. This event type is despatched after all effects for that occurrence of resizing of that particular event target have been executed by the user agent | `window`, `<body>`, `<frameset>`                                          | Yes         | No             |
-| `scroll`       | `UIEvent`           | fires when a user scrolls a document or an element                                                                                                                                                 | `Element`, `Document`, `window`                                           | Yes         | No             |
-| `contextmenu`  | `MouseEvent`        | fires by right clicking an element                                                                                                                                                                 | `Element`                                                                 | Yes         | Yes            |
+### The event flow
+
+When an event is invoked the event flows or propagates through the DOM, firing the same event on other nodes and JavaScript objects. The event flow can be programmed to occur as a capture phase (i.e. DOM tree trunk to branch) or bubbling phase (i.e. DOM tree branches to trunk), or both
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div>click me to start event flow</div>
+
+<script>
+
+/*notice that I am passing the addEventListener() a boolean parameter of true so capture events fire, not just bubbling events. it defaults to false*/
+
+//1 capture phase
+window.addEventListener('click',function(){console.log(1);},true);
+
+//2 capture phase
+document.addEventListener('click',function(){console.log(2);},true);
+
+//3 capture phase
+document.documentElement.addEventListener('click',function(){console.log(3);},true);
+
+//4 capture phase
+document.body.addEventListener('click',function(){console.log(4);},true);
+
+//5 target phase occurs during capture phase
+document.querySelector('div').addEventListener('click',function(){console.log(5);},true);
+
+//6 target phase occurs during bubbling phase
+document.querySelector('div').addEventListener('click',function(){console.log(6);},false);
+
+//7 bubbling phase
+document.body.addEventListener('click',function(){console.log(7);},false);
+
+//8 bubbling phase
+document.documentElement.addEventListener('click',function(){console.log(8);},false);
+
+//9 bubbling phase
+document.addEventListener('click',function(){console.log(9);},false);
+
+//10 bubbling phase
+window.addEventListener('click',function(){console.log(10)},false);
+
+</script>
+</body>
+</html>
+```
+
+### Removing event listeners
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div>click to say hi</div>
+
+<script>
+
+var sayHi = function(){console.log('hi')};
+
+//adding event listener using anonymous function
+document.body.addEventListener('click',function(){console.log('dude');},false);
+
+//adding event listener using function reference
+document.querySelector('div').addEventListener('click',sayHi,false);
+
+//attempt to remove both event listeners, but only the listener added with a funtions reference is removed
+document.querySelector('div').removeEventListener('click',sayHi,false);
+
+//this of course does not work as the function passed to removeEventListener is a new and different function
+document.body.removeEventListener('click',function(){console.log('dude');},false);
+
+//clicking the div will still invoke the click event attached to the body element, this event was not removed
+
+</script>
+</body>
+</html>
+```
+
+### Getting event properties from the event object
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div>click me</div>
+
+<script>
+
+document.querySelector('div').addEventListener('click',function(event){
+Object.keys(event).sort().forEach(function(item){
+     console.log(item+' = '+event[item]); //logs event propeties and values
+});
+},false);
+
+//assumes 'this' is window
+this.addEventListener('load',function(event){
+Object.keys(event).sort().forEach(function(item){
+     console.log(item+' = '+event[item]); //logs event propeties and values
+});
+},false);
+
+</script>
+</body>
+</html>
+```
+
+### The value of `this` when using `addEventListener()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div>click me</div>
+
+<script>
+
+document.querySelector('div').addEventListener('click',function(){
+// 'this' will be the element or node the event listener is attached too
+console.log(this); //logs '<div>'
+},false);
+
+</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div>click me</div>
+
+<script>
+
+//click on the <div> or the <body> the value of this remains the <body> element node
+document.body.addEventListener('click',function(){
+console.log(this); //log <body>...</body>
+},false);
+
+</script>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div>click me</div>
+
+<script>
+
+document.addEventListener('click',function(event){
+console.log(event.currentTarget);  //logs '#document'
+//same as...
+console.log(this);
+},false);
+
+document.body.addEventListener('click',function(event){
+console.log(event.currentTarget); //logs '<body>'
+//same as...
+console.log(this);
+},false);
+
+document.querySelector('div').addEventListener('click',function(event){
+console.log(event.currentTarget); //logs '<div>'
+//same as...
+console.log(this);
+},false);
+
+</script>
+</body>
+</html>
+```
+
+### Referencing the `target` of an event an not the node or object the event is invoked on
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div>click me</div>
+
+<script>
+
+document.body.addEventListener('click',function(event){
+//when the <div> is clicked logs '<div>' because the <div> was the target in the event flow
+console.log(event.target);
+},false);
+
+</script>
+</body>
+</html>
+```
+
+### Cancelling default browser events using `preventDefault()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<a href="google.com">no go</div>
+
+<input type="checkbox" />
+
+<textarea></textarea>
+
+<script>
+
+document.querySelector('a').addEventListener('click',function(event){
+event.preventDefault(); //stop the default event for <a> which would be to load a url
+},false);
+
+document.querySelector('input').addEventListener('click',function(event){
+event.preventDefault(); //stop default event for checkbox, which would be to toggle checkbox state
+},false);
+
+document.querySelector('textarea').addEventListener('keypress',function(event){
+event.preventDefault(); //stop default event for textarea, which would be to add characters typed
+},false);
+
+/*keep in mind that events still propagate, clicking the link in this html document will stop the default event but not event bubbling*/
+document.body.addEventListener('click',function(){
+console.log('the event flow still flows!');
+},false);
+
+</script>
+</body>
+</html>
+```
+
+### Stopping the event flow using `stopPropagation()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div>click me</div>
+
+<script>
+
+document.querySelector('div').addEventListener('click',function(){
+console.log('me too, but nothing from the event flow!');
+},false);
+
+document.querySelector('div').addEventListener('click',function(event){
+console.log('invoked all click events attached, but cancel capture and bubble event phases');
+event.stopPropagation();
+},false);
+
+document.querySelector('div').addEventListener('click',function(){
+console.log('me too, but nothing from the event flow!');
+},false);
+
+/*when the <div> is clicked this event is not invoked because one of the events attached to the <div> stops the capture and bubble flow.*/
+document.body.addEventListener('click',function(){
+console.log('What, denied from being invoked!');
+},false);
+
+</script>
+</body>
+</html>
+```
+
+### Stopping the event flow as well as other like events on the same target using `stopImmediatePropagation()`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div>click me</div>
+
+<script>
+
+//first event attached
+document.querySelector('div').addEventListener('click',function(){
+console.log('I get invoked because I was attached first');
+},false);
+
+//seond event attached
+document.querySelector('div').addEventListener('click',function(event){
+console.log('I get invoked, but stop any other click events on this target');
+event.stopImmediatePropagation();
+},false);
+
+//third event attached, but because stopImmediatePropagation() was called above this event does not get invoked
+document.querySelector('div').addEventListener('click',function(){
+console.log('I get stopped from the previous click event listener');
+},false);
+
+//notice that the event flow is also cancelled as if stopPropagation was called too
+document.body.addEventListener('click',function(){
+console.log('What, denied from being invoked!');
+},false);
+
+</script>
+</body>
+</html>
+```
+
+### Custom events
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div>click me</div>​​​​​
+
+<script>
+
+var divElement = document.querySelector('div');
+
+//create the custom event
+var cheer = document.createEvent('CustomEvent'); //the 'CustomEvent' parameter is required
+
+//create an event listener for the custom event
+divElement.addEventListener('goBigBlue',function(event){
+    console.log(event.detail.goBigBlueIs)
+},false);
+
+/*Use the initCustomEvent method to setup the details of the custom event.
+Parameters for initCustomEvent are: (event, bubble?, cancelable?, pass values to event.detail)*/
+cheer.initCustomEvent('goBigBlue',true,false,{goBigBlueIs:'its gone!'});
+
+//invoke the custom event using dispatchEvent
+divElement.dispatchEvent(cheer);​
+
+</script>
+</body>
+</html>
+```
+
+### Simulating/Triggering mouse events
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<div>no need to click, we programatically trigger it</div>​​​​
+
+<script>
+
+var divElement = document.querySelector('div');
+
+//setup click event that will be simulated
+divElement.addEventListener('click',function(event){
+    console.log(Object.keys(event));
+},false);
+
+//create simulated mouse event 'click'
+var simulateDivClick = document.createEvent('MouseEvents');
+
+/*setup simulated mouse 'click'
+initMouseEvent(type,bubbles,cancelable,view,detail,screenx,screeny,clientx,clienty,ctrlKey,altKey,shiftKey,metaKey,button,relatedTarget)*
+simulateDivClick.initMouseEvent('click',true,true,document.defaultView,0,0,0,0,0,false,false,false,0,null,null);
+
+//invoke simulated clicked event
+divElement.dispatchEvent(simulateDivClick);
+
+</script>
+</body>
+</html>
+```
+
+### Event delegation
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<p>Click a table cell</p>
+
+<table border="1">
+    <tbody>
+        <tr><td>row 1 column 1</td><td>row 1 column 2</td></tr>
+        <tr><td>row 2 column 1</td><td>row 2 column 2</td></tr>
+        <tr><td>row 3 column 1</td><td>row 3 column 2</td></tr>
+        <tr><td>row 4 column 1</td><td>row 4 column 2</td></tr>
+        <tr><td>row 5 column 1</td><td>row 5 column 2</td></tr>
+        <tr><td>row 6 column 1</td><td>row 6 column 2</td></tr>
+    </tbody>
+</table>​​​​​​​​
+
+<script>
+
+document.querySelector('table').addEventListener('click',function(event){
+	if(event.target.tagName.toLowerCase() === 'td'){ //make sure we only run code if a td is the target
+		console.log(event.target.textContent); //use event.target to gain access to target of the event which is the td
+	}
+},false);
+
+</script>
+</body>
+</html>
+```
