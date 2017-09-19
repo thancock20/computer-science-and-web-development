@@ -1,5 +1,17 @@
 # Project completed in association with this item
+
+[Simon Game](http://toddhancock.net/simon-game)
+
+[Github repository](https://github.com/thancock20/simon-game)
+
 ## Description:
-## Use Cases:
+
+The simon game project from freeCodeCamp.com
+
 ## Technologies used:
-## Skills I demonstrated via this project
+
+* Babel
+* Jest
+* JavaScript
+* Stylus
+* Webpack
