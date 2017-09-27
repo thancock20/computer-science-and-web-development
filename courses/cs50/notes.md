@@ -1198,7 +1198,7 @@ trie;
   ```
   w.x.y.z
   ```
-  * Each of w, x, y, and z can be a nonnegative value in the range [0,255].
+  * Each of w, x, y, and z can be a nonnegative value in the range `[0,255]`.
   * If each IP address is 32 bits, that means there are roughly 4 billion addresses to give out.
   * The population of the world is somewhere in excess of 7 billion, and most folks in the western world have more than 1 device capable of Internet connectivity.
     * Some workarounds have allowed us to deal with this problem (for now).
@@ -1206,7 +1206,7 @@ trie;
     ```
     s:t:u:v:w:x:y:z
     ```
-    * Each of s, t, u, v, w, x, y, and z is represented by 1 to 4 hexadecimal digits in the range [0, ffff].
+    * Each of s, t, u, v, w, x, y, and z is represented by 1 to 4 hexadecimal digits in the range `[0, ffff]`.
 * **DHCP**
   * How do we get an IP address in the first place though? Surely we can't just choose any one we want. What if the one we want is already taken?
   * Somewhere between your computer and the Internet at large exists a *Dynamic Host Configuration Protocol* (DHCP) server, whose role is to assign IP addresses to devices.
