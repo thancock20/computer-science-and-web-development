@@ -1,6 +1,6 @@
 #:computer: Computer Science and Web Development - comprehensive
 
-**Note:** Modelled on this [repo](https://gitlab.com/P1xt/get-job-ready/tree/master) from [`@P1xt`](https://gitlab.com/P1xt)
+**Note:** Modeled on this [repo](https://gitlab.com/P1xt/get-job-ready/tree/master) from [`@P1xt`](https://gitlab.com/P1xt)
 
 **Note:** [Curriculum taken from :computer: Guide: Computer Science and Web Development - comprehensive path](https://forum.freecodecamp.com/t/computer-guide-computer-science-and-web-development-comprehensive-path/64470).
 
@@ -24,7 +24,9 @@ The **only things** that you need to know are how to use **Git** and **GitHub**.
 
 
 ## The list - work down it in order
+
 ### Tier 1 - getting started
+
 * Book: [You Don't Know JS: Up & Going](https://github.com/getify/You-Dont-Know-JS/blob/master/up%20&%20going/README.md#you-dont-know-js-up--going)
 * Book: [You Don't Know JS: Scope & Closures](https://github.com/getify/You-Dont-Know-JS/blob/master/scope%20&%20closures/README.md#you-dont-know-js-scope--closures)
 * Book: [You Don't Know JS: this & Object Prototypes](https://github.com/getify/You-Dont-Know-JS/blob/master/this%20&%20object%20prototypes/README.md#you-dont-know-js-this--object-prototypes)
@@ -44,13 +46,14 @@ The **only things** that you need to know are how to use **Git** and **GitHub**.
 * Project: Build an online Towers of Hanoi solver that accepts a tower height between 5 and 10,  and then displays a graphical (animated) solution, iteratively moving each piece until the puzzle is solved
 
 ### Tier 2 - develop more expertise
+
 * Course: [How to Code: Simple Data](https://www.edx.org/course/how-code-simple-data-ubcx-htc1x)
 * Course: [How to Code: Complex Data](https://www.edx.org/course/how-code-complex-data-ubcx-htc2x)
-* Course: [Software Construction: Data Abstraction](https://www.edx.org/course/software-construction-data-abstraction-ubcx-softconst1x)
 * Book:  [DOM Enlightenment](http://domenlightenment.com/)
 * Project:  Simon Game from the frontend section of FCC
 * Project:  Complete all Classic Puzzles - Easy on [CodinGame](https://www.codingame.com/) in JavaScript
-* Course:  [Introduction to MongoDB using the MEAN Stack](https://www.edx.org/course/introduction-mongodb-using-mean-stack-mongodbx-m101x-0) on edX
+* Course:  [Programming for the Web with JavaScript](https://www.edx.org/course/programming-web-javascript-pennx-sd4x) on edX.
+* Course: [M101JS: MongoDB for Node.js Developers](https://university.mongodb.com/courses/M101JS/about) on MongoDB University
 * The FCC Backend Certification - all projects, ignore the tutorials and just read the official docs if you want.
 * Course: [Calculus One](https://www.coursera.org/learn/calculus1)
 * Book:  [JavaScript Design Patterns](https://addyosmani.com/resources/essentialjsdesignpatterns/book/)
@@ -71,6 +74,7 @@ The **only things** that you need to know are how to use **Git** and **GitHub**.
 
 
 ### Tier 3 - add more rigor
+
 * Book: [Professor Frisby's Mostly Adequate Guide to Functional Programming](https://www.gitbook.com/book/drboolean/mostly-adequate-guide/details)
 * Course: [Software Testing](https://www.udacity.com/course/software-testing--cs258)
 * Course: [Software Debugging](https://www.udacity.com/course/software-debugging--cs259)
@@ -99,6 +103,7 @@ The **only things** that you need to know are how to use **Git** and **GitHub**.
 * Project: Clone Twitter - yes, all the functionality
 
 ### Tier 4 - polish the rough edges
+
 * Course: [Computer Architecture](https://www.coursera.org/course/comparch)
 * Project: Complete all challenges from the [Code Jam Round 3 2015](https://code.google.com/codejam/contest/4254486/dashboard)
 * Course: [Introduction to Cyber Security](https://www.futurelearn.com/courses/introduction-to-cyber-security)
@@ -122,6 +127,7 @@ The **only things** that you need to know are how to use **Git** and **GitHub**.
 * Project: Extend your CSS grid framework to include the CSS and JavaScript required to implement 5 to 10 material design components
 
 ## Bookmarks you should have
+
 * [surge.sh](https://surge.sh/) - deploy your frontend projects here (or use github pages)
 * [MDN](https://developer.mozilla.org/en-US/) - look HTML, CSS, and JavaScript stuff up here
 * [Heroku](https://dashboard.heroku.com/) - deploy your fullstack projects here (or hyperdev)
@@ -174,10 +180,12 @@ The **only things** that you need to know are how to use **Git** and **GitHub**.
 * code a flash cards application, for jotting quick notes you can use to quiz yourself later
 
 #### Additional Resources
+
 [OpenStax](https://openstax.org/subjects) - Open Source textbooks on a variety of University level topics, check here if you want a reference math or physics textbook
 
 
 ----------
+
 #### Attribution
 
 * Many of the courses listed closely mimic the list from [Open Source Society University - Computer Science](https://github.com/open-source-society/computer-science)
