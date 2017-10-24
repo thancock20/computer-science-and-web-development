@@ -1,7 +1,7 @@
 # Notes related to what I learned while completing this
 
 
-## Week One:
+## Week One: Introduction
 
 Simple example app running express, mongodb and nunjucks as templating engine:
 
@@ -59,3 +59,20 @@ body { font-family: 'Helvetica', 'Arial', sans-serif; }
 {% endfor %}
 </ul>
 ```
+
+## Week Two: CRUD
+
+
+* **Creating Documents**
+  * `insertOne()`
+  * `insertMany()`
+* **Reading Documents**
+  * `find()`
+  * `findOne()`
+* **Updating Documents**
+  * `updateOne()`
+  * `updateMany()`
+  * `replaceOne()`
+* **Deleting Documents**
+  * `deleteOne()`
+  * `deleteMany()`
