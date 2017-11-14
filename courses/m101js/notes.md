@@ -166,3 +166,14 @@ function commandLineOptions() {
 
 }
 ```
+
+## Week Four: Schema Design
+
+
+**When to Denormalize**:
+
+| Relations | Technique                   |
+|:----------|:----------------------------|
+| one:one   | Embed                       |
+| one:many  | Embed (the many in the one) |
+| many:many | Link                        |
