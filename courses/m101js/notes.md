@@ -80,10 +80,10 @@ body { font-family: 'Helvetica', 'Arial', sans-serif; }
   ## Week Three: The Node.js Driver
 
 
-  ```js
-  var MongoClient = require('mongodb').MongoClient,
-    commandLineArgs = require('command-line-args'),
-    assert = require('assert');
+```js
+var MongoClient = require('mongodb').MongoClient,
+  commandLineArgs = require('command-line-args'),
+  assert = require('assert');
 
 
 var options = commandLineOptions();

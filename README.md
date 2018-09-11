@@ -1,4 +1,4 @@
-#:computer: Computer Science and Web Development - comprehensive
+# :computer: Computer Science and Web Development - comprehensive
 
 **Note:** Modeled on this [repo](https://gitlab.com/P1xt/get-job-ready/tree/master) from [`@P1xt`](https://gitlab.com/P1xt)
 
